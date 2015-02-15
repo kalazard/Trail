@@ -1,0 +1,80 @@
+<?php
+
+namespace Site\TrailBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Member
+ *
+ * @ORM\Table(name="member", uniqueConstraints={@ORM\UniqueConstraint(name="id_UNIQUE", columns={"id"})}, indexes={@ORM\Index(name="fk_member_1_idx", columns={"user"}), @ORM\Index(name="fk_member_2_idx", columns={"avatar"})})
+ * @ORM\Entity
+ */
+class Member
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nom", type="string", length=45, nullable=false)
+     */
+    private $nom;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="prenom", type="string", length=45, nullable=false)
+     */
+    private $prenom;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date_naissance", type="date", nullable=false)
+     */
+    private $dateNaissance;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="telephone", type="integer", nullable=false)
+     */
+    private $telephone;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="licence", type="string", length=45, nullable=false)
+     */
+    private $licence;
+
+    /**
+     * @var \User
+     *
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="user", referencedColumnName="id")
+     * })
+     */
+    private $user;
+
+    /**
+     * @var \Image
+     *
+     * @ORM\ManyToOne(targetEntity="Image")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="avatar", referencedColumnName="id")
+     * })
+     */
+    private $avatar;
+
+
+}

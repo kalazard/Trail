@@ -1,0 +1,46 @@
+<?php
+
+namespace Site\TrailBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Coordonnees
+ *
+ * @ORM\Table(name="coordonnees", uniqueConstraints={@ORM\UniqueConstraint(name="id_UNIQUE", columns={"id"})})
+ * @ORM\Entity
+ */
+class Coordonnees
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="longitude", type="float", precision=10, scale=0, nullable=false)
+     */
+    private $longitude;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="latitude", type="float", precision=10, scale=0, nullable=false)
+     */
+    private $latitude;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="altitude", type="float", precision=10, scale=0, nullable=false)
+     */
+    private $altitude;
+
+
+}

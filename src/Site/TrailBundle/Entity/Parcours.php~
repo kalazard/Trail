@@ -1,0 +1,50 @@
+<?php
+
+namespace Site\TrailBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Parcours
+ *
+ * @ORM\Table(name="parcours", indexes={@ORM\Index(name="fk_parcours_2_idx", columns={"itiniraire"}), @ORM\Index(name="fk_parcours_3_idx", columns={"difficulte"}), @ORM\Index(name="IDX_99B1DEE3B26681E", columns={"evenement"})})
+ * @ORM\Entity
+ */
+class Parcours
+{
+    /**
+     * @var \Evenement
+     *
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="NONE")
+     * @ORM\OneToOne(targetEntity="Evenement")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="evenement", referencedColumnName="id")
+     * })
+     */
+    private $evenement;
+
+    /**
+     * @var \Itiniraire
+     *
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="NONE")
+     * @ORM\OneToOne(targetEntity="Itiniraire")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="itiniraire", referencedColumnName="id")
+     * })
+     */
+    private $itiniraire;
+
+    /**
+     * @var \DifficulteParcours
+     *
+     * @ORM\ManyToOne(targetEntity="DifficulteParcours")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="difficulte", referencedColumnName="id")
+     * })
+     */
+    private $difficulte;
+
+
+}

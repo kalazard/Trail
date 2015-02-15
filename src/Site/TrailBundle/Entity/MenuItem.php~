@@ -1,0 +1,60 @@
+<?php
+
+namespace Site\TrailBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * MenuItem
+ *
+ * @ORM\Table(name="menu_item", uniqueConstraints={@ORM\UniqueConstraint(name="id_UNIQUE", columns={"id"})})
+ * @ORM\Entity
+ */
+class MenuItem
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="label", type="string", length=45, nullable=false)
+     */
+    private $label;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="ordre", type="integer", nullable=false)
+     */
+    private $ordre;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="parent", type="integer", nullable=false)
+     */
+    private $parent;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\ManyToMany(targetEntity="Role", mappedBy="menuItem")
+     */
+    private $role;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->role = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+}
