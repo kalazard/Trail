@@ -5,9 +5,17 @@
         <group>
             <file>file:/home/alazard/Documents/Acrobatt/Trail/src/Site/TrailBundle/Resources/views/layout.html.twig</file>
             <file>file:/home/alazard/Documents/Acrobatt/Trail/src/Site/TrailBundle/Resources/js/menu.js</file>
+            <file>file:/home/alazard/Documents/Acrobatt/Trail/src/.htaccess</file>
             <file>file:/home/alazard/Documents/Acrobatt/Trail/src/Site/TrailBundle/Controller/HomeController.php</file>
+            <file>file:/home/alazard/Documents/Acrobatt/Trail/src/Site/TrailBundle/Resources/config/routing.yml</file>
+            <file>file:/home/alazard/Documents/Acrobatt/Trail/app/config/security.yml</file>
+            <file>file:/home/alazard/Documents/Acrobatt/Trail/src/Site/TrailBundle/Resources/views/Security/login.html.twig</file>
+            <file>file:/home/alazard/Documents/Acrobatt/Trail/app/autoload.php</file>
+            <file>file:/home/alazard/Documents/Acrobatt/Trail/src/Site/TrailBundle/Entity/User.php</file>
             <file>file:/home/alazard/Documents/Acrobatt/Trail/src/Site/TrailBundle/Resources/css/menu.css</file>
             <file>file:/home/alazard/Documents/Acrobatt/Trail/src/Site/TrailBundle/Resources/views/Home/index.html.twig</file>
+            <file>file:/home/alazard/Documents/Acrobatt/Trail/src/Site/TrailBundle/Controller/SecurityController.php</file>
+            <file>file:/home/alazard/Documents/Acrobatt/Trail/app/config/parameters.yml</file>
         </group>
     </open-files>
 </project-private>

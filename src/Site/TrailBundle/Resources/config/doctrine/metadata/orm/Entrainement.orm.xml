@@ -12,6 +12,11 @@
     <id name="id" type="integer" column="id">
       <generator strategy="IDENTITY"/>
     </id>
+    <many-to-one field="evenement" target-entity="Evenement">
+      <join-columns>
+        <join-column name="evenement" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
     <many-to-one field="programme" target-entity="Programme">
       <join-columns>
         <join-column name="programme" referenced-column-name="id"/>
@@ -20,11 +25,6 @@
     <many-to-one field="lieuRendezVous" target-entity="LieuRendezVous">
       <join-columns>
         <join-column name="lieu_rendez_vous" referenced-column-name="id"/>
-      </join-columns>
-    </many-to-one>
-    <many-to-one field="evenement" target-entity="Evenement">
-      <join-columns>
-        <join-column name="evenement" referenced-column-name="id"/>
       </join-columns>
     </many-to-one>
   </entity>

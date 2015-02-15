@@ -7,10 +7,10 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * User
  *
- * @ORM\Table(name="user", uniqueConstraints={@ORM\UniqueConstraint(name="id_UNIQUE", columns={"id"})}, indexes={@ORM\Index(name="fk_user_1_idx", columns={"role"})})
+ * @ORM\Table(name="user", uniqueConstraints={@ORM\UniqueConstraint(name="id_UNIQUE", columns={"id"}), @ORM\UniqueConstraint(name="username_UNIQUE", columns={"username"})}, indexes={@ORM\Index(name="fk_user_1_idx", columns={"role"})})
  * @ORM\Entity
  */
-class User
+class User implements \Symfony\Component\Security\Core\User\UserInterface
 {
     /**
      * @var integer
@@ -38,9 +38,23 @@ class User
     /**
      * @var string
      *
-     * @ORM\Column(name="salt_key", type="string", length=45, nullable=false)
+     * @ORM\Column(name="salt", type="string", length=255, nullable=false)
      */
-    private $saltKey;
+    private $salt;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="roles", type="array", nullable=false)
+     */
+    private $roles;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="username", type="string", length=45, nullable=false, unique=true)
+     */
+    private $username;
 
     /**
      * @var \Role
@@ -110,27 +124,51 @@ class User
         return $this->password;
     }
 
+
     /**
-     * Set saltKey
+     * Set roles
      *
-     * @param string $saltKey
+     * @param string $roles
      * @return User
      */
-    public function setSaltKey($saltKey)
+    public function setRoles($roles)
     {
-        $this->saltKey = $saltKey;
+        $this->roles = $roles;
 
         return $this;
     }
 
     /**
-     * Get saltKey
+     * Get roles
      *
      * @return string 
      */
-    public function getSaltKey()
+    public function getRoles()
     {
-        return $this->saltKey;
+        return $this->roles;
+    }
+
+    /**
+     * Set username
+     *
+     * @param string $username
+     * @return User
+     */
+    public function setUsername($username)
+    {
+        $this->username = $username;
+
+        return $this;
+    }
+
+    /**
+     * Get username
+     *
+     * @return string 
+     */
+    public function getUsername()
+    {
+        return $this->username;
     }
 
     /**
@@ -155,4 +193,17 @@ class User
     {
         return $this->role;
     }
+
+    public function eraseCredentials() {
+        
+    }
+
+    public function getSalt() {
+        return $this->salt;
+    }
+    
+    public function setSalt($salt) {
+        $this->salt = $salt;
+    }
+
 }

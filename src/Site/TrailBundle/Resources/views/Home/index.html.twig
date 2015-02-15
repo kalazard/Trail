@@ -3,5 +3,9 @@
 {% block title %}{{ parent() }} - Accueil{% endblock %}
 
 {% block body %}
-  
+  {% if app.user %}
+      <p> lala </p>
+ {% else %}
+     <p> pas lala</p>
+ {% endif %}
 {% endblock %}

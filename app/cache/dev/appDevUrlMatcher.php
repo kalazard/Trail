@@ -140,9 +140,39 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
 
         }
 
+        // site_trail_homepage_empty
+        if (rtrim($pathinfo, '/') === '') {
+            if (substr($pathinfo, -1) !== '/') {
+                return $this->redirect($pathinfo.'/', 'site_trail_homepage_empty');
+            }
+
+            return array (  '_controller' => 'Site\\TrailBundle\\Controller\\HomeController::indexAction',  '_route' => 'site_trail_homepage_empty',);
+        }
+
         // site_trail_homepage
         if ($pathinfo === '/home') {
             return array (  '_controller' => 'Site\\TrailBundle\\Controller\\HomeController::indexAction',  '_route' => 'site_trail_homepage',);
+        }
+
+        if (0 === strpos($pathinfo, '/log')) {
+            if (0 === strpos($pathinfo, '/login')) {
+                // login
+                if ($pathinfo === '/login') {
+                    return array (  '_controller' => 'Site\\TrailBundle\\Controller\\SecurityController::loginAction',  '_route' => 'login',);
+                }
+
+                // login_check
+                if ($pathinfo === '/login_check') {
+                    return array('_route' => 'login_check');
+                }
+
+            }
+
+            // logout
+            if ($pathinfo === '/logout') {
+                return array('_route' => 'logout');
+            }
+
         }
 
         throw 0 < count($allow) ? new MethodNotAllowedException(array_unique($allow)) : new ResourceNotFoundException();

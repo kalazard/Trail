@@ -22,16 +22,6 @@ class Entrainement
     private $id;
 
     /**
-     * @var \Evenement
-     *
-     * @ORM\ManyToOne(targetEntity="Evenement")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="evenement", referencedColumnName="id")
-     * })
-     */
-    private $evenement;
-
-    /**
      * @var \LieuRendezVous
      *
      * @ORM\ManyToOne(targetEntity="LieuRendezVous")
@@ -51,6 +41,16 @@ class Entrainement
      */
     private $programme;
 
+    /**
+     * @var \Evenement
+     *
+     * @ORM\ManyToOne(targetEntity="Evenement")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="evenement", referencedColumnName="id")
+     * })
+     */
+    private $evenement;
+
 
 
     /**
@@ -61,29 +61,6 @@ class Entrainement
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set evenement
-     *
-     * @param \Site\TrailBundle\Entity\Evenement $evenement
-     * @return Entrainement
-     */
-    public function setEvenement(\Site\TrailBundle\Entity\Evenement $evenement = null)
-    {
-        $this->evenement = $evenement;
-
-        return $this;
-    }
-
-    /**
-     * Get evenement
-     *
-     * @return \Site\TrailBundle\Entity\Evenement 
-     */
-    public function getEvenement()
-    {
-        return $this->evenement;
     }
 
     /**
@@ -130,5 +107,28 @@ class Entrainement
     public function getProgramme()
     {
         return $this->programme;
+    }
+
+    /**
+     * Set evenement
+     *
+     * @param \Site\TrailBundle\Entity\Evenement $evenement
+     * @return Entrainement
+     */
+    public function setEvenement(\Site\TrailBundle\Entity\Evenement $evenement = null)
+    {
+        $this->evenement = $evenement;
+
+        return $this;
+    }
+
+    /**
+     * Get evenement
+     *
+     * @return \Site\TrailBundle\Entity\Evenement 
+     */
+    public function getEvenement()
+    {
+        return $this->evenement;
     }
 }

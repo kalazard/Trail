@@ -44,8 +44,16 @@ class __TwigTemplate_fee752dbf818ac8c461ca8e62fc05921400805be5720786456589b1f2be
     public function block_body($context, array $blocks = array())
     {
         // line 6
-        echo "  
-";
+        echo "  ";
+        if ($this->getAttribute((isset($context["app"]) ? $context["app"] : $this->getContext($context, "app")), "user", array())) {
+            // line 7
+            echo "      <p> lala </p>
+ ";
+        } else {
+            // line 9
+            echo "     <p> pas lala</p>
+ ";
+        }
     }
 
     public function getTemplateName()
@@ -60,6 +68,6 @@ class __TwigTemplate_fee752dbf818ac8c461ca8e62fc05921400805be5720786456589b1f2be
 
     public function getDebugInfo()
     {
-        return array (  47 => 6,  44 => 5,  37 => 3,  11 => 1,);
+        return array (  54 => 9,  50 => 7,  47 => 6,  44 => 5,  37 => 3,  11 => 1,);
     }
 }

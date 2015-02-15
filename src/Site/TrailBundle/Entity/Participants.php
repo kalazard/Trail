@@ -13,16 +13,6 @@ use Doctrine\ORM\Mapping as ORM;
 class Participants
 {
     /**
-     * @var \Participation
-     *
-     * @ORM\ManyToOne(targetEntity="Participation")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="participation", referencedColumnName="id")
-     * })
-     */
-    private $participation;
-
-    /**
      * @var \Evenement
      *
      * @ORM\Id
@@ -46,30 +36,17 @@ class Participants
      */
     private $user;
 
-
-
     /**
-     * Set participation
+     * @var \Participation
      *
-     * @param \Site\TrailBundle\Entity\Participation $participation
-     * @return Participants
+     * @ORM\ManyToOne(targetEntity="Participation")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="participation", referencedColumnName="id")
+     * })
      */
-    public function setParticipation(\Site\TrailBundle\Entity\Participation $participation = null)
-    {
-        $this->participation = $participation;
+    private $participation;
 
-        return $this;
-    }
 
-    /**
-     * Get participation
-     *
-     * @return \Site\TrailBundle\Entity\Participation 
-     */
-    public function getParticipation()
-    {
-        return $this->participation;
-    }
 
     /**
      * Set evenement
@@ -115,5 +92,28 @@ class Participants
     public function getUser()
     {
         return $this->user;
+    }
+
+    /**
+     * Set participation
+     *
+     * @param \Site\TrailBundle\Entity\Participation $participation
+     * @return Participants
+     */
+    public function setParticipation(\Site\TrailBundle\Entity\Participation $participation = null)
+    {
+        $this->participation = $participation;
+
+        return $this;
+    }
+
+    /**
+     * Get participation
+     *
+     * @return \Site\TrailBundle\Entity\Participation 
+     */
+    public function getParticipation()
+    {
+        return $this->participation;
     }
 }

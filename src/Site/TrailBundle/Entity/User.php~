@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * User
  *
- * @ORM\Table(name="user", uniqueConstraints={@ORM\UniqueConstraint(name="id_UNIQUE", columns={"id"})}, indexes={@ORM\Index(name="fk_user_1_idx", columns={"role"})})
+ * @ORM\Table(name="user", uniqueConstraints={@ORM\UniqueConstraint(name="id_UNIQUE", columns={"id"}), @ORM\UniqueConstraint(name="username_UNIQUE", columns={"username"})}, indexes={@ORM\Index(name="fk_user_1_idx", columns={"role"})})
  * @ORM\Entity
  */
 class User
@@ -41,6 +41,20 @@ class User
      * @ORM\Column(name="salt_key", type="string", length=45, nullable=false)
      */
     private $saltKey;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="roles", type="string", length=45, nullable=false)
+     */
+    private $roles;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="username", type="string", length=45, nullable=false)
+     */
+    private $username;
 
     /**
      * @var \Role
