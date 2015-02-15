@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Member" table="member">
+    <indexes>
+      <index name="fk_member_1_idx" columns="user"/>
+      <index name="fk_member_2_idx" columns="avatar"/>
+    </indexes>
+    <unique-constraints>
+      <unique-constraint name="id_UNIQUE" columns="id"/>
+    </unique-constraints>
+    <id name="id" type="integer" column="id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="nom" type="string" column="nom" length="45" nullable="false"/>
+    <field name="prenom" type="string" column="prenom" length="45" nullable="false"/>
+    <field name="dateNaissance" type="date" column="date_naissance" nullable="false"/>
+    <field name="telephone" type="integer" column="telephone" nullable="false"/>
+    <field name="licence" type="string" column="licence" length="45" nullable="false"/>
+    <many-to-one field="avatar" target-entity="Image">
+      <join-columns>
+        <join-column name="avatar" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="user" target-entity="User">
+      <join-columns>
+        <join-column name="user" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

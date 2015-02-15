@@ -1,0 +1,3 @@
+site_trail_homepage:
+    path:     /home
+    defaults: { _controller: SiteTrailBundle:Home:index }

@@ -1,0 +1,4 @@
+site_trail:
+    resource: "@SiteTrailBundle/Resources/config/routing.yml"
+    prefix:   /
+
