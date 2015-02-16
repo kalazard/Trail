@@ -1789,7 +1789,7 @@
         </argument>
         <argument type="service">
           <service class="Symfony\Component\Security\Core\Authentication\Provider\AnonymousAuthenticationProvider" public="false">
-            <argument>54e11450d328e</argument>
+            <argument>54e25b2376cad</argument>
           </service>
         </argument>
       </argument>
@@ -2014,8 +2014,8 @@
             </argument>
             <argument type="collection">
               <argument key="check_path">login_check</argument>
+              <argument key="require_previous_session">false</argument>
               <argument key="use_forward">false</argument>
-              <argument key="require_previous_session">true</argument>
               <argument key="username_parameter">_username</argument>
               <argument key="password_parameter">_password</argument>
               <argument key="csrf_parameter">_csrf_token</argument>
@@ -2030,7 +2030,7 @@
         <argument type="service">
           <service class="Symfony\Component\Security\Http\Firewall\AnonymousAuthenticationListener" public="false">
             <argument type="service" id="security.context"/>
-            <argument>54e11450d328e</argument>
+            <argument>54e25b2376cad</argument>
             <argument type="service" id="monolog.logger.security" on-invalid="null"/>
             <argument type="service" id="security.authentication.manager"/>
           </service>

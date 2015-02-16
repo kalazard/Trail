@@ -44,11 +44,31 @@ class __TwigTemplate_494db47ac6323f158eb4ec5499b8aa88d1cf6da0e0e7463ab20854d6d1f
         // line 9
         echo "      <script src=\"//code.jquery.com/jquery-1.11.2.min.js\"></script>
       <script src=\"//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js\"></script>
-      <script src=\"../../src/Site/TrailBundle/Resources/js/menu.js\"></script>
-      
+      <!--<script src=\"../../src/Site/TrailBundle/Resources/js/menu.js\"></script>-->
+      ";
+        // line 12
+        if (isset($context['assetic']['debug']) && $context['assetic']['debug']) {
+            // asset "08ad7e7_0"
+            $context["asset_url"] = isset($context['assetic']['use_controller']) && $context['assetic']['use_controller'] ? $this->env->getExtension('routing')->getPath("_assetic_08ad7e7_0") : $this->env->getExtension('assets')->getAssetUrl("_controller/js/08ad7e7_part_1_menu_1.js");
+            // line 13
+            echo "        <script type=\"text/javascript\" src=\"";
+            echo twig_escape_filter($this->env, (isset($context["asset_url"]) ? $context["asset_url"] : $this->getContext($context, "asset_url")), "html", null, true);
+            echo "\"></script>
+    ";
+        } else {
+            // asset "08ad7e7"
+            $context["asset_url"] = isset($context['assetic']['use_controller']) && $context['assetic']['use_controller'] ? $this->env->getExtension('routing')->getPath("_assetic_08ad7e7") : $this->env->getExtension('assets')->getAssetUrl("_controller/js/08ad7e7.js");
+            echo "        <script type=\"text/javascript\" src=\"";
+            echo twig_escape_filter($this->env, (isset($context["asset_url"]) ? $context["asset_url"] : $this->getContext($context, "asset_url")), "html", null, true);
+            echo "\"></script>
+    ";
+        }
+        unset($context["asset_url"]);
+        // line 15
+        echo "      
     <meta charset=\"utf-8\">
     <title>";
-        // line 14
+        // line 17
         $this->displayBlock('title', $context, $blocks);
         echo "</title>
   </head>
@@ -111,9 +131,9 @@ class __TwigTemplate_494db47ac6323f158eb4ec5499b8aa88d1cf6da0e0e7463ab20854d6d1f
             </button>
             
             ";
-        // line 74
+        // line 77
         $this->displayBlock('body', $context, $blocks);
-        // line 76
+        // line 79
         echo "            <!--<div class=\"container\">
                 <div class=\"row\">
                     <div class=\"col-lg-8 col-lg-offset-2\">
@@ -143,7 +163,7 @@ class __TwigTemplate_494db47ac6323f158eb4ec5499b8aa88d1cf6da0e0e7463ab20854d6d1f
           
           <div class=\"tab-pane fade active in\" id=\"signin\">
               <form id=\"loginform\" action=\"";
-        // line 104
+        // line 107
         echo $this->env->getExtension('routing')->getPath("login_check");
         echo "\" method=\"post\" class=\"form-horizontal\">
               <fieldset>
@@ -242,7 +262,7 @@ class __TwigTemplate_494db47ac6323f158eb4ec5499b8aa88d1cf6da0e0e7463ab20854d6d1f
     \$.ajax({
         type: \"POST\",
         url: \"";
-        // line 200
+        // line 203
         echo $this->env->getExtension('routing')->getPath("login_check");
         echo "\",
         data: {_username: username, _password: password},
@@ -269,16 +289,16 @@ class __TwigTemplate_494db47ac6323f158eb4ec5499b8aa88d1cf6da0e0e7463ab20854d6d1f
 </html>";
     }
 
-    // line 14
+    // line 17
     public function block_title($context, array $blocks = array())
     {
         echo "Trail";
     }
 
-    // line 74
+    // line 77
     public function block_body($context, array $blocks = array())
     {
-        // line 75
+        // line 78
         echo "            ";
     }
 
@@ -294,6 +314,6 @@ class __TwigTemplate_494db47ac6323f158eb4ec5499b8aa88d1cf6da0e0e7463ab20854d6d1f
 
     public function getDebugInfo()
     {
-        return array (  282 => 75,  279 => 74,  273 => 14,  246 => 200,  147 => 104,  117 => 76,  115 => 74,  52 => 14,  45 => 9,  31 => 7,  27 => 5,  21 => 1,);
+        return array (  302 => 78,  299 => 77,  293 => 17,  266 => 203,  167 => 107,  137 => 79,  135 => 77,  72 => 17,  68 => 15,  54 => 13,  50 => 12,  45 => 9,  31 => 7,  27 => 5,  21 => 1,);
     }
 }

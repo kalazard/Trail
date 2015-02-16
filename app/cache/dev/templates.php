@@ -78,7 +78,6 @@
   'DoctrineBundle:Collector:db.html.twig' => '/home/alazard/Documents/Acrobatt/Trail/vendor/doctrine/doctrine-bundle/Resources/views/Collector/db.html.twig',
   'DoctrineBundle:Collector:explain.html.twig' => '/home/alazard/Documents/Acrobatt/Trail/vendor/doctrine/doctrine-bundle/Resources/views/Collector/explain.html.twig',
   'SiteTrailBundle:Home:index.html.twig' => '/home/alazard/Documents/Acrobatt/Trail/src/Site/TrailBundle/Resources/views/Home/index.html.twig',
-  'SiteTrailBundle:Security:login.html.twig' => '/home/alazard/Documents/Acrobatt/Trail/src/Site/TrailBundle/Resources/views/Security/login.html.twig',
   'SiteTrailBundle::layout.html.twig' => '/home/alazard/Documents/Acrobatt/Trail/src/Site/TrailBundle/Resources/views/layout.html.twig',
   'DebugBundle:Profiler:dump.html.twig' => '/home/alazard/Documents/Acrobatt/Trail/vendor/symfony/symfony/src/Symfony/Bundle/DebugBundle/Resources/views/Profiler/dump.html.twig',
   'WebProfilerBundle:Router:panel.html.twig' => '/home/alazard/Documents/Acrobatt/Trail/vendor/symfony/symfony/src/Symfony/Bundle/WebProfilerBundle/Resources/views/Router/panel.html.twig',

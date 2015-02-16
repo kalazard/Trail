@@ -40,6 +40,19 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
 
         }
 
+        if (0 === strpos($pathinfo, '/js/08ad7e7')) {
+            // _assetic_08ad7e7
+            if ($pathinfo === '/js/08ad7e7.js') {
+                return array (  '_controller' => 'assetic.controller:render',  'name' => '08ad7e7',  'pos' => NULL,  '_format' => 'js',  '_route' => '_assetic_08ad7e7',);
+            }
+
+            // _assetic_08ad7e7_0
+            if ($pathinfo === '/js/08ad7e7_part_1_menu_1.js') {
+                return array (  '_controller' => 'assetic.controller:render',  'name' => '08ad7e7',  'pos' => 0,  '_format' => 'js',  '_route' => '_assetic_08ad7e7_0',);
+            }
+
+        }
+
         if (0 === strpos($pathinfo, '/_')) {
             // _wdt
             if (0 === strpos($pathinfo, '/_wdt') && preg_match('#^/_wdt/(?P<token>[^/]++)$#s', $pathinfo, $matches)) {
@@ -155,17 +168,9 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
         }
 
         if (0 === strpos($pathinfo, '/log')) {
-            if (0 === strpos($pathinfo, '/login')) {
-                // login
-                if ($pathinfo === '/login') {
-                    return array (  '_controller' => 'Site\\TrailBundle\\Controller\\SecurityController::loginAction',  '_route' => 'login',);
-                }
-
-                // login_check
-                if ($pathinfo === '/login_check') {
-                    return array('_route' => 'login_check');
-                }
-
+            // login_check
+            if ($pathinfo === '/login_check') {
+                return array('_route' => 'login_check');
             }
 
             // logout
