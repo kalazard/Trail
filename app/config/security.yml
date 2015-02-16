@@ -31,6 +31,7 @@ security:
                 check_path:  login_check
                 success_handler: site_trail.authentication_handler
                 failure_handler: site_trail.authentication_handler
+                require_previous_session: false
             logout:
                 path:  logout
                 target:  /home
