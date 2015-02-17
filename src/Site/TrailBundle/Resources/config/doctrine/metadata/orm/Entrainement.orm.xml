@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Entrainement" table="entrainement">
+    <indexes>
+      <index name="fk_entrainement_1_idx" columns="lieu_rendez_vous"/>
+      <index name="fk_entrainement_2_idx" columns="programme"/>
+      <index name="fk_entrainement_3_idx" columns="evenement"/>
+    </indexes>
+    <unique-constraints>
+      <unique-constraint name="id_UNIQUE" columns="id"/>
+    </unique-constraints>
+    <id name="id" type="integer" column="id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <many-to-one field="evenement" target-entity="Evenement">
+      <join-columns>
+        <join-column name="evenement" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="programme" target-entity="Programme">
+      <join-columns>
+        <join-column name="programme" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="lieuRendezVous" target-entity="LieuRendezVous">
+      <join-columns>
+        <join-column name="lieu_rendez_vous" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Image" table="image">
+    <indexes>
+      <index name="fk_image_1_idx" columns="auteur"/>
+      <index name="fk_image_2_idx" columns="categorie"/>
+    </indexes>
+    <unique-constraints>
+      <unique-constraint name="id_UNIQUE" columns="id"/>
+    </unique-constraints>
+    <id name="id" type="integer" column="id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="titre" type="string" column="titre" length="45" nullable="false"/>
+    <field name="description" type="string" column="description" length="45" nullable="false"/>
+    <field name="taille" type="string" column="taille" length="45" nullable="false"/>
+    <field name="poids" type="float" column="poids" precision="10" scale="0" nullable="false"/>
+    <many-to-one field="categorie" target-entity="Categorie">
+      <join-columns>
+        <join-column name="categorie" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="auteur" target-entity="User">
+      <join-columns>
+        <join-column name="auteur" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

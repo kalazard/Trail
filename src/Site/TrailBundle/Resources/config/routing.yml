@@ -1,0 +1,10 @@
+site_trail_homepage_empty:
+    path:     /
+    defaults: { _controller: SiteTrailBundle:Home:index }
+site_trail_homepage:
+    path:     /home
+    defaults: { _controller: SiteTrailBundle:Home:index }
+login_check:
+    pattern:   /login_check
+logout:
+    pattern:   /logout

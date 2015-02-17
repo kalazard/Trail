@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Parcours" table="parcours">
+    <indexes>
+      <index name="fk_parcours_2_idx" columns="itiniraire"/>
+      <index name="fk_parcours_3_idx" columns="difficulte"/>
+      <index name="IDX_99B1DEE3B26681E" columns="evenement"/>
+    </indexes>
+    <id name="evenement" association-key="true"/>
+    <id name="itiniraire" association-key="true"/>
+    <one-to-one field="evenement" target-entity="Evenement">
+      <join-columns>
+        <join-column name="evenement" referenced-column-name="id"/>
+      </join-columns>
+    </one-to-one>
+    <one-to-one field="itiniraire" target-entity="Itiniraire">
+      <join-columns>
+        <join-column name="itiniraire" referenced-column-name="id"/>
+      </join-columns>
+    </one-to-one>
+    <many-to-one field="difficulte" target-entity="DifficulteParcours">
+      <join-columns>
+        <join-column name="difficulte" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

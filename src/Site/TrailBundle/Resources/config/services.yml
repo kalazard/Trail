@@ -1,0 +1,10 @@
+services:
+#    site_trail.example:
+#        class: Site\TrailBundle\Example
+#        arguments: [@service_id, "plain_value", %parameter%]
+    site_trail.authentication_handler:
+        class: Site\TrailBundle\WebServices\AuthenticationHandler
+        public: false
+        arguments:
+            - @router
+            - @session
