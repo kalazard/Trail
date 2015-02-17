@@ -4,7 +4,58 @@ site_trail_homepage_empty:
 site_trail_homepage:
     path:     /home
     defaults: { _controller: SiteTrailBundle:Home:index }
+site_trail_map:
+    path:     /map
+    defaults: { _controller: SiteTrailBundle:Map:index }
+site_trail_map_createRoute:
+    path:     /map/createRoute
+    defaults: { _controller: SiteTrailBundle:Map:createRoute }
+site_trail_map_createPoi:
+    path:     /map/createPoi
+    defaults: { _controller: SiteTrailBundle:Map:createPoi }
 login_check:
     pattern:   /login_check
 logout:
     pattern:   /logout
+calendrier:
+    path: /calendrier
+    defaults: { _controller: SiteTrailBundle:Calendrier:index }
+calendrierForm:
+    path: /calendrierForm
+    defaults: { _controller: SiteTrailBundle:Calendrier:afficherForm }
+detailEvenement:
+    path: /detailEvenement
+    defaults: { _controller: SiteTrailBundle:Calendrier:afficherDetailEvenement }
+ics:
+    path: /ics/{id}/{dateDebut}/{dateFin}
+    defaults: { _controller: SiteTrailBundle:Ics:index, id: default, dateDebut: '', dateFin: '' }   
+icsForm:
+    path: /icsForm
+    defaults: { _controller: SiteTrailBundle:Ics:icsForm }
+site_trail_memberdisplay:
+    path:     /member_list
+    defaults: { _controller: SiteTrailBundle:MemberDisplay:list }
+site_trail_searchmember:
+    path:     /member_search/
+    defaults: { _controller: SiteTrailBundle:MemberDisplay:search }
+site_trail_createUser:
+    path:    /user/create
+    defaults: { _controller:SiteTrailBundle:User:create }
+site_trail_loadRoles:
+    path:    /user/loadRoles
+    defaults: { _controller:SiteTrailBundle:User:loadRoles }
+site_trail_getAllUsers:
+    path:    /user/all
+    defaults: { _controller:SiteTrailBundle:User:getAllUsers }
+site_trail_annuaire:
+    path:    /user/annuaire
+    defaults: { _controller:SiteTrailBundle:User:annuaire }
+site_trail_deleteUser:
+    path:    /user/delete
+    defaults: { _controller:SiteTrailBundle:User:delete }
+site_trail_getUser:
+    path:    /user/get
+    defaults: { _controller:SiteTrailBundle:User:getUser }
+site_trail_updateUser:
+    path:    /user/update
+    defaults: { _controller:SiteTrailBundle:User:updateUser }

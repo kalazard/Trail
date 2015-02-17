@@ -1,0 +1,44 @@
+{% extends "SiteTrailBundle::layout.html.twig" %}
+
+{% block body %}
+    <div class="popupEvenement">
+        {% if idClasse == 1 %} <!-- Entrainement -->
+            <p>Entrainement</p>
+        {% elseif idClasse == 2 %} <!-- Entrainement personnel -->
+            <p>Entrainement personnel</p>
+        {% elseif idClasse == 3 %} <!-- Evenement divers -->
+            <p>Evenement divers</p>
+        {% elseif idClasse == 4 %} <!-- Sortie découverte -->
+            <p>Sortie découverte</p>
+        {% else %}
+        {% endif %}
+        <p>{{evenement.getEvenement().getTitre()}}</p>
+        <p>Créé par {{evenement.getEvenement().getCreateur().getUserName()}} le {{evenement.getEvenement().getDateCreation()|date('d-m-Y', false)}}</p>
+        <p>{{evenement.getEvenement().getDescription()}}</p>
+        <p>Lien KID : <a target="_blank" href="{{evenement.getEvenement().getLienKid()}}">{{evenement.getEvenement().getLienKid()}}</a></p>
+        <p>Alias : {{evenement.getEvenement().getAlias()}}</p>
+        <p>Status : Alias : {{evenement.getEvenement().getStatus()}}</p>
+        <p>Commence le {{evenement.getEvenement().getDateDebut()|date('d-m-Y', false)}} à {{evenement.getEvenement().getDateDebut()|date('H:i')}}</p>
+        <p>Termine le {{evenement.getEvenement().getDateFin()|date('d-m-Y', false)}} à {{evenement.getEvenement().getDateFin()|date('H:i')}}</p>
+        
+        {% if idClasse == 1 %} <!-- Entrainement -->
+            <p>Programme : {{evenement.getProgramme().getLabel()}} ({{evenement.getProgramme().getDuree()|date('H:i')}})</p>
+            <p>Lieu de rendez-vous : {{evenement.getLieuRendezVous().getTitre()}} ({{evenement.getLieuRendezVous().getCoordonnees().getLongitude()}}X{{evenement.getLieuRendezVous().getCoordonnees().getLatitude()}}X{{evenement.getLieuRendezVous().getCoordonnees().getAltitude()}})</p>
+        {% elseif idClasse == 2 %} <!-- Entrainement personnel -->
+        {% elseif idClasse == 3 %} <!-- Evenement divers -->
+            <p>Label : {{evenement.getLabel()}} </p>
+        {% elseif idClasse == 4 %} <!-- Sortie découverte -->
+            <p>Lieu de rendez-vous : {{evenement.getLieuRendezVous().getTitre()}} ({{evenement.getLieuRendezVous().getCoordonnees().getLongitude()}}X{{evenement.getLieuRendezVous().getCoordonnees().getLatitude()}}X{{evenement.getLieuRendezVous().getCoordonnees().getAltitude()}})</p>
+        {% else %}
+        {% endif %}
+        <input type="button" value="Fermer" class="btnFermer"/>
+    </div>
+    <script>
+        $( ".popupEvenement" ).on( "click", ".btnFermer", function()
+        {
+            $('.popupEvenement').children().remove();
+            $('.popupEvenement').remove();
+            $('#overlay').remove();
+        });
+    </script>
+{% endblock %}

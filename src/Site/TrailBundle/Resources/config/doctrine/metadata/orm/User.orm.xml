@@ -13,9 +13,10 @@
     </id>
     <field name="email" type="string" column="email" length="45" nullable="false"/>
     <field name="password" type="string" column="password" length="255" nullable="false"/>
-    <field name="saltKey" type="string" column="salt_key" length="45" nullable="false"/>
+    <field name="salt" type="string" column="salt" length="45" nullable="false"/>
     <field name="roles" type="string" column="roles" length="45" nullable="false"/>
     <field name="username" type="string" column="username" length="45" nullable="false"/>
+    <field name="tokenics" type="string" column="tokenics" length="32" nullable="false"/>
     <many-to-one field="role" target-entity="Role">
       <join-columns>
         <join-column name="role" referenced-column-name="id"/>

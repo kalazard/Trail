@@ -16,8 +16,8 @@
     <field name="lienKid" type="string" column="lien_kid" length="45" nullable="false"/>
     <field name="alias" type="string" column="alias" length="45" nullable="false"/>
     <field name="status" type="string" column="status" length="45" nullable="false"/>
-    <field name="dateDebut" type="date" column="date_debut" nullable="false"/>
-    <field name="dateFin" type="date" column="date_fin" nullable="false"/>
+    <field name="dateDebut" type="datetime" column="date_debut" nullable="false"/>
+    <field name="dateFin" type="datetime" column="date_fin" nullable="false"/>
     <many-to-one field="createur" target-entity="User">
       <join-columns>
         <join-column name="createur" referenced-column-name="id"/>

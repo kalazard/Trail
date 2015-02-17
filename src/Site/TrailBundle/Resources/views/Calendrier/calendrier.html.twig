@@ -1,0 +1,142 @@
+{% extends "SiteTrailBundle::layout.html.twig" %}
+
+{% block title %}{{ parent() }} - Accueil{% endblock %}
+
+{% block body %}
+    <h1>Mon calendrier</h1>
+    <input id="dlCal" type="button" value="Télécharger mon calendrier" />
+    <div id="listeAction">
+        <a id="lienAjoutEvent">Ajouter un évènement</a>
+    </div>
+    <div id='calendar'></div>
+    
+{% javascripts '@SiteTrailBundle/Resources/js/*' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}
+    
+<script>
+    var eventAffiches = [];
+    
+    {% for eventDeType in listeEvenement %}
+        {% for monEvenement in eventDeType %}
+            var tabEvent = new Object();
+            tabEvent['class'] = '{{ loop.parent.loop.index}}';
+            tabEvent['id'] = '{{monEvenement.getId()}}';
+            tabEvent['title'] = '{{monEvenement.getEvenement().getTitre()}}';
+            tabEvent['start'] = '{{monEvenement.getEvenement().getDateDebut()|date('Y-m-d H:i:s')}}';
+            tabEvent['end'] = '{{monEvenement.getEvenement().getDateFin()|date('Y-m-d H:i:s')}}';
+            tabEvent['description'] = '{{monEvenement.getEvenement.getDescription()}}';
+            eventAffiches.push(tabEvent);
+        {% endfor %}
+    {% endfor %}
+        
+    function afficherDetail(idClasse, idObj)
+    {        
+        $.ajax({
+            type: "POST",
+            url: "{{ path('detailEvenement') }}",
+            cache: false,
+            data: {"idClasse" : idClasse,
+                    "idObj" : idObj},
+            success: function(data){
+                $('body').prepend('<div id="overlay"></div>');
+                $('body').append(data);
+            }
+        });
+    }
+        
+    function afficherCalendrier(listeEvenement)
+    {    
+        estAffiche = false;
+        datePrecedente = '0000-00-00';
+
+        $(document).ready(function()
+        {
+            var date = new Date();
+            var d = date.getDate();
+            var m = date.getMonth();
+            var y = date.getFullYear();
+
+            var calendar = $('#calendar').fullCalendar(
+            {
+            header:
+            {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'month,agendaWeek,agendaDay'
+            },
+            defaultView: 'month',
+            dayClick: function(date, jsEvent, view) {
+                $("#listeAction").val(date.format());
+
+                if(estAffiche && datePrecedente === date.format())
+                {
+                   $("#listeAction").css({
+                        "display": "none"
+                    }); 
+
+                    estAffiche = false;
+                }
+                else
+                {
+                    $("#listeAction").css({
+                        "display": "inline",
+                        "margin-top": jsEvent.pageY-150,                    
+                        "margin-left": jsEvent.pageX-150
+                    });
+
+                    estAffiche = true;
+                }
+
+                datePrecedente = date.format();
+            },
+            lang: 'fr',
+            events: eventAffiches,
+            eventRender: function(event, element) {
+                element.html("<p>" + event.start.format('HH:mm') + " - " + event.end.format('HH:mm') + "<br/>");
+                element.append("&#8226; <a style='color:white;cursor:pointer' onclick='afficherDetail(" + event.class + ", " + event.id +")' id='detailEvenement'>" + event.title + "</a><br/>");
+                element.append("&#8226; " + event.description + "</p>");
+                
+                element.css({
+                    'word-wrap': 'break-word',
+                });
+                
+                
+                
+                
+                
+                
+            }
+            });
+        });
+    }
+
+    afficherCalendrier(eventAffiches);
+    
+        $('#lienAjoutEvent').click(function() {
+        $.ajax({
+            type: "POST",
+            url: "{{ path('calendrierForm') }}",
+            data: {"dateCliquee" : $("#listeAction").val()},
+            cache: false,
+            success: function(data){
+                $('body').prepend('<div id="overlay"></div>');
+                $('body').append(data);
+            }
+        });
+    });
+    
+    $( "body" ).on( "click", "#dlCal", function()
+    {
+        $.ajax({
+            type: "POST",
+            url: "{{ path('icsForm') }}",
+            cache: false,
+            success: function(data){
+                $('body').prepend('<div id="overlay"></div>');
+                $('body').append(data);
+            }
+        });
+    });
+</script>
+{% endblock %}
