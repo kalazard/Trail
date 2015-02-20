@@ -1,0 +1,57 @@
+<!DOCTYPE HTML>
+<html>
+{% block body %}
+ <head>
+      <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
+      {% stylesheets filter='cssrewrite'
+        '@SiteTrailBundle/Resources/css/menu.css'
+         %}
+        <link rel="stylesheet" href="{{ asset_url }}" type="text/css" />
+      {% endstylesheets %}
+
+      <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+      <script src="//code.jquery.com/ui/1.11.2/jquery-ui.min.js"></script>
+      <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+      <!--<script src="../../src/Site/TrailBundle/Resources/js/menu.js"></script>-->
+      <link rel="stylesheet" href="http://openlayers.org/en/v3.2.1/css/ol.css" type="text/css">
+    <script src="http://openlayers.org/en/v3.2.1/build/ol.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+    <script type="text/javascript" src="https://rawgithub.com/mpetazzoni/leaflet-gpx/master/gpx.js"></script>
+     <script src="http://open.mapquestapi.com/sdk/js/v7.2.s/mqa.toolkit.js?key=Fmjtd%7Cluu821u12h%2C72%3Do5-94bauw"></script>
+    <script src="http://open.mapquestapi.com/sdk/leaflet/v1.s/mq-map.js?key=Fmjtd%7Cluu8210720%2C7a%3Do5-94bahf"></script>
+    <script src="http://open.mapquestapi.com/sdk/leaflet/v1.s/mq-geocoding.js?key=Fmjtd%7Cluu8210720%2C7a%3Do5-94bahf"></script>
+    {% javascripts '@SiteTrailBundle/Resources/js/*'%}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+    <title>{% block title %}Map{% endblock %}</title>
+    <meta charset="utf-8">
+  </head>
+ <div id="map" class="map"></div>
+<div id="controls">
+  <div class="input-group">
+    <span class="input-group-addon" id="basic-addon1">Latitude</span>
+    <input type="text" class="form-control" placeholder="Latitude" aria-describedby="basic-addon1" id="lat">
+  </div>
+  <div class="input-group">
+    <span class="input-group-addon" id="basic-addon1">Longitude</span>
+    <input type="text" class="form-control" placeholder="Longitude" aria-describedby="basic-addon1" id="lng">
+  </div>
+  <div class="input-group">
+    <span class="input-group-addon" id="basic-addon1">Zoom</span>
+    <input type="text" class="form-control" placeholder="Zoom" aria-describedby="basic-addon1" id="zoom">
+  </div>
+  <div class="btn-group" role="group" aria-label="..." id="boutonGroup">
+    <button type="button" class="btn btn-default" id="ok">Bouger</button>
+  </div>
+
+  <div class="input-group">
+    <span class="input-group-addon" id="basic-addon1">Ville</span>
+    <input type="text" class="form-control" placeholder="Ville" aria-describedby="basic-addon1" id="ville">
+  </div>
+  <div class="btn-group" role="group" aria-label="..." id="boutonGroup">
+    <button type="button" class="btn btn-default" id="okVille">Recherche</button>
+  </div>
+</div>
+{% endblock %}
+</html>
