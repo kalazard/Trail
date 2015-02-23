@@ -8,7 +8,6 @@ $(window).load(function()
   map = new L.map('map');
   getLocation();
   $("#ok").click(moveToCoords);
-  $("#okVille").click(geocode);
   $("body").append(dispLat);
   $("body").append(dispLng);
   map.on('mousemove', displayCoords);
@@ -21,41 +20,72 @@ function getLocation() {
           if (navigator.geolocation) {
               navigator.geolocation.getCurrentPosition(goToPosition);
           } else {
-              $("#map").html("Geolocation is not supported by this browser.");
+              $("#map").html("Votre navigateur ne supporte pas la géolocalisation");
           }
       }
 
 //Place la map à la position récupérée dans getLocation
 function goToPosition(position) {
-  $("#map").css("height", "500px").css("width", "60%").css("margin","auto");
+
+  //Définition des attributs de la carte et positionnement
+  $("#map").css("height", "70%").css("width", "60%").css("margin","auto");
   $("#controls").css("width", "20%").css("margin","auto");
-  //$("#boutonGroup").css("width", "10%").css("margin","auto");
   map.setView([position.coords.latitude, position.coords.longitude], 13);
 
+  //Mise en place de l'overlay (controles personnalisés)
+  var geocodeSearch = L.Control.extend({
+      options: {
+          position: 'bottomleft'
+      },
+
+      onAdd: function (map) {
+          var container = L.DomUtil.create('div', 'leaflet-control-command');
+          $(container).html("<div class='input-group' id='geocodeControl'> " +
+                              "<span class='input-group-addon' id='basic-addon1'>Recherche</span>" + 
+                              "<input type='text' class='form-control' placeholder='Ville' aria-describedby='basic-addon1' id='ville'>" + 
+                            "</div><div class='btn-group'role='group' aria-label='...' id='boutonGroup'>" + 
+                              "<button type='button' class='btn btn-default' id='okVille'>Se centrer</button></div>");
+          container.addEventListener('mouseover', function () 
+          {
+            map.dragging.disable();
+          });
+          container.addEventListener('mouseout', function () 
+          {
+              map.dragging.enable();
+          });
+          return container;
+      }
+  });
+  map.addControl(new geocodeSearch());
+
+  //Ajout du fond de carte Landscape obtenu sur Thunderforest
   L.tileLayer('http://tile.thunderforest.com/landscape/{z}/{x}/{y}.png', {
       attribution: 'Landscape'
   }).addTo(map);
 
+
   L.marker([position.coords.latitude, position.coords.longitude]).addTo(map)
-      .bindPopup('Je suis ici :D')
+      .bindPopup('Vous êtes ici :D')
       .openPopup();
+
+  //Définition de l'écouteur
+  $("#okVille").click(geocode);
+
+
+  $("#geocodeControl").css("width","20%");
 }
 
 //Déplace la map aux coordonnées indiquées
 function moveToCoords(lat,lng,zoom)
 {
   map.setView([$("#lat").val(), $("#lng").val()], $("#zoom").val());
-  
 }
 
 //Affiche les coordonnées
 function displayCoords(event)
 {
-    /*$("#dispLat").text("Latiude : " + event.latlng.lat);
-    $("#dispLng").text("Longitude : " + event.latlng.lng);*/
     $("#lat").val(event.latlng.lat);
     $("#lng").val(event.latlng.lng);
-    //$("#zoom").val(map.getZoom());
 }
 
 function refreshZoom()
@@ -81,6 +111,4 @@ function geocode()
 {
     var geo = MQ.geocode({ map: map })
       .search($("#ville").val());
-      console.log(geo);
-      //map.setView([$("#lat").val(), $("#lng").val()], $("#zoom").val());
 }
