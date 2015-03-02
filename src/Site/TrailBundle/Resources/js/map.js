@@ -1,5 +1,14 @@
-var map;
-var GPX;
+var map, GPX, routeControl,pointArray,latlngArray, polyline, elevationScript, elevationChartScript;
+var isCreateRoute = false;
+var elevationURL = "http://open.mapquestapi.com/elevation/v1/profile?key=Fmjtd%7Cluu8210720%2C7a%3Do5-94bahf&callback=getElevation&shapeFormat=raw";
+var elevationChartURL = "http://open.mapquestapi.com/elevation/v1/chart?key=Fmjtd%7Cluu8210720%2C7a%3Do5-94bahf&inFormat=kvp&shapeFormat=raw&width=425&height=350";
+var graph = $("<img>").css("display","none");
+
+var Point = function(lat,lng)
+{
+    this.lat = lat;
+    this.lng = lng;
+};
 
 $(window).load(function()
 {
@@ -8,11 +17,12 @@ $(window).load(function()
   map = new L.map('map');
   getLocation();
   $("#ok").click(moveToCoords);
+  $("#iti").click(createRoute);
   $("body").append(dispLat);
   $("body").append(dispLng);
   map.on('mousemove', displayCoords);
   map.on('zoomend', refreshZoom);
-
+  graph.appendTo("body");
 });
 
 //Coordonnées à partir du navigateur
@@ -73,6 +83,7 @@ function goToPosition(position) {
 
 
   $("#geocodeControl").css("width","20%");
+  $("#map").css("cursor","move");
 }
 
 //Déplace la map aux coordonnées indiquées
@@ -111,4 +122,97 @@ function geocode()
 {
     var geo = MQ.geocode({ map: map })
       .search($("#ville").val());
+}
+
+function createRoute()
+{
+  if(!isCreateRoute)
+  {
+      isCreateRoute = true;
+      var routeValidate = L.Control.extend({
+        options: {
+            position: 'topright'
+        },
+
+        onAdd: function (map) {
+            var container = L.DomUtil.create('div', 'leaflet-control-command');
+            $(container).html("<div class='btn-group'role='group' aria-label='...' id='routeGroup'>" + 
+                                "<button type='button' class='btn btn-default' id='routeOk'>Valider</button></div>");
+            container.addEventListener('mouseover', function () 
+            {
+              map.dragging.disable();
+              map.off("click",drawRoute);
+            });
+            container.addEventListener('mouseout', function () 
+            {
+                map.dragging.enable();
+                map.on("click",drawRoute);
+            });
+            return container;
+        }
+    });
+    routeControl = new routeValidate();
+    map.addControl(routeControl);
+    $("#routeOk").click(saveRoute);
+    pointArray = [];
+    latlngArray = [];
+    map.on("click",drawRoute);
+    $("#map").css("cursor","pointer");
+    map.dragging.disable();
+  }
+}
+
+function drawRoute(event)
+{
+
+  pointArray.push(new Point(event.latlng.lat,event.latlng.lng));
+  latlngArray.push(event.latlng);
+  if(pointArray.length > 1)
+  {
+      polyline = L.polyline(latlngArray, {color: 'blue', opacity : '50%'}).addTo(map);
+      var URL = elevationURL + '&latLngCollection=';
+      var URLChart = elevationChartURL + '&latLngCollection=';
+      for(var i = 0; i < latlngArray.length; i++)
+      {
+        var lat = latlngArray[i].lat;
+        var lng = latlngArray[i].lng;
+        URL += lat + "," + lng;
+        URLChart += lat + "," + lng;
+        if(i !== latlngArray.length - 1)
+        {
+          URL += ",";
+          URLChart += ",";
+        }
+          
+      }
+      URL.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      URLChart.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      elevationScript = document.createElement('script');
+      elevationScript.type = 'text/javascript';
+      elevationScript.src = URL;
+      elevationChartScript = document.createElement('script');
+      elevationChartScript.type = 'text/javascript';
+      elevationChartScript.src = URLChart;
+      $("body").append(elevationScript);
+      graph.attr("src",elevationChartScript.src);
+      graph.css("display","block");
+  }
+}
+
+function saveRoute()
+{
+  routeControl.removeFrom(map);
+  map.off("click",drawRoute);
+  $("#map").css("cursor","move");
+  map.dragging.enable();
+  $("body").append("<p>" + pointArray + "</p>");
+  isCreateRoute = false;
+}
+
+function getElevation(response)
+{
+  for(var i = 0; i < pointArray.length; i++)
+      {
+        pointArray[i].elevation = response.elevationProfile[i].height;
+      }
 }
