@@ -7,6 +7,9 @@ site_trail_homepage:
 site_trail_map:
     path:     /map
     defaults: { _controller: SiteTrailBundle:Map:index }
+site_trail_map_createRoute:
+    path:     /map/createRoute
+    defaults: { _controller: SiteTrailBundle:Map:createRoute }
 login_check:
     pattern:   /login_check
 logout:

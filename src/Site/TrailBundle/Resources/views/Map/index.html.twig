@@ -63,7 +63,46 @@
             </ul>
         </div>
       </nav>
-  </div>
+      <div class="modal fade" id="save">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Fermer"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Sauvegarde de l'itinéraire</h4>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="form-group">
+                <label for="recipient-name" class="control-label">Nom :</label>
+                <input type="text" class="form-control" id="nom">
+              </div>
+              <div class="form-group">
+                <label for="message-text" class="control-label">Numéro :</label>
+                <input type="number" class="form-control" id="numero"></textarea>
+              </div>
+              <div class="form-group">
+                <label for="recipient-name" class="control-label">Type de chemin :</label>
+                <input type="text" class="form-control" id="typechemin">
+              </div>
+              <div class="form-group">
+                <label for="message-text" class="control-label">Commentaire :</label>
+                <textarea class="form-control" id="commentaire"></textarea>
+              </div>
+              <div class="form-group">
+                <label for="recipient-name" class="control-label">Difficulté:</label>
+                <input type="text" class="form-control" id="difficulté">
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+            <button type="button" class="btn btn-primary" id="saveiti">Sauvegarder</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div>
+  </div>  
+</div>
 </body>
 {% endblock %}
 </html>

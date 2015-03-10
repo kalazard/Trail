@@ -52,6 +52,44 @@ class Itiniraire
      */
     private $itiniraire;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nom", type="string", length=45, nullable=true)
+     */
+    private $nom;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="numero", type="integer", nullable=true)
+     */
+    private $numero;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="typechemin", type="string", length=45, nullable=true)
+     */
+    private $typechemin;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="commentaire", type="string", length=100, nullable=true)
+     */
+    private $commentaire;
+
+    /**
+     * @var \DifficulteParcours
+     *
+     * @ORM\ManyToOne(targetEntity="DifficulteParcours")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="difficulté", referencedColumnName="id")
+     * })
+     */
+    private $difficulte;
+
 
 
     /**
@@ -154,5 +192,120 @@ class Itiniraire
     public function getItiniraire()
     {
         return $this->itiniraire;
+    }
+
+    /**
+     * Set nom
+     *
+     * @param string $nom
+     * @return Itiniraire
+     */
+    public function setNom($nom)
+    {
+        $this->nom = $nom;
+
+        return $this;
+    }
+
+    /**
+     * Get nom
+     *
+     * @return string 
+     */
+    public function getNom()
+    {
+        return $this->nom;
+    }
+
+    /**
+     * Set numero
+     *
+     * @param integer $numero
+     * @return Itiniraire
+     */
+    public function setNumero($numero)
+    {
+        $this->numero = $numero;
+
+        return $this;
+    }
+
+    /**
+     * Get numero
+     *
+     * @return integer 
+     */
+    public function getNumero()
+    {
+        return $this->numero;
+    }
+
+    /**
+     * Set typechemin
+     *
+     * @param string $typechemin
+     * @return Itiniraire
+     */
+    public function setTypechemin($typechemin)
+    {
+        $this->typechemin = $typechemin;
+
+        return $this;
+    }
+
+    /**
+     * Get typechemin
+     *
+     * @return string 
+     */
+    public function getTypechemin()
+    {
+        return $this->typechemin;
+    }
+
+    /**
+     * Set commentaire
+     *
+     * @param string $commentaire
+     * @return Itiniraire
+     */
+    public function setCommentaire($commentaire)
+    {
+        $this->commentaire = $commentaire;
+
+        return $this;
+    }
+
+    /**
+     * Get commentaire
+     *
+     * @return string 
+     */
+    public function getCommentaire()
+    {
+        return $this->commentaire;
+    }
+
+    /**
+     * Set difficulte
+     *
+     * @param \Site\TrailBundle\Entity\DifficulteParcours $difficulte
+     * @return Itiniraire
+     */
+    public function setDifficulte(\Site\TrailBundle\Entity\DifficulteParcours $difficulte = null)
+    {
+        $this->difficulte = $difficulte;
+
+        return $this;
+    }
+
+    /**
+     * Get difficulte
+     *
+     * @return \Site\TrailBundle\Entity\DifficulteParcours 
+     */
+    public function getDifficulte()
+    {
+        return $this->difficulte;
     }
 }

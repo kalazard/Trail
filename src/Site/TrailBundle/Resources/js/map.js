@@ -74,10 +74,6 @@ function goToPosition(position) {
   }).addTo(map);
 
 
-  L.marker([position.coords.latitude, position.coords.longitude]).addTo(map)
-      .bindPopup('Vous êtes ici :D')
-      .openPopup();
-
   //Définition de l'écouteur
   $("#okVille").click(geocode);
 
@@ -151,6 +147,7 @@ function createRoute()
             return container;
         }
     });
+
     routeControl = new routeValidate();
     map.addControl(routeControl);
     $("#routeOk").click(saveRoute);
@@ -167,9 +164,11 @@ function drawRoute(event)
 
   pointArray.push(new Point(event.latlng.lat,event.latlng.lng));
   latlngArray.push(event.latlng);
+  var marker = L.circleMarker([event.latlng.lat, event.latlng.lng]);
+  map.addLayer(marker);
   if(pointArray.length > 1)
   {
-      polyline = L.polyline(latlngArray, {color: 'blue', opacity : '50%'}).addTo(map);
+      polyline = L.polyline(latlngArray, {color: 'blue', opacity : '0.5'}).addTo(map);
       var URL = elevationURL + '&latLngCollection=';
       var URLChart = elevationChartURL + '&latLngCollection=';
       for(var i = 0; i < latlngArray.length; i++)
@@ -205,7 +204,28 @@ function saveRoute()
   map.off("click",drawRoute);
   $("#map").css("cursor","move");
   map.dragging.enable();
-  $("body").append("<p>" + pointArray + "</p>");
+  
+  $("#save").modal('show');
+  $("#saveiti").on("click",function()
+    {
+      $.post("map/createRoute",
+                            {
+                                   points: pointArray,
+                                   longueur : pointArray[pointArray.length - 1].distance,
+                                   elevation : pointArray[pointArray.length - 1].elevation,
+                                   nom : $("#nom").val(),
+                                   numero : $("#numero").val(),
+                                   typechemin : $("#typechemin").val(),
+                                   commentaire : $("#commentaire").val(),
+                                   difficulte : $("#difficulte").val()
+                                },
+                            function(data, status){
+                                alert("Data: " + data + "\nStatus: " + status);
+                                console.log(data);
+                            });
+      $("#save").modal('hide');
+    });
+
   isCreateRoute = false;
 }
 
@@ -214,5 +234,6 @@ function getElevation(response)
   for(var i = 0; i < pointArray.length; i++)
       {
         pointArray[i].elevation = response.elevationProfile[i].height;
+        pointArray[i].distance = response.elevationProfile[i].distance;
       }
 }
