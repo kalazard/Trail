@@ -22,62 +22,103 @@
     <title>{% block title %}Trail{% endblock %}</title>
   </head>
   <body>
-    <div id="wrapper">
-        <div class="overlay"></div>
-    
-        <!-- Sidebar -->
-        <nav class="navbar navbar-inverse navbar-fixed-top" id="sidebar-wrapper" role="navigation">
-            <ul class="nav sidebar-nav">
-                <li class="sidebar-brand">
-                    <a href="#">
-                       Trail
-                    </a>
-                </li>
-                <img class="avatar" src="https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=120"
-                    alt="" href="#signup" data-toggle="modal" data-target=".bs-modal-sm">
-                <li>
-                    <a href="#">Home</a>
-                </li>
-                <li>
-                    <a href="#">About</a>
-                </li>
-                <li>
-                    <a href="#">Events</a>
+      <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">Brand</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li>
+                    <a href="{{path('site_trail_homepage_empty')}}">Accueil</a>
                 </li>
                 <li>
-                    <a href="#">Team</a>
-                </li>
-                <li class="dropdown">
-                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Works <span class="caret"></span></a>
-                  <ul class="dropdown-menu" role="menu">
-                    <li class="dropdown-header">Dropdown heading</li>
-                    <li><a href="#">Action</a></li>
-                    <li><a href="#">Another action</a></li>
-                    <li><a href="#">Something else here</a></li>
-                    <li><a href="#">Separated link</a></li>
-                    <li><a href="#">One more separated link</a></li>
-                  </ul>
+                    <a href="{{path('calendrier')}}">Evenements</a>
                 </li>
                 <li>
-                    <a href="#">Services</a>
+                    <a href="{{path('site_trail_annuaire')}}">Annuaire</a>
                 </li>
                 <li>
-                    <a href="#">Contact</a>
+                    <a href="#">Galerie</a>
                 </li>
                 <li>
-                    <a href="https://twitter.com/maridlcrmn">Follow me</a>
+                    <a href="{{path('site_trail_map')}}">Carte</a>
                 </li>
-            </ul>
-        </nav>
-        <!-- /#sidebar-wrapper -->
+      </ul>
+        
+      <ul class="nav navbar-nav navbar-right">
+        
+        <li class="dropdown">
+            {% if app.user %}
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{app.user.username}} <span class="caret"></span></a>
+               {% else %}
+                   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Mon espace personnel <span class="caret"></span></a>
+               {% endif %}
+          
+          <ul class="dropdown-menu" role="menu">
+             <li>
+                            <div class="navbar-login">
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <p class="text-center">
+                                            <span class="glyphicon glyphicon-user icon-size"></span>
+                                        </p>
+                                    </div>
+                                    <div class="col-lg-8">
+                                        {% if app.user %}
+                                            <p class="text-left"><strong>{{app.user.username}}</strong></p>
+                                            <p class="text-left small">Vous êtes connecté</p>
+                                            <p class="text-left">
+                                                <a href="#" class="btn btn-primary btn-block btn-sm">Mon compte</a>
+                                            </p>
+                                       {% else %}
+                                           <p class="text-left"><strong>Anonyme</strong></p>
+                                            <p class="text-left small">Vous n'êtes pas connecté</p>
+                                            <p class="text-left">
+                                                <a href="#" class="btn btn-primary btn-block btn-sm" data-toggle="modal" data-target=".bs-modal-sm">Me connecter</a>
+                                            </p>
+                                       {% endif %}                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <div class="navbar-login navbar-login-session">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                         {% if app.user %}
+                                            <p>
+                                            <a href="{{path('logout')}}" class="btn btn-danger btn-block">Me deconnecter</a>
+                                        </p>
+                                       {% endif %}
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+          </ul>
+        </li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+
 
         <!-- Page Content -->
         <div id="page-content-wrapper">
-            <button type="button" class="hamburger is-closed" data-toggle="offcanvas">
-                <span class="hamb-top"></span>
-    			<span class="hamb-middle"></span>
-				<span class="hamb-bottom"></span>
-            </button>
+            
             
             {% block body %}
             {% endblock %}
