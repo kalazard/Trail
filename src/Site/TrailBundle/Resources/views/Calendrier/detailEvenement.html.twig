@@ -17,7 +17,7 @@
         <p>{{evenement.getEvenement().getDescription()}}</p>
         <p>Lien KID : <a target="_blank" href="{{evenement.getEvenement().getLienKid()}}">{{evenement.getEvenement().getLienKid()}}</a></p>
         <p>Alias : {{evenement.getEvenement().getAlias()}}</p>
-        <p>Status : Alias : {{evenement.getEvenement().getStatus()}}</p>
+        <p>Status : {{evenement.getEvenement().getStatus()}}</p>
         <p>Commence le {{evenement.getEvenement().getDateDebut()|date('d-m-Y', false)}} à {{evenement.getEvenement().getDateDebut()|date('H:i')}}</p>
         <p>Termine le {{evenement.getEvenement().getDateFin()|date('d-m-Y', false)}} à {{evenement.getEvenement().getDateFin()|date('H:i')}}</p>
         
