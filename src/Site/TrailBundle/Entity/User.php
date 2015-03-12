@@ -58,6 +58,13 @@ class User implements \Symfony\Component\Security\Core\User\UserInterface, JsonS
     private $tokenics;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="tokenics", type="string", length=32, nullable=false)
+     */
+    private $tokenics;
+
+    /**
      * @var \Role
      *
      * @ORM\ManyToOne(targetEntity="Role")

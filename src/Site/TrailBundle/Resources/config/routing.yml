@@ -5,13 +5,13 @@ site_trail_homepage:
     path:     /home
     defaults: { _controller: SiteTrailBundle:Home:index }
 site_trail_map:
-    path: 	/map
+    path:     /map
     defaults: { _controller: SiteTrailBundle:Map:index }
 site_trail_map_createRoute:
-    path: 	/map/createRoute
+    path:     /map/createRoute
     defaults: { _controller: SiteTrailBundle:Map:createRoute }
 site_trail_map_createPoi:
-    path: 	/map/createPoi
+    path:     /map/createPoi
     defaults: { _controller: SiteTrailBundle:Map:createPoi }
 login_check:
     pattern:   /login_check
@@ -33,10 +33,10 @@ icsForm:
     path: /icsForm
     defaults: { _controller: SiteTrailBundle:Ics:icsForm }
 site_trail_memberdisplay:
-    path: 	/member_list
+    path:     /member_list
     defaults: { _controller: SiteTrailBundle:MemberDisplay:list }
 site_trail_searchmember:
-    path: 	/member_search/
+    path:     /member_search/
     defaults: { _controller: SiteTrailBundle:MemberDisplay:search }
 site_trail_createUser:
     path:    /user/create
