@@ -3,10 +3,6 @@
 {% block title %}{{ parent() }} - Accueil{% endblock %}
 
 {% block body %}
-  {% if app.user %}
-      <p>{{ app.user.username }}</p>
- {% else %}
-     <p> pas lala</p>
- {% endif %}
- <a href="{{ path('calendrier') }}">Afficher le calendrier</a>
+
+
 {% endblock %}
