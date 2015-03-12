@@ -1,0 +1,90 @@
+{% extends "SiteTrailBundle::layout.html.twig" %}
+
+{% block body %}
+    
+{{ form_start(form, {'attr': {'id': 'ajouterEvent'}}) }}
+    {{ form_errors(form) }}
+    {% if app.user.id is defined %} 
+        <input type="hidden" name="createur" value="{{ app.user.id }}"/>
+    {% else %}
+        <input type="hidden" name="createur" value="0"/>
+    {% endif %}
+    
+    {{ form_row(form.titre, {'attr': {'maxlength': '45'}}) }}
+    {{ form_row(form.description, {'attr': {'maxlength': '45'}}) }} 
+    {{ form_row(form.lienKid, {'attr': {'maxlength': '45'}}) }}
+    {{ form_row(form.alias, {'attr': {'maxlength': '45'}}) }}
+    {{ form_row(form.status, {'attr': {'maxlength': '45'}}) }}
+    {{ form_row(form.date_debut) }}
+    {{ form_row(form.date_fin) }}
+    
+    <label>Participants :</label>
+    <select name="participants[]" multiple>
+        {% for monUser in listeUser %}
+            <option value='{{monUser.id}}'>{{monUser.userName}}</option>
+        {% endfor %}
+    </select><br/>
+    
+    <select id="selectTypeEvent" name="type">
+        <option value="1">Entrainement</option>
+        <option value="2">Entrainement personnel</option>
+        <option value="3">Evenement divers</option>
+        <option value="4">Sortie découverte</option>
+    </select>
+    <div id="specificites">
+        <label>Programme</label>
+        <select name='programme'>
+        {% for monProgramme in listeProgramme %}
+            <option value='{{monProgramme.id}}'>{{monProgramme.label}} ({{monProgramme.duree|date('Y-m-d')}})</option>
+        {% endfor %}
+        </select><br/>
+        <label>Lieu de rendez-vous</label>
+        <select name='lieu'>
+        {% for monLieu in listeLieuRendezVous %}
+            <option value='{{monLieu.id}}'>{{monLieu.titre}}</option>
+        {% endfor %}
+        </select>
+    </div>
+    <input type="submit" value="Ajouter" />
+    <input type="button" value="Annuler" id="btnAnnuler"/>
+{{ form_end(form) }}
+
+<script>
+    $( "body" ).on( "change", "#selectTypeEvent", function()
+    {
+        $('#specificites').children().remove();
+        
+        switch($(this).val())
+        {
+            case '1': //Entrainement
+                $('#specificites').append("<label>Programme</label>");
+                $('#specificites').append("<select name='programme' id='pr'>");
+                {% for monProgramme in listeProgramme %}
+                    $('#specificites #pr').append("<option value='{{monProgramme.id}}'>{{monProgramme.label}} ({{monProgramme.duree|date('Y-m-d')}})</option>");
+                {% endfor %}
+                $('#specificites').append("</select><br/>");
+                $('#specificites').append("<label>Lieu de rendez-vous</label>");
+                $('#specificites').append("<select name='lieu' id='li'>");
+                {% for monLieu in listeLieuRendezVous %}
+                    $('#specificites #li').append("<option value='{{monLieu.id}}'>{{monLieu.titre}}</option>");
+                {% endfor %}
+                $('#specificites').append("</select>");
+                break;
+            case '2': //Entrainement personnel
+                break;
+            case '3': //Evenement divers
+                $('#specificites').append("<label>Label</label><input type='text' name='label' maxlength='45'/></br>");
+                break;
+            case '4': //Sortie découverte
+                $('#specificites').append("<label>Lieu de rendez-vous</label>");
+                $('#specificites').append("<select name='lieu' id='li'>");
+                {% for monLieu in listeLieuRendezVous %}
+                    $('#specificites #li').append("<option value='" + {{monLieu.id}} + "'>" + '{{monLieu.titre}}' + "</option>");
+                {% endfor %}
+                $('#specificites').append("</select>");
+                break;
+            default:
+        }
+    });
+</script>
+{% endblock %}

@@ -8,6 +8,6 @@
       <generator strategy="IDENTITY"/>
     </id>
     <field name="label" type="string" column="label" length="45" nullable="false"/>
-    <field name="duree" type="date" column="duree" nullable="false"/>
+    <field name="duree" type="datetime" column="duree" nullable="false"/>
   </entity>
 </doctrine-mapping>

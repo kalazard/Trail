@@ -51,6 +51,13 @@ class User implements \Symfony\Component\Security\Core\User\UserInterface, JsonS
     private $username;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="tokenics", type="string", length=32, nullable=false)
+     */
+    private $tokenics;
+
+    /**
      * @var \Role
      *
      * @ORM\ManyToOne(targetEntity="Role")
@@ -141,6 +148,30 @@ class User implements \Symfony\Component\Security\Core\User\UserInterface, JsonS
     {
         return $this->username;
     }
+    
+    /**
+     * Set tokenics
+     *
+     * @param string $tokenics
+     * @return User
+     */
+    public function setTokenics($tokenics)
+    {
+        $this->tokenics = $tokenics;
+
+        return $this;
+    }
+
+    /**
+     * Get tokenics
+     *
+     * @return string 
+     */
+    public function getTokenics()
+    {
+        return $this->tokenics;
+    }
+
 
     /**
      * Set role
@@ -178,6 +209,7 @@ class User implements \Symfony\Component\Security\Core\User\UserInterface, JsonS
         $this->salt = $salt;
     }
 
+
     public function jsonSerialize() {
         return array(
             'id' => $this->id,
@@ -188,3 +220,6 @@ class User implements \Symfony\Component\Security\Core\User\UserInterface, JsonS
     }
 
 }
+
+
+

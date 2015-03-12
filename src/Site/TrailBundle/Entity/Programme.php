@@ -31,7 +31,7 @@ class Programme
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="duree", type="date", nullable=false)
+     * @ORM\Column(name="duree", type="datetime", nullable=false)
      */
     private $duree;
 

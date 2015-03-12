@@ -1,0 +1,37 @@
+{% extends "SiteTrailBundle::layout.html.twig" %}
+
+{% block title %}{{ parent() }} - Recherche des membres{% endblock %}
+
+{% block body %}
+  {% if app.user %}
+      <h1>Recherche des membres</h1>
+	  
+	  <form name="myform" action="{{ path('site_trail_searchmember') }}" method="POST">
+			<input name="enter" type="text" size="25" placeholder="Valeurs de recherche">
+			<input type="submit" name="submit" value=" Rechercher ">
+		</form>
+	  
+	  {% if resultats is not empty %}
+	  
+			<h3>Résultats selon le nom</h3>
+			{% if resultats['username'] is not empty %}
+				{% for membre in resultats['username'] %}
+					<p> Pseudonyme: {{membre.getUserName()}}  Email: {{membre.getEmail()}}</p>
+				{% endfor %}
+			{% else %}
+				 <p>Aucun résultat n'a été trouvé pour ce nom</p>
+			{% endif %}
+			
+			<h3>Résultats selon l'email</h3>
+			{% if resultats['email'] is not empty %}
+				{% for membre in resultats['email'] %}
+					<p> Pseudonyme: {{membre.getUserName()}}  Email: {{membre.getEmail()}}</p>
+				{% endfor %}
+			{% else %}
+				 <p>Aucun résultat n'a été trouvé pour cet Email</p>
+			{% endif %}
+	  {% endif %}
+ {% else %}
+     <p>Vous n'avez pas accès à cette page</p>
+ {% endif %}
+{% endblock %}

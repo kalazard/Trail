@@ -1,0 +1,14 @@
+{% extends "SiteTrailBundle::layout.html.twig" %}
+
+{% block title %}{{ parent() }} - Liste des membres{% endblock %}
+
+{% block body %}
+  {% if app.user %}
+      <h1>Listage des membres</h1>
+	  {% for membre in resultats%}
+		<p> Pseudonyme: {{membre.getUserName()}}  Email: {{membre.getEmail()}}</p>
+	  {% endfor %}
+ {% else %}
+     <p>Vous n'avez pas accès à cette page</p>
+ {% endif %}
+{% endblock %}

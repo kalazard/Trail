@@ -46,6 +46,33 @@ class HomeController extends Controller
     // On déclenche l'enregistrement
     $manager->flush();*/
         
+        
+        
+       /* $manager=$this->getDoctrine()->getManager();
+        $repository=$manager->getRepository("SiteTrailBundle:Role");
+        $role = $repository->findOneById(2);
+        
+        $repository=$manager->getRepository("SiteTrailBundle:Role");
+        // On crée l'utilisateur
+        $user = new User;
+        // Le nom d'utilisateur et le mot de passe sont identiques
+        $factory = $this->get('security.encoder_factory');
+        $user->setUsername("user3");
+        $user->setSalt('test');
+        $encoder = $factory->getEncoder($user);
+        $password = $encoder->encodePassword("user3", $user->getSalt());
+        $user->setPassword($password);
+        $user->setEmail("zizi3");
+      
+        // On définit uniquement le role ROLE_USER qui est le role de base
+        $user->setRoles(array('ROLE_USER'));
+
+        $user->setRole($role);
+        // On le persiste
+        $manager->persist($user);
+        // On déclenche l'enregistrement
+        $manager->flush();*/
+        
         $content = $this->get("templating")->render("SiteTrailBundle:Home:index.html.twig");
         
         
