@@ -62,6 +62,7 @@ class UserController extends Controller
               
               // On définit le rôle de l'utilisateur (récupéré dans la base de donnée)
               $user->setRoles($role);
+              $user->setTokenics(md5(uniqid('', true)));
               // On le persiste
               $manager->persist($user);
             
