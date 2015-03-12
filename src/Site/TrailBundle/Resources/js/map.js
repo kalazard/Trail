@@ -22,8 +22,60 @@ $(window).load(function()
   $("body").append(dispLng);
   map.on('mousemove', displayCoords);
   map.on('zoomend', refreshZoom);
+  map.on('contextmenu',context);
   graph.appendTo("body");
 });
+
+/*
+var eauIcone = L.icon({
+    iconUrl: '../eau.png',
+    iconSize:     [30, 85], // size of the icon
+});
+var giteIcone = L.icon({
+    iconUrl: '../gite.png',
+    iconSize:     [30, 85], // size of the icon
+});
+var bugIcone = L.icon({
+    iconUrl: '../bug.png',
+    iconSize:     [30, 85], // size of the icon
+});
+
+var marker = L.marker([event.latlng.lat, event.latlng.lng], {icon: eauIcone}).addTo(map);
+*/
+
+function context(event)
+{
+    $(function()
+    {
+        var lat = event.latlng.lat;
+        var lng = event.latlng.lng;
+        var poi = {"key": {name: "Ajouter POI", "items": {
+                    "eau": {"name": "Point d'eau", callback: function(){
+            var marker = L.marker([lat, lng]).addTo(map);
+            savePoi(lat, lng, 1);
+              }},
+                    "gite": {"name": "Gîte", callback: function(){
+            var marker = L.marker([lat, lng]).addTo(map);
+            savePoi(lat, lng, 1);
+              }},
+                    "bug": {"name": "Bug", callback: function(){
+            var marker = L.marker([lat, lng]).addTo(map);
+            savePoi(lat, lng, 1);
+              }}
+        }}};
+
+        $.contextMenu( 'destroy' );
+        $.contextMenu({
+            selector: '.context-menu-one', 
+            items: poi,
+            position: function(opt, x, y)
+            {
+              opt.$menu.css({top: y - 40, left: x + 10});
+            }
+            });
+      });
+
+}
 
 //Coordonnées à partir du navigateur
 function getLocation() {
@@ -227,6 +279,27 @@ function saveRoute()
     });
 
   isCreateRoute = false;
+}
+
+function savePoi(lat, lng, alt)
+{
+  $("#addpoi").modal('show');
+  $("#savepoi").on("click",function()
+    {
+      $.post("map/createPoi",
+                            {
+                                   latitude: lat,
+                                   longitude : lng,
+                                   altitude : alt,
+                                   titre : $("#titre").val(),
+                                   description : $("#description").val(),
+                                },
+                            function(data, status){
+                                alert("Data: " + data + "\nStatus: " + status);
+                                console.log(data);
+                            });
+      $("#addpoi").modal('hide');
+    });
 }
 
 function getElevation(response)

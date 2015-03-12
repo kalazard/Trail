@@ -4,6 +4,10 @@ namespace Site\TrailBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
+use Site\TrailBundle\Entity\Poi;
+use Site\TrailBundle\Entity\Coordonnees;
+use Site\TrailBundle\Entity\TypeLieu;
+use Site\TrailBundle\Entity\Icone;
 use Site\TrailBundle\Entity\Itiniraire;
 use Site\TrailBundle\Entity\Gpx;
 use Site\TrailBundle\Entity\DifficulteParcours;
@@ -56,6 +60,37 @@ class MapController extends Controller
         $manager->persist($diff);
         $manager->flush();
         return new JsonResponse(array('data' => 'Itinéraire Crée'),200);
+      }
+
+      return new Response('This is not ajax!', 400);
+    }
+
+
+    public function createPoiAction(Request $request)
+    {
+      if ($request->isXMLHttpRequest()) 
+      {
+        $manager=$this->getDoctrine()->getManager();
+        $poi = new Poi();
+        $poi->setTitre($request->request->get("titre","MonPoi"));
+        $poi->setDescription($request->request->get("description","Ceci est mon poi"));
+        $coord = new Coordonnees();
+        $coord->setLongitude($request->request->get("longitude",1.0));
+        $coord->setLatitude($request->request->get("latitude",1.0));
+        $coord->setAltitude($request->request->get("altitude",1.0));
+        $poi->setCoordonnees($coord);
+        $icone = new Icone();
+        $icone->setPath("test");
+        $lieu = new TypeLieu();
+        $lieu->setLabel("eau");
+        $lieu->setIcone($icone);
+        $poi->setLieu($lieu);
+        $manager->persist($icone);
+        $manager->persist($coord);
+        $manager->persist($lieu);
+        $manager->persist($poi);
+        $manager->flush();
+        return new JsonResponse(array('data' => 'Poi Crée'),200);
       }
 
       return new Response('This is not ajax!', 400);
