@@ -6,6 +6,12 @@
     {% stylesheets filter='cssrewrite' '@SiteTrailBundle/Resources/css/*' %}
       <link rel="stylesheet" href="{{ asset_url }}" type="text/css" />
     {% endstylesheets %}
+    <style type="text/css">
+        html, body 
+        {
+          height: 100%;
+        }
+    </style>
     <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
     <script src="//code.jquery.com/ui/1.11.2/jquery-ui.min.js"></script>
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/themes/smoothness/jquery-ui.css" />
