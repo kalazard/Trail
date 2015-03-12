@@ -142,6 +142,7 @@ class UserController extends Controller
     
     public function deleteAction()
     {
+        
         //Seul l'admin peut delete un utilisateur
         $request= $this->getRequest();
         if($request->isXmlHttpRequest())
@@ -169,6 +170,8 @@ class UserController extends Controller
         $response = new JsonResponse($return);
             $response->headers->set('Content-Type', 'application/json');
             return $response;
+        
+        
     }
     
     public function getUserAction()

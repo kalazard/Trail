@@ -117,7 +117,10 @@ $(document).ready(function() {
         
    });
    $(document).on('click','.delete', function() {
-       var user_to_delete = $(this).data('value');
+   
+       if(confirm("Voulez vous vraiment supprimer cet utilisateur ?"))
+       {
+           var user_to_delete = $(this).data('value');
        $.ajax({
         type: "POST",
         url: "{{ path('site_trail_deleteUser') }}",
@@ -135,6 +138,11 @@ $(document).ready(function() {
            }
         }
     });
+        }
+        else
+        {
+            
+        }
         
    });
    function load_combobox_roles(combobox)

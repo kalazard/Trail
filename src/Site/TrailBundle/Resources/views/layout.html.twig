@@ -80,6 +80,7 @@
                                             <p class="text-left">
                                                 <a href="#" class="btn btn-primary btn-block btn-sm">Mon compte</a>
                                             </p>
+                                            
                                        {% else %}
                                            <p class="text-left"><strong>Anonyme</strong></p>
                                             <p class="text-left small">Vous n'êtes pas connecté</p>
@@ -100,6 +101,9 @@
                                             <p>
                                             <a href="{{path('logout')}}" class="btn btn-danger btn-block">Me deconnecter</a>
                                         </p>
+                                            {%if is_granted('ROLE_Administrateur')%}
+                                                 <a href="#" class="btn btn-primary btn-block" data-toggle="modal" data-target=".bs-modal-sm">Créer un utilisateur</a>
+                                            {%endif%}
                                        {% endif %}
                                         
                                     </div>
@@ -141,15 +145,33 @@
           <br>
           <div class="bs-example bs-example-tabs">
               <ul id="myTab" class="nav nav-tabs">
-                <li class="active"><a href="#signin" data-toggle="tab">Se connecter</a></li>
-                <li class=""><a href="#signup" data-toggle="tab">S'inscrire</a></li>
+                
+                {% if app.user %}
+                    {% if is_granted('ROLE_Administrateur') %}
+                        <li class="active"><a href="#signup" data-toggle="tab">Créer un utilisateur</a></li>
+                    {%endif%}
+               {% else %}
+                   <li class="active"><a href="#signin" data-toggle="tab">Se connecter</a></li>
+                   <li class=""><a href="#signup" data-toggle="tab">S'inscrire</a></li>
+               {% endif %}
+                
                 
               </ul>
           </div>
         <div class="modal-body">
           <div id="myTabContent" class="tab-content">
+          {% if app.user %}
+                    {% if is_granted('ROLE_Administrateur') %}
+                        <div class="tab-pane fade in" id="signin">
+                     {%else%}
+                        <div class="tab-pane active fade in" id="signin">
+                    {%endif%}
+                    
+          {%else%}
+             <div class="tab-pane active fade in" id="signin">       
+          {%endif%}
           
-          <div class="tab-pane fade active in" id="signin">
+              
               <form id="loginform" action="{{ path('login_check') }}" method="post" class="form-horizontal">
               <fieldset>
               <!-- Sign In Form -->
@@ -180,16 +202,22 @@
               </fieldset>
               </form>
           </div>
-          <div class="tab-pane fade" id="signup">
+              {% if app.user %}
+                    {% if is_granted('ROLE_Administrateur') %}
+                        <div class="tab-pane fade in active" id="signup">
+                     {%else%}
+                        <div class="tab-pane fade" id="signup">
+                    {%endif%}
+                    
+          {%else%}
+             <div class="tab-pane fade" id="signup">       
+          {%endif%}
+          
               <form id="signupform" class="form-horizontal">
               <fieldset>
               <!-- Sign Up Form -->
               <!-- Text input-->
-              {% if app.user %}
-                    <p>{{ app.user.username }}</p>
-               {% else %}
-                   <p> pas lala</p>
-               {% endif %}
+              
               <div class="control-group">
                 <label class="control-label" for="Email">Email :</label>
                 <div class="controls">
