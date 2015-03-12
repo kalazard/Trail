@@ -14,7 +14,7 @@ security:
     # http://symfony.com/doc/current/book/security.html#where-do-users-come-from-user-providers
     providers:
         main:
-            entity:  {  class:  Site\TrailBundle\Entity\User, property:  username  }
+            entity:  {  class:  Site\TrailBundle\Entity\User, property:  email  }
 
     # the main part of the security, where you can set up firewalls
     # for specific sections of your app
@@ -28,6 +28,7 @@ security:
             anonymous:  true
             provider:  main
             form_login:
+                username_parameter: _email
                 check_path:  login_check
                 success_handler: site_trail.authentication_handler
                 failure_handler: site_trail.authentication_handler

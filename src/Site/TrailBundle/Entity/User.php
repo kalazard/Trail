@@ -1,7 +1,7 @@
 <?php
 
 namespace Site\TrailBundle\Entity;
-
+use JsonSerializable;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="user", uniqueConstraints={@ORM\UniqueConstraint(name="id_UNIQUE", columns={"id"}), @ORM\UniqueConstraint(name="username_UNIQUE", columns={"username"})}, indexes={@ORM\Index(name="fk_user_1_idx", columns={"role"})})
  * @ORM\Entity
  */
-class User implements \Symfony\Component\Security\Core\User\UserInterface
+class User implements \Symfony\Component\Security\Core\User\UserInterface, JsonSerializable
 {
     /**
      * @var integer
@@ -42,12 +42,6 @@ class User implements \Symfony\Component\Security\Core\User\UserInterface
      */
     private $salt;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="roles", type="array", nullable=false)
-     */
-    private $roles;
 
     /**
      * @var string
@@ -87,7 +81,7 @@ class User implements \Symfony\Component\Security\Core\User\UserInterface
     public function setEmail($email)
     {
         $this->email = $email;
-
+        $this->username = $email;
         return $this;
     }
 
@@ -126,29 +120,6 @@ class User implements \Symfony\Component\Security\Core\User\UserInterface
 
 
     /**
-     * Set roles
-     *
-     * @param string $roles
-     * @return User
-     */
-    public function setRoles($roles)
-    {
-        $this->roles = $roles;
-
-        return $this;
-    }
-
-    /**
-     * Get roles
-     *
-     * @return string 
-     */
-    public function getRoles()
-    {
-        return $this->roles;
-    }
-
-    /**
      * Set username
      *
      * @param string $username
@@ -177,21 +148,22 @@ class User implements \Symfony\Component\Security\Core\User\UserInterface
      * @param \Site\TrailBundle\Entity\Role $role
      * @return User
      */
-    public function setRole(\Site\TrailBundle\Entity\Role $role = null)
+    public function setRoles(\Site\TrailBundle\Entity\Role $role = null)
     {
         $this->role = $role;
 
         return $this;
     }
 
-    /**
-     * Get role
-     *
-     * @return \Site\TrailBundle\Entity\Role 
-     */
-    public function getRole()
+    
+    public function getRoles()
     {
-        return $this->role;
+        return $this->role->getRole();
+    }
+    
+    public function getRoleId()
+    {
+        return $this->role->getId();
     }
 
     public function eraseCredentials() {
@@ -204,6 +176,15 @@ class User implements \Symfony\Component\Security\Core\User\UserInterface
     
     public function setSalt($salt) {
         $this->salt = $salt;
+    }
+
+    public function jsonSerialize() {
+        return array(
+            'id' => $this->id,
+            'email'=> $this->getEmail(),
+            'username'=> $this->getUsername(),
+            'role'=> $this->getRoles()[0],
+        );
     }
 
 }

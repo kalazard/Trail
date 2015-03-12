@@ -108,9 +108,9 @@
               <!-- Sign In Form -->
               <!-- Text input-->
               <div class="control-group">
-                <label class="control-label" for="_username">Login :</label>
+                <label class="control-label" for="_email">Email :</label>
                 <div class="controls">
-                  <input required="" id="userid" name="_username" type="text" class="form-control" placeholder="login" class="input-medium" required="">
+                  <input required="" id="userid" name="_email" type="text" class="form-control" placeholder="login" class="input-medium" required="">
                 </div>
               </div>
 
@@ -134,10 +134,15 @@
               </form>
           </div>
           <div class="tab-pane fade" id="signup">
-              <form class="form-horizontal">
+              <form id="signupform" class="form-horizontal">
               <fieldset>
               <!-- Sign Up Form -->
               <!-- Text input-->
+              {% if app.user %}
+                    <p>{{ app.user.username }}</p>
+               {% else %}
+                   <p> pas lala</p>
+               {% endif %}
               <div class="control-group">
                 <label class="control-label" for="Email">Email :</label>
                 <div class="controls">
@@ -163,7 +168,18 @@
                   <input id="reenterpassword" class="form-control" name="reenterpassword" type="password" placeholder="********" class="input-large" required="">
                 </div>
               </div>
-
+              {% if app.user %}
+                    {% if is_granted('ROLE_Administrateur') %}
+                        <div class="control-group">
+                            <label class="control-label" for="selectRole">Selectionner un rôle :</label>
+                            <div class="controls">
+                                <select id="selectRole" class="form-control" name="selectRole" class="input-large">
+                                </select>
+                            </div>
+                          </div>               
+                    {% endif %}
+               
+               {% endif %}
               
               <br>
               
@@ -189,35 +205,86 @@
     </div>
 </div>    
 <script>
+$(document).ready( function() {
+    
 
-$("#loginform").submit(function(){ 
-    
-    
-    
-    var username = $("#userid").val();
+$("#loginform").submit(function(){    
+    var email = $("#userid").val();
     var password = $("#passwordinput").val();
-    alert(username+password);
     $.ajax({
         type: "POST",
-        url: "{{ path('login_check') }}",
-        data: {_username: username, _password: password},
+        url: "{{path('login_check')}}",
+        data: {_email: email, _password: password},
         cache: false,
-        success: function(data){
-           alert(data.success);
+        success: function(data){           
            if(data.success)
-           {
+           {               
                location.reload();
            }
            else
            {
-              alert(data.message);
-           }
-               
+              $.notify(data.message, "error");
+           }         
         
         }
     }); 
-    return false;
-    
+    return false;    
+});
+
+$("#signupform").submit(function(){    
+    var email = $("#Email").val();
+    var password = $("#password").val();
+    var role = $("#selectRole").val();
+    var data = {email: email, password: password};
+    if(role != "")
+    {
+        data = {email: email, password: password, role: role}
+    }   
+    $.ajax({
+        type: "POST",
+        url: "{{path('site_trail_createUser')}}",
+        data: data,
+        cache: false,
+        success: function(data){           
+           if(data.success)
+           {               
+               $.notify("fonctionne", "success");
+           }
+           else
+           {
+              $.notify("Il y a eu une erreur", "error");
+           }         
+        
+        }
+    }); 
+    return false;    
+});
+
+function load_combobox_roles(combobox)
+{
+    $.ajax({
+        type: "POST",
+        url: "{{ path('site_trail_loadRoles') }}",
+        data: {},
+        cache: false,
+        success: function(data){           
+           if(data.success)
+           {               
+              combobox.empty();
+              
+              $.each(data.roles, function(index, value) {                
+                 combobox.append('<option value="'+ value.id +'">'+ value.name +'</option>');
+               });
+           }   
+           else
+           {
+               combobox.empty();
+           }
+        }
+    }); 
+}
+
+load_combobox_roles($("#selectRole"));
 });
 </script>
     {% javascripts '@SiteTrailBundle/Resources/js/*'

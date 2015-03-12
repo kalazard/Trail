@@ -51,6 +51,8 @@ class HomeController extends Controller
         
         return new Response($content);
     }
+    
+    
 }
 
 /* 
