@@ -41,4 +41,11 @@
             $('#overlay').remove();
         });
     </script>
+{% javascripts '@SiteTrailBundle/Resources/js/calendrier.js' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}
+
+{% javascripts '@SiteTrailBundle/Resources/js/lang-all.js' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}
 {% endblock %}
