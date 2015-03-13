@@ -272,7 +272,7 @@ function saveRoute()
                                    difficulte : $("#difficulte").val()
                                 },
                             function(data, status){
-                                alert("Data: " + data + "\nStatus: " + status);
+                                /*alert("Data: " + data + "\nStatus: " + status);*/
                                 console.log(data);
                             });
       $("#save").modal('hide');
@@ -295,7 +295,7 @@ function savePoi(lat, lng, alt)
                                    description : $("#description").val(),
                                 },
                             function(data, status){
-                                alert("Data: " + data + "\nStatus: " + status);
+                                /*alert("Data: " + data + "\nStatus: " + status);*/
                                 console.log(data);
                             });
       $("#addpoi").modal('hide');
