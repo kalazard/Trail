@@ -20,7 +20,7 @@
         <join-column name="categorie" referenced-column-name="id"/>
       </join-columns>
     </many-to-one>
-    <many-to-one field="auteur" target-entity="User">
+    <many-to-one field="auteur" target-entity="Utilisateur">
       <join-columns>
         <join-column name="auteur" referenced-column-name="id"/>
       </join-columns>

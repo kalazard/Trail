@@ -50,9 +50,9 @@ class Image
     private $poids;
 
     /**
-     * @var \User
+     * @var \Utilisateur
      *
-     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\ManyToOne(targetEntity="Utilisateur")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="auteur", referencedColumnName="id")
      * })
@@ -176,10 +176,10 @@ class Image
     /**
      * Set auteur
      *
-     * @param \Site\TrailBundle\Entity\User $auteur
+     * @param \Site\TrailBundle\Entity\Utilisateur $auteur
      * @return Image
      */
-    public function setAuteur(\Site\TrailBundle\Entity\User $auteur = null)
+    public function setAuteur(\Site\TrailBundle\Entity\Utilisateur $auteur = null)
     {
         $this->auteur = $auteur;
 
@@ -189,7 +189,7 @@ class Image
     /**
      * Get auteur
      *
-     * @return \Site\TrailBundle\Entity\User 
+     * @return \Site\TrailBundle\Entity\Utilisateur 
      */
     public function getAuteur()
     {

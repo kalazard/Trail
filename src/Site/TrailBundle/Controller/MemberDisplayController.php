@@ -2,7 +2,7 @@
 
 namespace Site\TrailBundle\Controller;
 
-use Site\TrailBundle\Entity\User;
+use Site\TrailBundle\Entity\Utilisateur;
 use Site\TrailBundle\Entity\Role;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -20,7 +20,7 @@ class MemberDisplayController extends Controller
 		
 		//if()
 		//{
-			//on charge la liste des membres en utilisant la méthode findAll de doctrine
+			//on charge la liste des membres en utilisant la mï¿½thode findAll de doctrine
 			$repository = $this
 			  ->getDoctrine()
 			  ->getManager()
@@ -53,7 +53,7 @@ class MemberDisplayController extends Controller
 		
 		//if()
 		//{
-			//on utilise un findBy pour récupérer la liste des utilisateurs on fonction des données de l'utilisateur
+			//on utilise un findBy pour rï¿½cupï¿½rer la liste des utilisateurs on fonction des donnï¿½es de l'utilisateur
 			if(!empty($search))
 			{
 				$repository = $this

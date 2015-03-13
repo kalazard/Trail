@@ -3,6 +3,7 @@
   <entity name="Itiniraire" table="itiniraire">
     <indexes>
       <index name="fk_itiniraire_1_idx" columns="itiniraire"/>
+      <index name="fk_difficulte" columns="difficulté"/>
     </indexes>
     <unique-constraints>
       <unique-constraint name="id_UNIQUE" columns="id"/>
@@ -13,9 +14,18 @@
     <field name="date" type="date" column="date" nullable="false"/>
     <field name="longueur" type="string" column="longueur" length="45" nullable="false"/>
     <field name="denivele" type="string" column="denivele" length="45" nullable="false"/>
+    <field name="nom" type="string" column="nom" length="45" nullable="true"/>
+    <field name="numero" type="integer" column="numero" nullable="true"/>
+    <field name="typechemin" type="string" column="typechemin" length="45" nullable="true"/>
+    <field name="commentaire" type="string" column="commentaire" length="100" nullable="true"/>
     <many-to-one field="itiniraire" target-entity="Gpx">
       <join-columns>
         <join-column name="itiniraire" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="difficulté" target-entity="DifficulteParcours">
+      <join-columns>
+        <join-column name="difficulté" referenced-column-name="id"/>
       </join-columns>
     </many-to-one>
   </entity>

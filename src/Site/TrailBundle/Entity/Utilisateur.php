@@ -1,16 +1,16 @@
 <?php
 
 namespace Site\TrailBundle\Entity;
-use JsonSerializable;
-use Doctrine\ORM\Mapping as ORM;
 
+use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 /**
- * User
+ * Utilisateur
  *
- * @ORM\Table(name="user", uniqueConstraints={@ORM\UniqueConstraint(name="id_UNIQUE", columns={"id"}), @ORM\UniqueConstraint(name="username_UNIQUE", columns={"username"})}, indexes={@ORM\Index(name="fk_user_1_idx", columns={"role"})})
+ * @ORM\Table(name="utilisateur", uniqueConstraints={@ORM\UniqueConstraint(name="id_UNIQUE", columns={"id"}), @ORM\UniqueConstraint(name="username_UNIQUE", columns={"username"})}, indexes={@ORM\Index(name="fk_user_1_idx", columns={"role"})})
  * @ORM\Entity
  */
-class User implements \Symfony\Component\Security\Core\User\UserInterface, JsonSerializable
+class Utilisateur implements \Symfony\Component\Security\Core\User\UserInterface, JsonSerializable
 {
     /**
      * @var integer
@@ -38,15 +38,14 @@ class User implements \Symfony\Component\Security\Core\User\UserInterface, JsonS
     /**
      * @var string
      *
-     * @ORM\Column(name="salt", type="string", length=255, nullable=false)
+     * @ORM\Column(name="salt", type="string", length=45, nullable=false)
      */
     private $salt;
-
 
     /**
      * @var string
      *
-     * @ORM\Column(name="username", type="string", length=45, nullable=false, unique=true)
+     * @ORM\Column(name="username", type="string", length=45, nullable=false)
      */
     private $username;
 
@@ -83,7 +82,7 @@ class User implements \Symfony\Component\Security\Core\User\UserInterface, JsonS
      * Set email
      *
      * @param string $email
-     * @return User
+     * @return Utilisateur
      */
     public function setEmail($email)
     {
@@ -106,7 +105,7 @@ class User implements \Symfony\Component\Security\Core\User\UserInterface, JsonS
      * Set password
      *
      * @param string $password
-     * @return User
+     * @return Utilisateur
      */
     public function setPassword($password)
     {
@@ -125,12 +124,34 @@ class User implements \Symfony\Component\Security\Core\User\UserInterface, JsonS
         return $this->password;
     }
 
+    /**
+     * Set salt
+     *
+     * @param string $salt
+     * @return Utilisateur
+     */
+    public function setSalt($salt)
+    {
+        $this->salt = $salt;
+
+        return $this;
+    }
+
+    /**
+     * Get salt
+     *
+     * @return string 
+     */
+    public function getSalt()
+    {
+        return $this->salt;
+    }
 
     /**
      * Set username
      *
      * @param string $username
-     * @return User
+     * @return Utilisateur
      */
     public function setUsername($username)
     {
@@ -148,12 +169,12 @@ class User implements \Symfony\Component\Security\Core\User\UserInterface, JsonS
     {
         return $this->username;
     }
-    
+
     /**
      * Set tokenics
      *
      * @param string $tokenics
-     * @return User
+     * @return Utilisateur
      */
     public function setTokenics($tokenics)
     {
@@ -172,12 +193,11 @@ class User implements \Symfony\Component\Security\Core\User\UserInterface, JsonS
         return $this->tokenics;
     }
 
-
     /**
      * Set role
      *
      * @param \Site\TrailBundle\Entity\Role $role
-     * @return User
+     * @return Utilisateur
      */
     public function setRoles(\Site\TrailBundle\Entity\Role $role = null)
     {
@@ -186,7 +206,11 @@ class User implements \Symfony\Component\Security\Core\User\UserInterface, JsonS
         return $this;
     }
 
-    
+    /**
+     * Get role
+     *
+     * @return \Site\TrailBundle\Entity\Role 
+     */
     public function getRoles()
     {
         return $this->role->getRole();
@@ -196,20 +220,7 @@ class User implements \Symfony\Component\Security\Core\User\UserInterface, JsonS
     {
         return $this->role->getId();
     }
-
-    public function eraseCredentials() {
-        
-    }
-
-    public function getSalt() {
-        return $this->salt;
-    }
     
-    public function setSalt($salt) {
-        $this->salt = $salt;
-    }
-
-
     public function jsonSerialize() {
         return array(
             'id' => $this->id,
@@ -219,7 +230,8 @@ class User implements \Symfony\Component\Security\Core\User\UserInterface, JsonS
         );
     }
 
+    public function eraseCredentials() {
+        
+    }
+
 }
-
-
-

@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Itiniraire
  *
- * @ORM\Table(name="itiniraire", uniqueConstraints={@ORM\UniqueConstraint(name="id_UNIQUE", columns={"id"})}, indexes={@ORM\Index(name="fk_itiniraire_1_idx", columns={"itiniraire"})})
+ * @ORM\Table(name="itiniraire", uniqueConstraints={@ORM\UniqueConstraint(name="id_UNIQUE", columns={"id"})}, indexes={@ORM\Index(name="fk_itiniraire_1_idx", columns={"itiniraire"}), @ORM\Index(name="fk_difficulte", columns={"difficulté"})})
  * @ORM\Entity
  */
 class Itiniraire
@@ -41,16 +41,6 @@ class Itiniraire
      * @ORM\Column(name="denivele", type="string", length=45, nullable=false)
      */
     private $denivele;
-
-    /**
-     * @var \Gpx
-     *
-     * @ORM\ManyToOne(targetEntity="Gpx")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="itiniraire", referencedColumnName="id")
-     * })
-     */
-    private $itiniraire;
 
     /**
      * @var string
@@ -88,7 +78,17 @@ class Itiniraire
      *   @ORM\JoinColumn(name="difficulté", referencedColumnName="id")
      * })
      */
-    private $difficulte;
+    private $difficulté;
+
+    /**
+     * @var \Gpx
+     *
+     * @ORM\ManyToOne(targetEntity="Gpx")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="itiniraire", referencedColumnName="id")
+     * })
+     */
+    private $itiniraire;
 
 
 
@@ -169,29 +169,6 @@ class Itiniraire
     public function getDenivele()
     {
         return $this->denivele;
-    }
-
-    /**
-     * Set itiniraire
-     *
-     * @param \Site\TrailBundle\Entity\Gpx $itiniraire
-     * @return Itiniraire
-     */
-    public function setItiniraire(\Site\TrailBundle\Entity\Gpx $itiniraire = null)
-    {
-        $this->itiniraire = $itiniraire;
-
-        return $this;
-    }
-
-    /**
-     * Get itiniraire
-     *
-     * @return \Site\TrailBundle\Entity\Gpx 
-     */
-    public function getItiniraire()
-    {
-        return $this->itiniraire;
     }
 
     /**
@@ -287,25 +264,48 @@ class Itiniraire
     }
 
     /**
-     * Set difficulte
+     * Set difficulté
      *
-     * @param \Site\TrailBundle\Entity\DifficulteParcours $difficulte
+     * @param \Site\TrailBundle\Entity\DifficulteParcours $difficulté
      * @return Itiniraire
      */
-    public function setDifficulte(\Site\TrailBundle\Entity\DifficulteParcours $difficulte = null)
+    public function setDifficulté(\Site\TrailBundle\Entity\DifficulteParcours $difficulté = null)
     {
-        $this->difficulte = $difficulte;
+        $this->difficulté = $difficulté;
 
         return $this;
     }
 
     /**
-     * Get difficulte
+     * Get difficulté
      *
      * @return \Site\TrailBundle\Entity\DifficulteParcours 
      */
-    public function getDifficulte()
+    public function getDifficulté()
     {
-        return $this->difficulte;
+        return $this->difficulté;
+    }
+
+    /**
+     * Set itiniraire
+     *
+     * @param \Site\TrailBundle\Entity\Gpx $itiniraire
+     * @return Itiniraire
+     */
+    public function setItiniraire(\Site\TrailBundle\Entity\Gpx $itiniraire = null)
+    {
+        $this->itiniraire = $itiniraire;
+
+        return $this;
+    }
+
+    /**
+     * Get itiniraire
+     *
+     * @return \Site\TrailBundle\Entity\Gpx 
+     */
+    public function getItiniraire()
+    {
+        return $this->itiniraire;
     }
 }

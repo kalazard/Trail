@@ -25,11 +25,11 @@ class Participants
     private $evenement;
 
     /**
-     * @var \User
+     * @var \Utilisateur
      *
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="NONE")
-     * @ORM\OneToOne(targetEntity="User")
+     * @ORM\OneToOne(targetEntity="Utilisateur")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="user", referencedColumnName="id")
      * })
@@ -74,10 +74,10 @@ class Participants
     /**
      * Set user
      *
-     * @param \Site\TrailBundle\Entity\User $user
+     * @param \Site\TrailBundle\Entity\Utilisateur $user
      * @return Participants
      */
-    public function setUser(\Site\TrailBundle\Entity\User $user)
+    public function setUser(\Site\TrailBundle\Entity\Utilisateur $user)
     {
         $this->user = $user;
 
@@ -87,7 +87,7 @@ class Participants
     /**
      * Get user
      *
-     * @return \Site\TrailBundle\Entity\User 
+     * @return \Site\TrailBundle\Entity\Utilisateur 
      */
     public function getUser()
     {

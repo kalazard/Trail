@@ -5,7 +5,7 @@ namespace Site\TrailBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Site\TrailBundle\Entity\Evenement;
-use Site\TrailBundle\Entity\User;
+use Site\TrailBundle\Entity\Utilisateur;
 use Site\TrailBundle\Entity\Entrainement;
 use Site\TrailBundle\Entity\EntrainementPersonnel;
 use Site\TrailBundle\Entity\EvenementDivers;
@@ -210,7 +210,7 @@ class CalendrierController extends Controller
             $idCreateur = htmlspecialchars($_POST['createur']);
             
             $manager=$this->getDoctrine()->getManager();
-            $repository=$manager->getRepository("SiteTrailBundle:User");
+            $repository=$manager->getRepository("SiteTrailBundle:Utilisateur");
             $event->setCreateur($repository->findOneById($idCreateur));
             $event->setDateCreation(new \DateTime("now"));
             
@@ -266,7 +266,7 @@ class CalendrierController extends Controller
             {
                 foreach($_REQUEST['participants'] as $monParticipant)
                 {
-                    $repository=$manager->getRepository("SiteTrailBundle:User");
+                    $repository=$manager->getRepository("SiteTrailBundle:Utilisateur");
                     $idParticipant = htmlspecialchars($monParticipant);
                     $userParticip = $repository->findOneById($idParticipant);
                     $participant = new Participants;
@@ -290,7 +290,7 @@ class CalendrierController extends Controller
        
         $query = $manager->createQuery(
             'SELECT u
-            FROM SiteTrailBundle:User u
+            FROM SiteTrailBundle:Utilisateur u
             WHERE u.id != :createur'
         )->setParameter('createur', $idUser);
         $listeUser = $query->getResult();        

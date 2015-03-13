@@ -18,7 +18,7 @@
     <field name="status" type="string" column="status" length="45" nullable="false"/>
     <field name="dateDebut" type="datetime" column="date_debut" nullable="false"/>
     <field name="dateFin" type="datetime" column="date_fin" nullable="false"/>
-    <many-to-one field="createur" target-entity="User">
+    <many-to-one field="createur" target-entity="Utilisateur">
       <join-columns>
         <join-column name="createur" referenced-column-name="id"/>
       </join-columns>

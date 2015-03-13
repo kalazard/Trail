@@ -2,7 +2,7 @@
 
 namespace Site\TrailBundle\Controller;
 
-use Site\TrailBundle\Entity\User;
+use Site\TrailBundle\Entity\Utilisateur;
 use Site\TrailBundle\Entity\Role;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;

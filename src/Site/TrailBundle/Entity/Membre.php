@@ -5,12 +5,12 @@ namespace Site\TrailBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Member
+ * Membre
  *
- * @ORM\Table(name="member", uniqueConstraints={@ORM\UniqueConstraint(name="id_UNIQUE", columns={"id"})}, indexes={@ORM\Index(name="fk_member_1_idx", columns={"user"}), @ORM\Index(name="fk_member_2_idx", columns={"avatar"})})
+ * @ORM\Table(name="membre", uniqueConstraints={@ORM\UniqueConstraint(name="id_UNIQUE", columns={"id"})}, indexes={@ORM\Index(name="fk_member_1_idx", columns={"user"}), @ORM\Index(name="fk_member_2_idx", columns={"avatar"})})
  * @ORM\Entity
  */
-class Member
+class Membre
 {
     /**
      * @var integer
@@ -57,9 +57,9 @@ class Member
     private $licence;
 
     /**
-     * @var \User
+     * @var \Utilisateur
      *
-     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\ManyToOne(targetEntity="Utilisateur")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="user", referencedColumnName="id")
      * })
@@ -92,7 +92,7 @@ class Member
      * Set nom
      *
      * @param string $nom
-     * @return Member
+     * @return Membre
      */
     public function setNom($nom)
     {
@@ -115,7 +115,7 @@ class Member
      * Set prenom
      *
      * @param string $prenom
-     * @return Member
+     * @return Membre
      */
     public function setPrenom($prenom)
     {
@@ -138,7 +138,7 @@ class Member
      * Set dateNaissance
      *
      * @param \DateTime $dateNaissance
-     * @return Member
+     * @return Membre
      */
     public function setDateNaissance($dateNaissance)
     {
@@ -161,7 +161,7 @@ class Member
      * Set telephone
      *
      * @param integer $telephone
-     * @return Member
+     * @return Membre
      */
     public function setTelephone($telephone)
     {
@@ -184,7 +184,7 @@ class Member
      * Set licence
      *
      * @param string $licence
-     * @return Member
+     * @return Membre
      */
     public function setLicence($licence)
     {
@@ -206,10 +206,10 @@ class Member
     /**
      * Set user
      *
-     * @param \Site\TrailBundle\Entity\User $user
-     * @return Member
+     * @param \Site\TrailBundle\Entity\Utilisateur $user
+     * @return Membre
      */
-    public function setUser(\Site\TrailBundle\Entity\User $user = null)
+    public function setUser(\Site\TrailBundle\Entity\Utilisateur $user = null)
     {
         $this->user = $user;
 
@@ -219,7 +219,7 @@ class Member
     /**
      * Get user
      *
-     * @return \Site\TrailBundle\Entity\User 
+     * @return \Site\TrailBundle\Entity\Utilisateur 
      */
     public function getUser()
     {
@@ -230,7 +230,7 @@ class Member
      * Set avatar
      *
      * @param \Site\TrailBundle\Entity\Image $avatar
-     * @return Member
+     * @return Membre
      */
     public function setAvatar(\Site\TrailBundle\Entity\Image $avatar = null)
     {

@@ -8,7 +8,7 @@
 
 namespace Site\TrailBundle\Controller;
 
-use Site\TrailBundle\Entity\User;
+use Site\TrailBundle\Entity\Utilisateur;
 use Site\TrailBundle\Entity\Role;
 
 
@@ -48,7 +48,7 @@ class UserController extends Controller
              $repository=$manager->getRepository("SiteTrailBundle:Role");
             
               // On crée l'utilisateur
-              $user = new User();
+              $user = new Utilisateur();
               
               $role=new Role(); //On récupère le role de base dans la base de données
               $role = $repository->find($role_base);
@@ -119,7 +119,7 @@ class UserController extends Controller
             if($this->get('security.context')->isGranted('ROLE_Administrateur'))
             {
                 $manager=$this->getDoctrine()->getManager();    //On récupère le manager de doctrine
-                $repository=$manager->getRepository("SiteTrailBundle:User");
+                $repository=$manager->getRepository("SiteTrailBundle:Utilisateur");
                 
                 $users = $repository->findAll();
                 
@@ -152,7 +152,7 @@ class UserController extends Controller
                 $id=$request->request->get('id_user');
                 
                 $manager=$this->getDoctrine()->getManager();    //On récupère le manager de doctrine
-                $repository=$manager->getRepository("SiteTrailBundle:User");
+                $repository=$manager->getRepository("SiteTrailBundle:Utilisateur");
                 $usertodelete = $repository->find($id);
                 $manager->remove($usertodelete);
                 $manager->flush();
@@ -184,7 +184,7 @@ class UserController extends Controller
                 $id=$request->request->get('id_user');
                 
                 $manager=$this->getDoctrine()->getManager();    //On récupère le manager de doctrine
-                $repository=$manager->getRepository("SiteTrailBundle:User");
+                $repository=$manager->getRepository("SiteTrailBundle:Utilisateur");
                 $user = $repository->find($id);
                 $repository=$manager->getRepository("SiteTrailBundle:Role");
                 $role = $repository->find($user->getRoleId());
@@ -222,7 +222,7 @@ class UserController extends Controller
                  $repository=$manager->getRepository("SiteTrailBundle:Role");
 
                   // On crée l'utilisateur
-                  $user = $manager->getRepository("SiteTrailBundle:User")->find($userToUpdate);
+                  $user = $manager->getRepository("SiteTrailBundle:Utilisateur")->find($userToUpdate);
                   if($email!="")
                   {
                       $user->setEmail($email);  //L'email sera le nom d'utilisateur

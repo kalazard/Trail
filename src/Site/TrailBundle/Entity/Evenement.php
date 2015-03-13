@@ -78,9 +78,9 @@ class Evenement
     private $dateFin;
 
     /**
-     * @var \User
+     * @var \Utilisateur
      *
-     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\ManyToOne(targetEntity="Utilisateur")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="createur", referencedColumnName="id")
      * })
@@ -286,10 +286,10 @@ class Evenement
     /**
      * Set createur
      *
-     * @param \Site\TrailBundle\Entity\User $createur
+     * @param \Site\TrailBundle\Entity\Utilisateur $createur
      * @return Evenement
      */
-    public function setCreateur(\Site\TrailBundle\Entity\User $createur = null)
+    public function setCreateur(\Site\TrailBundle\Entity\Utilisateur $createur = null)
     {
         $this->createur = $createur;
 
@@ -299,7 +299,7 @@ class Evenement
     /**
      * Get createur
      *
-     * @return \Site\TrailBundle\Entity\User 
+     * @return \Site\TrailBundle\Entity\Utilisateur 
      */
     public function getCreateur()
     {

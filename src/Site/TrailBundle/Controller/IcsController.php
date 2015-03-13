@@ -7,7 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Site\TrailBundle\Entity\Evenement;
-use Site\TrailBundle\Entity\User;
+use Site\TrailBundle\Entity\Utilisateur;
 
 
 class IcsController extends Controller
@@ -40,7 +40,7 @@ class IcsController extends Controller
         else //Cas où on veut récupérer le calendrier "à l'exterieur" du site
         {
             $manager = $this->getDoctrine()->getManager();
-            $repository=$manager->getRepository("SiteTrailBundle:User");
+            $repository=$manager->getRepository("SiteTrailBundle:Utilisateur");
             $tokenics = htmlspecialchars($id);
             $utilisateur = $repository->findOneByTokenics($tokenics);
             $idUser = $utilisateur->getId();
