@@ -333,9 +333,7 @@ $("#signupform").submit(function(){
         error = true;
     }
     if(password != reenterpassword)
-    {
-        alert(password);
-        alert(reenterpassword);
+    {        
         $.notify("Les mots de passe ne sont pas identiques", "error");
         error = true;
     }
