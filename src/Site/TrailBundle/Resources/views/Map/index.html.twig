@@ -35,8 +35,17 @@
     <h1><img src="{{ asset_url }}" alt="Symfony!" style="width :12; height: 90px;"/><small>Site de cartographie collaborative</small></h1>
     {% endimage %}    
   </div>
-  <div id="map" class="map context-menu-one box menu-1"></div>
-  <div class="container">
+  <style>
+      .container-map{
+          height: 100%;
+          width: 100%;
+      }
+      .map{
+          width:200px;
+      }
+  </style>
+  <div class="container container-map">
+      <div id="map" class="map context-menu-one box menu-1"></div>
     <nav role="navigation" class="navbar navbar-default">
         <div class="navbar-header">
             <button type="button" data-target="#navbarCollapse" data-toggle="collapse" class="navbar-toggle">

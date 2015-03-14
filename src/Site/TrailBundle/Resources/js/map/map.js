@@ -90,7 +90,7 @@ function getLocation() {
 function goToPosition(position) {
 
   //Définition des attributs de la carte et positionnement
-  $("#map").css("height", "70%").css("width", "60%").css("margin","auto");
+  $("#map").css("height", "70%").css("width", "100%").css("margin","auto");
   $("#controls").css("width", "20%").css("margin","auto");
   map.setView([position.coords.latitude, position.coords.longitude], 13);
 
@@ -102,11 +102,11 @@ function goToPosition(position) {
 
       onAdd: function (map) {
           var container = L.DomUtil.create('div', 'leaflet-control-command');
-          $(container).html("<div class='input-group' id='geocodeControl'> " +
+          $(container).html("<div class='row'><div class='container'><div class='input-group col-lg-3' id='geocodeControl'> " +
                               "<span class='input-group-addon' id='basic-addon1'>Recherche</span>" + 
                               "<input type='text' class='form-control' placeholder='Ville' aria-describedby='basic-addon1' id='ville'>" + 
                             "</div><div class='btn-group'role='group' aria-label='...' id='boutonGroup'>" + 
-                              "<button type='button' class='btn btn-default' id='okVille'>Se centrer</button></div>");
+                              "<button type='button' class='btn btn-default' id='okVille'>Se centrer</button></div></div></div>");
           container.addEventListener('mouseover', function () 
           {
             map.dragging.disable();
@@ -130,7 +130,7 @@ function goToPosition(position) {
   $("#okVille").click(geocode);
 
 
-  $("#geocodeControl").css("width","20%");
+  //$("#geocodeControl").css("width","20%");
   $("#map").css("cursor","move");
 }
 
