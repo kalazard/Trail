@@ -17,19 +17,19 @@ login_check:
     pattern:   /login_check
 logout:
     pattern:   /logout
-calendrier:
+site_trail_calendrier:
     path: /calendrier
     defaults: { _controller: SiteTrailBundle:Calendrier:index }
-calendrierForm:
+site_trail_calendrier_calendrierForm:
     path: /calendrierForm
     defaults: { _controller: SiteTrailBundle:Calendrier:afficherForm }
-detailEvenement:
+site_trail_calendrier_detailEvenement:
     path: /detailEvenement
     defaults: { _controller: SiteTrailBundle:Calendrier:afficherDetailEvenement }
-ics:
+site_trail_calendrier_ics:
     path: /ics/{id}/{dateDebut}/{dateFin}
     defaults: { _controller: SiteTrailBundle:Ics:index, id: default, dateDebut: '', dateFin: '' }   
-icsForm:
+site_trail_calendrier_icsForm:
     path: /icsForm
     defaults: { _controller: SiteTrailBundle:Ics:icsForm }
 site_trail_memberdisplay:

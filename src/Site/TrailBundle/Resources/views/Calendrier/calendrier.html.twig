@@ -4,11 +4,17 @@
 
 {% block body %}
     <h1>Mon calendrier</h1>
+    
+    
+    
+    
     <input id="dlCal" type="button" value="Télécharger mon calendrier" />
     <div id="listeAction">
         <a id="lienAjoutEvent">Ajouter un évènement</a>
     </div>
     <div id='calendar'></div>
+    
+    
     
 {% javascripts '@SiteTrailBundle/Resources/js/*' %}
     <script type="text/javascript" src="{{ asset_url }}"></script>
@@ -34,13 +40,13 @@
     {        
         $.ajax({
             type: "POST",
-            url: "{{ path('detailEvenement') }}",
+            url: "{{ path('site_trail_calendrier_detailEvenement') }}",
             cache: false,
             data: {"idClasse" : idClasse,
                     "idObj" : idObj},
             success: function(data){
-                $('body').prepend('<div id="overlay"></div>');
                 $('body').append(data);
+                $("#modalEventDetail").modal('show');
             }
         });
     }
@@ -94,18 +100,12 @@
             events: eventAffiches,
             eventRender: function(event, element) {
                 element.html("<p>" + event.start.format('HH:mm') + " - " + event.end.format('HH:mm') + "<br/>");
-                element.append("&#8226; <a style='color:white;cursor:pointer' onclick='afficherDetail(" + event.class + ", " + event.id +")' id='detailEvenement'>" + event.title + "</a><br/>");
+                element.append("&#8226; <a style='color:white;cursor:pointer;font-style:italic;' onclick='afficherDetail(" + event.class + ", " + event.id +")' id='detailEvenement'>" + event.title + "</a><br/>");
                 element.append("&#8226; " + event.description + "</p>");
                 
                 element.css({
                     'word-wrap': 'break-word',
-                });
-                
-                
-                
-                
-                
-                
+                });     
             }
             });
         });
@@ -113,28 +113,31 @@
 
     afficherCalendrier(eventAffiches);
     
-        $('#lienAjoutEvent').click(function() {
-        $.ajax({
-            type: "POST",
-            url: "{{ path('calendrierForm') }}",
-            data: {"dateCliquee" : $("#listeAction").val()},
-            cache: false,
-            success: function(data){
-                $('body').prepend('<div id="overlay"></div>');
-                $('body').append(data);
-            }
+        $( "body" ).on( "click", "#lienAjoutEvent", function()
+        {
+            $.ajax({
+                type: "POST",
+                url: "{{ path('site_trail_calendrier_calendrierForm') }}",
+                data: {"dateCliquee" : $("#listeAction").val()},
+                cache: false,
+                success: function(data){
+                    $('body').append(data);
+                    $("#modalAjoutEventForm").modal('show');
+                }
+            });
         });
-    });
     
     $( "body" ).on( "click", "#dlCal", function()
     {
         $.ajax({
             type: "POST",
-            url: "{{ path('icsForm') }}",
+            url: "{{ path('site_trail_calendrier_icsForm') }}",
             cache: false,
             success: function(data){
-                $('body').prepend('<div id="overlay"></div>');
                 $('body').append(data);
+                $('#lienDl').children().remove();
+                $("#lienDl").append("<a id='lienDl' href='{{ path('site_trail_calendrier_ics') }}/default/" + $( "#dateDebut" ).val() + "/" +  $( "#dateFin" ).val() + "'>Télécharger</a>");
+                $("#modalIcs").modal('show');
             }
         });
     });
