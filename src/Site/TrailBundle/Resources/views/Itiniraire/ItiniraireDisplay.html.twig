@@ -1,0 +1,14 @@
+{% extends "SiteTrailBundle::layout.html.twig" %}
+
+{% block title %}{{ parent() }} - Liste des itinéraires{% endblock %}
+
+{% block body %}
+  {% if app.user %}
+      <h1>Listage des itinéraires</h1>
+	  {% for itineraire in resultats%}
+		<p> Nom: {{itineraire.getNom()}}  Type de chemin: {{itineraire.getTypechemin()}} Difficulté: {{itineraire.getDifficulté().getLabel()}}</p>
+	  {% endfor %}
+ {% else %}
+     <p>Vous n'avez pas accès à cette page</p>
+ {% endif %}
+{% endblock %}

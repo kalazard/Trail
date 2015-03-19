@@ -3,6 +3,7 @@
 namespace Site\TrailBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 
 /**
  * DifficulteParcours
@@ -10,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="difficulte_parcours", uniqueConstraints={@ORM\UniqueConstraint(name="id_UNIQUE", columns={"id"})})
  * @ORM\Entity
  */
-class DifficulteParcours
+class DifficulteParcours implements JsonSerializable
 {
     /**
      * @var integer
@@ -91,5 +92,13 @@ class DifficulteParcours
     public function getLabel()
     {
         return $this->label;
+    }
+
+    public function jsonSerialize() {
+        return array(
+            'id' => $this->id,
+            'niveauDifficulte'=> $this->getNiveauDifficulte(),
+            'label'=> $this->getLabel()
+        );
     }
 }

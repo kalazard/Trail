@@ -26,6 +26,7 @@
     {% javascripts '@SiteTrailBundle/Resources/js/map/*' %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
+
     <title>{% block title %}Map{% endblock %}</title>
     <meta charset="utf-8">
 </head>
@@ -107,7 +108,8 @@
               </div>
               <div class="form-group">
                 <label for="recipient-name" class="control-label">Difficulté:</label>
-                <input type="text" class="form-control" id="difficulté">
+                <!--input type="text" class="form-control" id="difficulté"-->
+                <select id="difficulte"></select>
               </div>
             </form>
           </div>

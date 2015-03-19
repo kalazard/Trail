@@ -36,28 +36,25 @@ class MapController extends Controller
       if ($request->isXMLHttpRequest()) 
       {
         $manager=$this->getDoctrine()->getManager();
-        //$repository=$manager->getRepository("SiteTrailBundle:Itineraire");
-        //$listPoints = $request->request->get("points","test");
+        $repositoryDiff=$manager->getRepository("SiteTrailBundle:DifficulteParcours");
+
+        $gpx = new Gpx();
+        $gpx->setPath("test");
+        $diff = $repositoryDiff->find($request->request->get("difficulte",""));
+
         $route = new Itiniraire();
         $route->setDate(new \DateTime('now'));
         $route->setLongueur($request->request->get("longueur","120"));
         $route->setDenivele($request->request->get("elevation","130"));
-        /*$route->setLongueur("100");
-        $route->setDenivele("120");*/
-        $gpx = new Gpx();
-        $gpx->setPath("test");
         $route->setItiniraire($gpx);
-        $route->setNom($request->request->get("nom","test"));
-        $route->setNumero($request->request->get("numero","120"));
-        $route->setTypechemin($request->request->get("typechemin","test"));
-        $route->setCommentaire($request->request->get("commentaire","test"));
-        $diff = new DifficulteParcours();
-        $diff->setNiveauDifficulte(10);
-        $diff->setLabel($request->request->get("difficulte","test"));
-        $route->setDifficulte($diff);
+        $route->setNom($request->request->get("nom",""));
+        $route->setNumero($request->request->get("numero",""));
+        $route->setTypechemin($request->request->get("typechemin",""));
+        $route->setCommentaire($request->request->get("commentaire",""));
+        $route->setDifficulté($diff);
+
         $manager->persist($route);
         $manager->persist($gpx);
-        $manager->persist($diff);
         $manager->flush();
         return new JsonResponse(array('data' => 'Itinéraire Crée'),200);
       }
