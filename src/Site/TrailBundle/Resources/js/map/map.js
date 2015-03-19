@@ -95,7 +95,7 @@ function goToPosition(position) {
   map.setView([position.coords.latitude, position.coords.longitude], 13);
 
   //Mise en place de l'overlay (controles personnalisés)
-  var geocodeSearch = L.Control.extend({
+  /*var geocodeSearch = L.Control.extend({
       options: {
           position: 'bottomleft'
       },
@@ -118,7 +118,8 @@ function goToPosition(position) {
           return container;
       }
   });
-  map.addControl(new geocodeSearch());
+  map.addControl(new geocodeSearch());*/
+  L.Control.geocoder().addTo(map);
 
   //Ajout du fond de carte Landscape obtenu sur Thunderforest
   L.tileLayer('http://tile.thunderforest.com/landscape/{z}/{x}/{y}.png', {
@@ -217,7 +218,13 @@ function drawRoute(event)
   pointArray.push(new Point(event.latlng.lat,event.latlng.lng));
   latlngArray.push(event.latlng);
   var marker = L.circleMarker([event.latlng.lat, event.latlng.lng]);
+  var draggable = new L.Draggable(marker);
+  draggable.enable();
   map.addLayer(marker);
+  if(polyline !== undefined)
+  {
+    map.removeLayer(polyline);
+  }
   if(pointArray.length > 1)
   {
       polyline = L.polyline(latlngArray, {color: 'blue', opacity : '0.5'}).addTo(map);
@@ -257,6 +264,7 @@ function saveRoute()
   $("#map").css("cursor","move");
   map.dragging.enable();
   
+  loadDifficultes();
   $("#save").modal('show');
   $("#saveiti").on("click",function()
     {
@@ -269,7 +277,7 @@ function saveRoute()
                                    numero : $("#numero").val(),
                                    typechemin : $("#typechemin").val(),
                                    commentaire : $("#commentaire").val(),
-                                   difficulte : $("#difficulte").val()
+                                   difficulte : $("#difficulte option:selected").val()
                                 },
                             function(data, status){
                                 /*alert("Data: " + data + "\nStatus: " + status);*/
@@ -309,4 +317,30 @@ function getElevation(response)
         pointArray[i].elevation = response.elevationProfile[i].height;
         pointArray[i].distance = response.elevationProfile[i].distance;
       }
+}
+
+function loadDifficultes()
+{
+  $.ajax({
+       url : 'difficulte/getDifficultes',
+       type : 'GET',
+       dataType : 'json',
+       success : function(json, statut){
+           console.log(json);
+           for(var i = 0; i < json.length; i++)
+           {
+            var opt = $("<option>").attr("value",json[i].niveauDifficulte).text(json[i].label);
+            opt.appendTo("#difficulte");
+           }
+       },
+
+       error : function(resultat, statut, erreur){
+         
+       },
+
+       complete : function(resultat, statut){
+
+       }
+
+    });
 }

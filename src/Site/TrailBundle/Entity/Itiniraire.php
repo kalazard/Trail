@@ -3,6 +3,7 @@
 namespace Site\TrailBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 
 /**
  * Itiniraire
@@ -10,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="itiniraire", uniqueConstraints={@ORM\UniqueConstraint(name="id_UNIQUE", columns={"id"})}, indexes={@ORM\Index(name="fk_itiniraire_1_idx", columns={"itiniraire"}), @ORM\Index(name="fk_difficulte", columns={"difficulté"})})
  * @ORM\Entity
  */
-class Itiniraire
+class Itiniraire implements JsonSerializable
 {
     /**
      * @var integer
@@ -307,5 +308,19 @@ class Itiniraire
     public function getItiniraire()
     {
         return $this->itiniraire;
+    }
+
+    public function jsonSerialize() {
+        return array(
+            'id' => $this->id,
+            'date'=> $this->getDate(),
+            'longueur'=> $this->getLongueur(),
+            'denivele'=> $this->getDenivele(),
+            'nom' => $this->getNom(),
+            'numero'=> $this->getNumero(),
+            'typechemin'=> $this->getTypechemin(),
+            'commentaire'=> $this->getCommentaire(),
+            'difficulte'=> $this->getDifficulte()
+        );
     }
 }

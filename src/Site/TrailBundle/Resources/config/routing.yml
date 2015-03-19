@@ -28,7 +28,7 @@ detailEvenement:
     defaults: { _controller: SiteTrailBundle:Calendrier:afficherDetailEvenement }
 ics:
     path: /ics/{id}/{dateDebut}/{dateFin}
-    defaults: { _controller: SiteTrailBundle:Ics:index, id: default, dateDebut: '', dateFin: '' }   
+    defaults: { _controller: SiteTrailBundle:Ics:index, id: default, dateDebut: '', dateFin: '' }
 icsForm:
     path: /icsForm
     defaults: { _controller: SiteTrailBundle:Ics:icsForm }
@@ -59,3 +59,12 @@ site_trail_getUser:
 site_trail_updateUser:
     path:    /user/update
     defaults: { _controller:SiteTrailBundle:User:updateUser }
+site_trail_getDifficulteParcours:
+    path:    /difficulte/getDifficultes
+    defaults: { _controller:SiteTrailBundle:DifficulteParcours:getDifficultes }
+site_trail_searchitineraire:
+    path:     /itineraire_search/
+    defaults: { _controller: SiteTrailBundle:Itiniraire:search }
+site_trail_listitineraire:
+    path:     /itineraire_list/
+    defaults: { _controller: SiteTrailBundle:Itiniraire:list }
