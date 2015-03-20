@@ -44,9 +44,7 @@ class SSOAuthenticator implements SimplePreAuthenticatorInterface
         $username = $this->userProvider->getEmail();
 
         if (!$username) {
-            throw new AuthenticationException(
-                "L'utilisateur a un soucis"
-            );
+            return new \Symfony\Component\Security\Core\Authentication\Token\AnonymousToken($providerKey,"anon.");
         }
 
         $user = $this->userProvider->loadUserByUsername($username);

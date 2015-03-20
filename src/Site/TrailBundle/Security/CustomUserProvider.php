@@ -13,7 +13,7 @@ class CustomUserProvider implements UserProviderInterface
         // an API call, or do something entirely different
         
 
-        return "boby@zizi.com";
+        return null;
     }
 
     public function loadUserByUsername($username)

@@ -23,7 +23,7 @@ security:
         dev:
             pattern:  ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        secured_area:
+        secured_area:            
             pattern: ^/
             stateless: true
             simple_preauth:
