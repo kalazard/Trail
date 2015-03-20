@@ -17,7 +17,7 @@ use Site\TrailBundle\Entity\Participants;
 use Symfony\Component\HttpFoundation\Response;
 
 
-class CalendrierController extends Controller
+class EvenementController extends Controller
 {
     /*Retourne les évènements qui ont été créés par un utilisateur ainsi
      *que les évènements auxquels il participle
@@ -159,9 +159,9 @@ class CalendrierController extends Controller
             $idUser = 0;
         }
         
-        $listeEvenement = CalendrierController::getAllEventFrom($idUser, $this->getDoctrine()->getManager());
+        $listeEvenement = EvenementController::getAllEventFrom($idUser, $this->getDoctrine()->getManager());
 
-        $content = $this->get("templating")->render("SiteTrailBundle:Calendrier:calendrier.html.twig", array(
+        $content = $this->get("templating")->render("SiteTrailBundle:Event:calendrier.html.twig", array(
                                                     'listeEvenement' => $listeEvenement));
         
         return new Response($content);
@@ -190,11 +190,10 @@ class CalendrierController extends Controller
         $event = new Evenement;
         $formBuilder = $this->get('form.factory')->createBuilder('form', $event);
         $formBuilder
-                ->setAction($this->generateUrl('site_trail_calendrier_calendrierForm'))
-                ->add('titre', 'text', array('attr' => array('class' => 'form-control')))
+                ->setAction($this->generateUrl('site_trail_evenement_calendrierForm'))
+                ->add('titre', 'text')
                 ->add('description', 'text')
                 ->add('lienKid', 'url')
-                ->add('alias', 'text')
                 ->add('status', 'text')
                 ->add('date_debut', 'datetime', array(
                                     'data' => new \DateTime($dateCliquee)))
@@ -279,7 +278,7 @@ class CalendrierController extends Controller
 
             $request->getSession()->getFlashBag()->add('notice', 'Evènement ajouté');
 
-            return $this->redirect($this->generateUrl('site_trail_calendrier_calendrier'));
+            return $this->redirect($this->generateUrl('site_trail_evenement_calendrier'));
         }
         
         $manager=$this->getDoctrine()->getManager();
@@ -295,7 +294,7 @@ class CalendrierController extends Controller
         )->setParameter('createur', $idUser);
         $listeUser = $query->getResult();        
         
-        $formulaire = $this->get("templating")->render("SiteTrailBundle:Calendrier:ajouterEventForm.html.twig", array(
+        $formulaire = $this->get("templating")->render("SiteTrailBundle:Event:ajouterEventForm.html.twig", array(
                                                             'listeProgramme' => $listeProgramme,
                                                             'listeLieuRendezVous' => $listeLieuRendezVous,
                                                             'listeUser' => $listeUser,
@@ -336,7 +335,7 @@ class CalendrierController extends Controller
                 break;
         }
         
-        $resp = $this->get("templating")->render("SiteTrailBundle:Calendrier:detailEvenement.html.twig", array(
+        $resp = $this->get("templating")->render("SiteTrailBundle:Event:detailEvenement.html.twig", array(
                                                             'evenement' => $evenement,
                                                             'idClasse' => $idClasse
                                                         ));

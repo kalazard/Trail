@@ -50,7 +50,7 @@ class IcsController extends Controller
             $dateF = '';
         }        
         
-        $mesEvenements = CalendrierController::getAllEventFrom($idUser, $this->getDoctrine()->getManager(), $dateD, $dateF);
+        $mesEvenements = EvenementController::getAllEventFrom($idUser, $this->getDoctrine()->getManager(), $dateD, $dateF);
 
         $ics = new Ics($mesEvenements);        
         
@@ -60,7 +60,7 @@ class IcsController extends Controller
     
     public function icsFormAction()
     {        
-        $content = $this->get("templating")->render("SiteTrailBundle:Calendrier:icsForm.html.twig");
+        $content = $this->get("templating")->render("SiteTrailBundle:Event:icsForm.html.twig");
         
         return new Response($content);
     }

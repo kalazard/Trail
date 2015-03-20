@@ -1,8 +1,8 @@
 <div id="modalAjoutEventForm" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Ajouter un évênement</h4>
+            <div class="modal-header text-center">
+                <h4 class="modal-title">Ajouter un événement</h4>
             </div>
             <div class="modal-body">
                 {{ form_start(form, {'attr': {'id': 'ajouterEvent'}}) }}
@@ -13,20 +13,74 @@
                     <input type="hidden" name="createur" value="0"/>
                 {% endif %}
 
-                {{ form_row(form.titre, {'attr': {'maxlength': '45'}}) }}
-                {{ form_row(form.description, {'attr': {'maxlength': '45'}}) }} 
-                {{ form_row(form.lienKid, {'attr': {'maxlength': '45'}}) }}
-                {{ form_row(form.alias, {'attr': {'maxlength': '45'}}) }}
-                {{ form_row(form.status, {'attr': {'maxlength': '45'}}) }}
-                {{ form_row(form.date_debut) }}
-                {{ form_row(form.date_fin) }}
+                <!-- Champ titre -->
+                <div class="form-group">
+                    {{ form_label(form.titre, "Titre : ", {'label_attr': {'class': 'col-sm-3 control-label'}}) }}
+                    {{ form_errors(form.titre) }}
+                    <div class="col-sm-9">
+                      {{ form_widget(form.titre, {'attr': {'class': 'form-control', 'maxlength': '45'}}) }}
+                    </div>
+                </div>
+                
+                <!-- Champ description -->
+                <div class="form-group">
+                    {{ form_label(form.description, "Description : ", {'label_attr': {'class': 'col-sm-3 control-label'}}) }}
+                    {{ form_errors(form.description) }}
+                    <div class="col-sm-9">
+                      {{ form_widget(form.description, {'attr': {'class': 'form-control', 'maxlength': '45'}}) }}
+                    </div>
+                </div>
+                    
+                <!-- Champ lien kidoikoiaki -->
+                <div class="form-group">
+                    {{ form_label(form.lienKid, "Lien KID : ", {'label_attr': {'class': 'col-sm-3 control-label'}}) }}
+                    {{ form_errors(form.lienKid) }}
+                    <div class="col-sm-9">
+                      {{ form_widget(form.lienKid, {'attr': {'class': 'form-control', 'maxlength': '45'}}) }}
+                    </div>
+                </div>
+                    
+                <!-- Champ status -->
+                <div class="form-group">
+                    {{ form_label(form.status, "Status : ", {'label_attr': {'class': 'col-sm-3 control-label'}}) }}
+                    {{ form_errors(form.status) }}
+                    <div class="col-sm-9">
+                      {{ form_widget(form.status, {'attr': {'class': 'form-control', 'maxlength': '45'}}) }}
+                    </div>
+                </div>
+                
+                <!-- Champ date début -->
+                <div class="form-group">
+                    {{ form_label(form.date_debut, "Date début : ", {'label_attr': {'class': 'col-sm-3 control-label'}}) }}
+                    {{ form_errors(form.date_debut) }}
+                    <div class="col-sm-9">
+                      {{ form_widget(form.date_debut) }}
+                    </div>
+                </div>
+                    
+                <!-- Champ date fin -->
+                <div class="form-group">
+                    {{ form_label(form.date_fin, "Date fin : ", {'label_attr': {'class': 'col-sm-3 control-label'}}) }}
+                    {{ form_errors(form.date_fin) }}
+                    <div class="col-sm-9">
+                      {{ form_widget(form.date_fin) }}
+                    </div>
+                </div>
+                    
+                <!-- Champ participants -->
+                <div class="form-group">
+                    <label class='col-sm-3 control-label'>Participants :</label>
+                    <div class="col-sm-9">
+                        <select name="participants[]" multiple>
+                            {% for monUser in listeUser %}
+                                <option value='{{monUser.id}}'>{{monUser.userName}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
 
-                <label>Participants :</label>
-                <select name="participants[]" multiple>
-                    {% for monUser in listeUser %}
-                        <option value='{{monUser.id}}'>{{monUser.userName}}</option>
-                    {% endfor %}
-                </select><br/>
+                <!-- Champ type d'événement -->
+                
 
                 <select id="selectTypeEvent" name="type">
                     <option value="1">Entrainement</option>
@@ -100,6 +154,6 @@
         }
     });
 </script>
-{% javascripts '@SiteTrailBundle/Resources/js/calendar/*' %}
+{% javascripts '@SiteTrailBundle/Resources/js/event/*' %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
 {% endjavascripts %}

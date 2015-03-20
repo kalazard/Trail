@@ -1,28 +1,35 @@
     <div id="modalEventDetail" class="modal fade">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header text-center">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     <h4 class="modal-title">
                         {% if idClasse == 1 %} <!-- Entrainement -->
-                            <p>Entrainement - {{evenement.getEvenement().getTitre()}}</p>
+                            <p>Entrainement - {{evenement.getEvenement().getTitre()}}<br/>
+                                <label class='petitTexte'>test</label>
+                            </p>
                         {% elseif idClasse == 2 %} <!-- Entrainement personnel -->
-                            <p>Entrainement personnel - {{evenement.getEvenement().getTitre()}}</p>
+                            <p>Entrainement personnel - {{evenement.getEvenement().getTitre()}}<br/>
+                                <label class='petitTexte'>test</label>
+                            </p>
                         {% elseif idClasse == 3 %} <!-- Evenement divers -->
-                            <p>Evenement divers - {{evenement.getEvenement().getTitre()}}</p>
+                            <p>Evenement divers - {{evenement.getEvenement().getTitre()}}<br/>
+                                <label class='petitTexte'>Créé par {{evenement.getEvenement().getCreateur().getUserName()}} le {{evenement.getEvenement().getDateCreation()|date('d/m/Y', false)}}</label>
+                            </p>
                         {% elseif idClasse == 4 %} <!-- Sortie découverte -->
-                            <p>Sortie découverte - {{evenement.getEvenement().getTitre()}}</p>
+                            <p>Sortie découverte - {{evenement.getEvenement().getTitre()}}<br/>
+                                <label class='petitTexte'>test</label>
+                            </p>
                         {% else %}
                         {% endif %}
                     </h4>
                 </div>
                 <div class="modal-body">
-                    <p>Créé par {{evenement.getEvenement().getCreateur().getUserName()}} le {{evenement.getEvenement().getDateCreation()|date('d/m/Y', false)}}</p>
-                    <p>{{evenement.getEvenement().getDescription()}}</p>
+                    <p>Début : {{evenement.getEvenement().getDateDebut()|date('d/m/Y', false)}} à {{evenement.getEvenement().getDateDebut()|date('H:i')}}</p>
+                    <p>Fin : {{evenement.getEvenement().getDateFin()|date('d/m/Y', false)}} à {{evenement.getEvenement().getDateFin()|date('H:i')}}</p>
+                    <p>Description : {{evenement.getEvenement().getDescription()}}</p>
                     <p>Lien KID : <a target="_blank" href="{{evenement.getEvenement().getLienKid()}}">{{evenement.getEvenement().getLienKid()}}</a></p>
-                    <p>Alias : {{evenement.getEvenement().getAlias()}}</p>
-                    <p>Status : {{evenement.getEvenement().getStatus()}}</p>
-                    <p>Commence le {{evenement.getEvenement().getDateDebut()|date('d/m/Y', false)}} à {{evenement.getEvenement().getDateDebut()|date('H:i')}}</p>
-                    <p>Termine le {{evenement.getEvenement().getDateFin()|date('d/m/Y', false)}} à {{evenement.getEvenement().getDateFin()|date('H:i')}}</p>
+                    <p>Status : {{evenement.getEvenement().getStatus()}}</p> 
                     {% if idClasse == 1 %} <!-- Entrainement -->
                         <p>Programme : {{evenement.getProgramme().getLabel()}} ({{evenement.getProgramme().getDuree()|date('H:i')}})</p>
                         <p>Lieu de rendez-vous : {{evenement.getLieuRendezVous().getTitre()}} ({{evenement.getLieuRendezVous().getCoordonnees().getLongitude()}}X{{evenement.getLieuRendezVous().getCoordonnees().getLatitude()}}X{{evenement.getLieuRendezVous().getCoordonnees().getAltitude()}})</p>
@@ -33,9 +40,6 @@
                         <p>Lieu de rendez-vous : {{evenement.getLieuRendezVous().getTitre()}} ({{evenement.getLieuRendezVous().getCoordonnees().getLongitude()}}X{{evenement.getLieuRendezVous().getCoordonnees().getLatitude()}}X{{evenement.getLieuRendezVous().getCoordonnees().getAltitude()}})</p>
                     {% else %}
                     {% endif %}
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
                 </div>
             </div>
         </div>
