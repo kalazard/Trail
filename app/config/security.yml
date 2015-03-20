@@ -12,9 +12,9 @@ security:
         ROLE_SUPER_ADMIN: [ROLE_USER, ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
 
     # http://symfony.com/doc/current/book/security.html#where-do-users-come-from-user-providers
-    providers:
-        main:
-            entity:  {  class:  Site\TrailBundle\Entity\Utilisateur, property:  email  }
+    providers:        
+        custom_user_provider:
+            id: custom_user_provider
 
     # the main part of the security, where you can set up firewalls
     # for specific sections of your app
@@ -23,19 +23,11 @@ security:
         dev:
             pattern:  ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        login:
-            pattern:  ^/
-            anonymous:  true
-            provider:  main
-            form_login:
-                username_parameter: _email
-                check_path:  login_check
-                success_handler: site_trail.authentication_handler
-                failure_handler: site_trail.authentication_handler
-                require_previous_session: false
-            logout:
-                path:  logout
-                target:  /home
+        secured_area:
+            pattern: ^/
+            stateless: true
+            simple_preauth:
+                authenticator: sso_authenticator
             #anonymous: ~
             #http_basic:
             #    realm: "Secured Demo Area"

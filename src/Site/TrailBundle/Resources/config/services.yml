@@ -8,3 +8,8 @@ services:
         arguments:
             - @router
             - @session
+    custom_user_provider:
+        class: Site\TrailBundle\Security\CustomUserProvider
+    sso_authenticator:
+        class: Site\TrailBundle\Security\SSOAuthenticator
+        arguments: ["@custom_user_provider"]

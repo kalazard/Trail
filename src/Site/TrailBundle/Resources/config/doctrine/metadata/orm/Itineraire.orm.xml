@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Itineraire" table="itineraire">
+    <indexes>
+      <index name="fk_itineraire_difficulte_idx" columns="difficulte"/>
+      <index name="fk_itineraire_1_idx" columns="auteur"/>
+    </indexes>
+    <id name="id" type="integer" column="id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="trace" type="integer" column="trace" nullable="false"/>
+    <field name="datecreation" type="date" column="datecreation" nullable="false"/>
+    <field name="longueur" type="float" column="longueur" precision="10" scale="0" nullable="false"/>
+    <field name="deniveleplus" type="float" column="deniveleplus" precision="10" scale="0" nullable="false"/>
+    <field name="denivelemoins" type="float" column="denivelemoins" precision="10" scale="0" nullable="false"/>
+    <field name="description" type="string" column="description" length="255" nullable="false"/>
+    <field name="nom" type="string" column="nom" length="255" nullable="false"/>
+    <field name="numero" type="integer" column="numero" nullable="false"/>
+    <field name="typechemin" type="string" column="typechemin" length="255" nullable="false"/>
+    <field name="status" type="string" column="status" length="255" nullable="false"/>
+    <many-to-one field="auteur" target-entity="Membre">
+      <join-columns>
+        <join-column name="auteur" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="difficulte" target-entity="Difficulteparcours">
+      <join-columns>
+        <join-column name="difficulte" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-many field="evenement" target-entity="Evenement" mapped-by="itineraire"/>
+    <many-to-many field="membre" target-entity="Membre" mapped-by="itineraire"/>
+    <many-to-many field="commentaire" target-entity="Commentaire" mapped-by="itineraire"/>
+    <many-to-many field="membres" target-entity="Membre" mapped-by="itinerairefavoris"/>
+  </entity>
+</doctrine-mapping>

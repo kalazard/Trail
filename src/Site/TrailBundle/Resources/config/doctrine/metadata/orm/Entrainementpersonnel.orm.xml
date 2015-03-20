@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
-  <entity name="Gpx" table="gpx">
-    <unique-constraints>
-      <unique-constraint name="id_UNIQUE" columns="id"/>
-    </unique-constraints>
+  <entity name="Entrainementpersonnel" table="entrainementpersonnel">
+    <indexes>
+      <index name="fk_entrainementpersonnel_evenement_idx" columns="evenement"/>
+    </indexes>
     <id name="id" type="integer" column="id">
       <generator strategy="IDENTITY"/>
     </id>
-    <field name="path" type="string" column="path" length="45" nullable="false"/>
+    <many-to-one field="evenement" target-entity="Evenement">
+      <join-columns>
+        <join-column name="evenement" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
   </entity>
 </doctrine-mapping>
