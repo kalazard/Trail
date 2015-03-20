@@ -3,6 +3,7 @@
 namespace Site\TrailBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 
 /**
  * TypeLieu
@@ -10,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="type_lieu", uniqueConstraints={@ORM\UniqueConstraint(name="id_UNIQUE", columns={"id"})}, indexes={@ORM\Index(name="fk_type_lieu_1_idx", columns={"icone"})})
  * @ORM\Entity
  */
-class TypeLieu
+class TypeLieu implements JsonSerializable
 {
     /**
      * @var integer
@@ -94,5 +95,13 @@ class TypeLieu
     public function getIcone()
     {
         return $this->icone;
+    }
+
+    public function jsonSerialize() {
+        return array(
+            'id' => $this->id,
+            'label'=> $this->getLabel(),
+            'icone'=> $this->getIcone()
+        );
     }
 }

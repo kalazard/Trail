@@ -3,6 +3,7 @@
 namespace Site\TrailBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 
 /**
  * Icone
@@ -10,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="icone", uniqueConstraints={@ORM\UniqueConstraint(name="id_UNIQUE", columns={"id"})})
  * @ORM\Entity
  */
-class Icone
+class Icone implements JsonSerializable
 {
     /**
      * @var integer
@@ -61,5 +62,12 @@ class Icone
     public function getPath()
     {
         return $this->path;
+    }
+
+        public function jsonSerialize() {
+        return array(
+            'id' => $this->id,
+            'path'=> $this->getPath(),
+        );
     }
 }

@@ -4,7 +4,7 @@
 {% block title %}{{ parent() }} - Annuaire{% endblock %}
 
 {% block body %}
-    <table class="table-bordered table-striped table">
+    <table class="table-bordered table-striped table sieve">
         <thead>
             <tr>
                 <th>Id</th>
@@ -65,6 +65,7 @@
             var roleUpdate = $("#selectRoleEdit");   //Combobox de mise à jour du role d'un utilisateur
             var btn_update = $("#btn_update");   //bouton qui déclenche la mise à jour d'un utilisateur
             fill_table_user();
+            $("table.sieve").sieve();
 
             //Fonction permettant de remplir l'annuaire
             function fill_table_user()
