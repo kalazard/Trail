@@ -1,6 +1,6 @@
-var map, GPX, routeControl,pointArray,latlngArray, polyline, elevationScript, elevationChartScript;
+var map, GPX, routeControl,pointArray,latlngArray, polyline, elevationScript, elevationChartScript,denivelep,denivelen;
 var isCreateRoute = false;
-var elevationURL = "http://open.mapquestapi.com/elevation/v1/profile?key=Fmjtd%7Cluu8210720%2C7a%3Do5-94bahf&callback=getElevation&shapeFormat=raw";
+var elevationURL = "http://open.mapquestapi.com/elevation/v1/profile?key=Fmjtd%7Cluu8210720%2C7a%3Do5-94bahf&callback=getElevation&shapeFormat=raw&unit=m";
 var elevationChartURL = "http://open.mapquestapi.com/elevation/v1/chart?key=Fmjtd%7Cluu8210720%2C7a%3Do5-94bahf&inFormat=kvp&shapeFormat=raw&width=425&height=350";
 var graph = $("<img>").css("display","none");
 
@@ -78,13 +78,19 @@ function context(event)
 }
 
 //Coordonnées à partir du navigateur
-function getLocation() {
+function getLocation() 
+{
           if (navigator.geolocation) {
-              navigator.geolocation.getCurrentPosition(goToPosition);
+              navigator.geolocation.getCurrentPosition(goToPosition,showError);
           } else {
-              $("#map").html("Votre navigateur ne supporte pas la géolocalisation");
+              //$("#map").html("Votre navigateur ne supporte pas la géolocalisation");
+              goToPosition({"coords" : {"latitude" : 0,"longitude" : 0}});
           }
       }
+function showError(error) 
+{
+  goToPosition({"coords" : {"latitude" : 0,"longitude" : 0}});
+}
 
 //Place la map à la position récupérée dans getLocation
 function goToPosition(position) {
@@ -92,33 +98,10 @@ function goToPosition(position) {
   //Définition des attributs de la carte et positionnement
   $("#map").css("height", "70%").css("width", "100%").css("margin","auto");
   $("#controls").css("width", "20%").css("margin","auto");
-  map.setView([position.coords.latitude, position.coords.longitude], 13);
+  var zoom = 3;
+  if(position.coords.latitude !== 0 && position.coords.longitude !== 0){zoom = 13;}
+  map.setView([position.coords.latitude, position.coords.longitude], zoom);
 
-  //Mise en place de l'overlay (controles personnalisés)
-  /*var geocodeSearch = L.Control.extend({
-      options: {
-          position: 'bottomleft'
-      },
-
-      onAdd: function (map) {
-          var container = L.DomUtil.create('div', 'leaflet-control-command');
-          $(container).html("<div class='row'><div class='container'><div class='input-group col-lg-3' id='geocodeControl'> " +
-                              "<span class='input-group-addon' id='basic-addon1'>Recherche</span>" + 
-                              "<input type='text' class='form-control' placeholder='Ville' aria-describedby='basic-addon1' id='ville'>" + 
-                            "</div><div class='btn-group'role='group' aria-label='...' id='boutonGroup'>" + 
-                              "<button type='button' class='btn btn-default' id='okVille'>Se centrer</button></div></div></div>");
-          container.addEventListener('mouseover', function () 
-          {
-            map.dragging.disable();
-          });
-          container.addEventListener('mouseout', function () 
-          {
-              map.dragging.enable();
-          });
-          return container;
-      }
-  });
-  map.addControl(new geocodeSearch());*/
   L.Control.geocoder().addTo(map);
 
   //Ajout du fond de carte Landscape obtenu sur Thunderforest
@@ -153,11 +136,9 @@ function refreshZoom()
   $("#zoom").val(map.getZoom());
 }
 
-function parseGPX()
+function parseGPX(path)
 {
-  
-  var gpx = '/Trail2/Trail/web/test4.gpx'; // URL to your GPX file or the GPX itself
-  GPX = new L.GPX(gpx, {async: true,
+  GPX = new L.GPX(path, {async: true,
   marker_options: {
     startIconUrl: '/Trail2/Trail/web//pin-icon-start.png',
     endIconUrl: '/Trail2/Trail/web//pin-icon-end.png',
@@ -218,8 +199,6 @@ function drawRoute(event)
   pointArray.push(new Point(event.latlng.lat,event.latlng.lng));
   latlngArray.push(event.latlng);
   var marker = L.circleMarker([event.latlng.lat, event.latlng.lng]);
-  var draggable = new L.Draggable(marker);
-  draggable.enable();
   map.addLayer(marker);
   if(polyline !== undefined)
   {
@@ -253,7 +232,7 @@ function drawRoute(event)
       elevationChartScript.src = URLChart;
       $("body").append(elevationScript);
       graph.attr("src",elevationChartScript.src);
-      graph.css("display","block");
+      graph.css("display","block");      
   }
 }
 
@@ -280,7 +259,6 @@ function saveRoute()
                                    difficulte : $("#difficulte option:selected").val()
                                 },
                             function(data, status){
-                                /*alert("Data: " + data + "\nStatus: " + status);*/
                                 console.log(data);
                             });
       $("#save").modal('hide');
@@ -312,11 +290,22 @@ function savePoi(lat, lng, alt)
 
 function getElevation(response)
 {
+  console.log(response);
+  denivelen = 0;
+  denivelep = 0;
   for(var i = 0; i < pointArray.length; i++)
-      {
-        pointArray[i].elevation = response.elevationProfile[i].height;
-        pointArray[i].distance = response.elevationProfile[i].distance;
-      }
+  {
+    pointArray[i].elevation = response.elevationProfile[i].height;
+    pointArray[i].distance = response.elevationProfile[i].distance;
+  }
+  for(var i = 0; i < pointArray.length - 1; i++)
+  {
+    var diff = pointArray[i].elevation - pointArray[i + 1].elevation;
+    diff < 0 ? denivelep += diff * -1 : denivelen += diff * -1;
+  }
+  $("#longueur").val(pointArray[pointArray.length - 1].distance);
+  $("#denivp").val(denivelep);
+      $("#denivn").val(denivelen);
 }
 
 function loadDifficultes()

@@ -7,6 +7,7 @@ use Site\TrailBundle\Entity\DifficulteParcours;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 
 class ItiniraireController extends Controller 
 {
@@ -58,13 +59,44 @@ class ItiniraireController extends Controller
 					->getRepository('SiteTrailBundle:Itiniraire')
 				;
 
-				$listUsers['nom'] = $repository->findBy(array('nom' => $search));
+				$listItiniraire['nom'] = $repository->findBy(array('nom' => $search));
 				
-				$listUsers['typechemin'] = $repository->findBy(array('typechemin' => $search));
+				$listItiniraire['typechemin'] = $repository->findBy(array('typechemin' => $search));
 
 			}
 
-		$content = $this->get("templating")->render("SiteTrailBundle:Itiniraire:SearchItiniraire.html.twig",array("resultats" => $listUsers));
+		$content = $this->get("templating")->render("SiteTrailBundle:Itiniraire:SearchItiniraire.html.twig",array("resultats" => $listItiniraire));
+		return new Response($content);
+	}
+
+	public function getByIdAction(Request $request)
+	{
+		//$itineraire = $this->getUser();
+		
+		//$search = "";
+		/*if(isset($_POST['enter']))
+		{
+			$search = $_POST['enter'];
+		}*/
+		$search = $request->query->get("id");
+		
+		$listItiniraire = array();
+			//on utilise un findBy pour r�cup�rer la liste des utilisateurs on fonction des donn�es de l'utilisateur
+			if(!empty($search))
+			{
+				$repository = $this
+					->getDoctrine()
+					->getManager()
+					->getRepository('SiteTrailBundle:Itiniraire')
+				;
+
+				$listItiniraire['id'] = $repository->findBy(array('id' => $search));
+				
+				//$listItiniraire['typechemin'] = $repository->findBy(array('typechemin' => $search));
+
+			}
+
+		$content = $this->get("templating")->render("SiteTrailBundle:Itiniraire:ItiniraireDisplay.html.twig",array("resultats" => $listItiniraire));
 		return new Response($content);
 	}
 

@@ -68,3 +68,6 @@ site_trail_searchitineraire:
 site_trail_listitineraire:
     path:     /itineraire_list/
     defaults: { _controller: SiteTrailBundle:Itiniraire:list }
+site_trail_getByIditineraire:
+    path:     /itineraire_getById/{id}
+    defaults: { _controller: SiteTrailBundle:Itiniraire:getById }
