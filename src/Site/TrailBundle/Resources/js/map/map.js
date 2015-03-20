@@ -10,6 +10,19 @@ var Point = function(lat,lng)
     this.lng = lng;
 };
 
+var TypeLieu = function(id, label,icone)
+{
+    this.id = id;
+    this.label = label;
+    this.icone = icone;
+};
+
+var Icone = function(id, path)
+{
+    this.id = id;
+    this.path = path;
+};
+
 $(window).load(function()
 {
   var dispLat = $("<p>").attr("id","dispLat");
@@ -43,26 +56,77 @@ var bugIcone = L.icon({
 var marker = L.marker([event.latlng.lat, event.latlng.lng], {icon: eauIcone}).addTo(map);
 */
 
+function loadLieux()
+{
+  var res = [];
+
+  $.ajax({
+       url : "map/getAllLieux",
+       type : 'GET', 
+       async : false,
+       dataType : 'json',
+       success : function(json, statut){
+           res = json;
+         },
+
+       error : function(resultat, statut, erreur){
+       }
+    });
+  return res;
+}
+
+function loadPoi()
+{
+  var res;
+  $.ajax({
+       url : "map/getPoi/",
+       type : 'GET',
+       dataType : 'json',
+       success : function(json, statut){
+           console.log("jsonpoi : " + json);
+           res=json;
+       },
+
+       error : function(resultat, statut, erreur){
+         
+       },
+
+       complete : function(resultat, statut){
+
+       }
+
+    });
+
+    return res;
+}
+
 function context(event)
 {
     $(function()
     {
+        allLieux = loadLieux();
+        var idLieu;
+        var labelLieu;
+        /*var pathIcone;
+        var txtMarker;
+        var idIcone;*/
         var lat = event.latlng.lat;
         var lng = event.latlng.lng;
-        var poi = {"key": {name: "Ajouter POI", "items": {
-                    "eau": {"name": "Point d'eau", callback: function(){
-            var marker = L.marker([lat, lng]).addTo(map);
-            savePoi(lat, lng, 1);
-              }},
-                    "gite": {"name": "Gîte", callback: function(){
-            var marker = L.marker([lat, lng]).addTo(map);
-            savePoi(lat, lng, 1);
-              }},
-                    "bug": {"name": "Bug", callback: function(){
-            var marker = L.marker([lat, lng]).addTo(map);
-            savePoi(lat, lng, 1);
-              }}
-        }}};
+        var tab = {};
+        for(var i = 0; i < allLieux.length; i++)
+          {
+              idLieu = allLieux[i].id;
+              console.log("idlieu" + idLieu);
+              labelLieu = allLieux[i].label;
+              /*pathIcone = allLieux[i].icone.path;
+              idIcone = allLieux[i].icone.id;*/
+              tab[labelLieu] = {"name": labelLieu, callback: function(idLieu){
+                  txtMarker = savePoi(lat, lng, 1, idLieu);
+                  var marker = L.marker([lat,lng]).addTo(map).bindPopup("<b>" + txtMarker[0] + "</b><br>" + txtMarker[1]);
+              }};
+          }
+        var poi = {"key": {name: "Ajouter POI", "items":tab
+        }};
 
         $.contextMenu( 'destroy' );
         $.contextMenu({
@@ -289,11 +353,12 @@ function saveRoute()
   isCreateRoute = false;
 }
 
-function savePoi(lat, lng, alt)
+function savePoi(lat, lng, alt, idLieu)
 {
   $("#addpoi").modal('show');
   $("#savepoi").on("click",function()
     {
+      console.log("1");
       $.post("map/createPoi",
                             {
                                    latitude: lat,
@@ -301,13 +366,24 @@ function savePoi(lat, lng, alt)
                                    altitude : alt,
                                    titre : $("#titre").val(),
                                    description : $("#description").val(),
+                                   idlieu : idLieu
+                                   //labellieu : labelLieu,
+                                   //idicone : idIcone,
+                                   //pathicone : pathIcone
+                                   //existLieu : new TypeLieu(idLieu, labelLieu, new Icone(idIcone, pathIcone))
                                 },
                             function(data, status){
                                 /*alert("Data: " + data + "\nStatus: " + status);*/
                                 console.log(data);
                             });
+      console.log("3");
       $("#addpoi").modal('hide');
+      console.log("4");
     });
+  console.log("5");
+    var res = [$("#titre").val(), $("#description").val()];
+    console.log("6");
+    return res;
 }
 
 function getElevation(response)
@@ -322,7 +398,7 @@ function getElevation(response)
 function loadDifficultes()
 {
   $.ajax({
-       url : 'difficulte/getDifficultes',
+       url : "difficulte/getDifficultes",
        type : 'GET',
        dataType : 'json',
        success : function(json, statut){

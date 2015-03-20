@@ -65,33 +65,35 @@ class MapController extends Controller
 
     public function createPoiAction(Request $request)
     {
-      if ($request->isXMLHttpRequest()) 
-      {
+      /*if ($request->isXMLHttpRequest()) 
+      {*/
         $manager=$this->getDoctrine()->getManager();
-        $poi = new Poi();
-        $poi->setTitre($request->request->get("titre","MonPoi"));
-        $poi->setDescription($request->request->get("description","Ceci est mon poi"));
+
+        /*$repositoryIcon=$manager->getRepository("SiteTrailBundle:Icone");
+        $icone = $repositoryIcon->find($request->request->get("idicone",""));*/
+        $repositoryTypeLieu=$manager->getRepository("SiteTrailBundle:TypeLieu");
+        $typelieu = $repositoryTypeLieu->find($request->request->get("idlieu",""));
+
         $coord = new Coordonnees();
         $coord->setLongitude($request->request->get("longitude",1.0));
         $coord->setLatitude($request->request->get("latitude",1.0));
         $coord->setAltitude($request->request->get("altitude",1.0));
+
+        $poi = new Poi();
+        $poi->setTitre($request->request->get("titre","MonPoi"));
+        $poi->setDescription($request->request->get("description","Ceci est mon poi"));
         $poi->setCoordonnees($coord);
-        $icone = new Icone();
-        $icone->setPath("test");
-        $lieu = new TypeLieu();
-        $lieu->setLabel("eau");
-        $lieu->setIcone($icone);
-        $poi->setLieu($lieu);
-        $manager->persist($icone);
+        $poi->setLieu($typelieu);
+
         $manager->persist($coord);
-        $manager->persist($lieu);
+        $manager->persist($typelieu);
         $manager->persist($poi);
         $manager->flush();
         return new JsonResponse(array('data' => 'Poi Crée'),200);
       }
-
+/*
       return new Response('This is not ajax!', 400);
-    }
+    }*/
 }
 
 /* 
