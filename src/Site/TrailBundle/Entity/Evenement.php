@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Evenement
  *
- * @ORM\Table(name="evenement", uniqueConstraints={@ORM\UniqueConstraint(name="id_UNIQUE", columns={"id"})}, indexes={@ORM\Index(name="fk_evenement_1_idx", columns={"createur"})})
+ * @ORM\Table(name="evenement", indexes={@ORM\Index(name="fk_evenement_createur_idx", columns={"createur"})})
  * @ORM\Entity
  */
 class Evenement
@@ -24,69 +24,91 @@ class Evenement
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_creation", type="date", nullable=false)
+     * @ORM\Column(name="datecreation", type="date", nullable=false)
      */
-    private $dateCreation;
+    private $datecreation;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="datedebut", type="datetime", nullable=false)
+     */
+    private $datedebut;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="datefin", type="datetime", nullable=false)
+     */
+    private $datefin;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="description", type="string", length=45, nullable=false)
-     */
-    private $description;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="titre", type="string", length=45, nullable=false)
+     * @ORM\Column(name="titre", type="string", length=255, nullable=false)
      */
     private $titre;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="lien_kid", type="string", length=45, nullable=false)
+     * @ORM\Column(name="description", type="string", length=255, nullable=false)
      */
-    private $lienKid;
+    private $description;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="alias", type="string", length=45, nullable=false)
+     * @ORM\Column(name="status", type="string", length=255, nullable=false)
+     */
+    private $status;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="alias", type="string", length=255, nullable=false)
      */
     private $alias;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="status", type="string", length=45, nullable=false)
+     * @ORM\Column(name="lienkid", type="string", length=255, nullable=false)
      */
-    private $status;
+    private $lienkid;
 
     /**
-     * @var \DateTime
+     * @var \Membre
      *
-     * @ORM\Column(name="date_debut", type="datetime", nullable=false)
-     */
-    private $dateDebut;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="date_fin", type="datetime", nullable=false)
-     */
-    private $dateFin;
-
-    /**
-     * @var \Utilisateur
-     *
-     * @ORM\ManyToOne(targetEntity="Utilisateur")
+     * @ORM\ManyToOne(targetEntity="Membre")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="createur", referencedColumnName="id")
      * })
      */
     private $createur;
 
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\ManyToMany(targetEntity="Itineraire", inversedBy="evenement")
+     * @ORM\JoinTable(name="parcours",
+     *   joinColumns={
+     *     @ORM\JoinColumn(name="evenement", referencedColumnName="id")
+     *   },
+     *   inverseJoinColumns={
+     *     @ORM\JoinColumn(name="itineraire", referencedColumnName="id")
+     *   }
+     * )
+     */
+    private $itineraire;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->itineraire = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
 
     /**
@@ -100,49 +122,72 @@ class Evenement
     }
 
     /**
-     * Set dateCreation
+     * Set datecreation
      *
-     * @param \DateTime $dateCreation
+     * @param \DateTime $datecreation
      * @return Evenement
      */
-    public function setDateCreation($dateCreation)
+    public function setDatecreation($datecreation)
     {
-        $this->dateCreation = $dateCreation;
+        $this->datecreation = $datecreation;
 
         return $this;
     }
 
     /**
-     * Get dateCreation
+     * Get datecreation
      *
      * @return \DateTime 
      */
-    public function getDateCreation()
+    public function getDatecreation()
     {
-        return $this->dateCreation;
+        return $this->datecreation;
     }
 
     /**
-     * Set description
+     * Set datedebut
      *
-     * @param string $description
+     * @param \DateTime $datedebut
      * @return Evenement
      */
-    public function setDescription($description)
+    public function setDatedebut($datedebut)
     {
-        $this->description = $description;
+        $this->datedebut = $datedebut;
 
         return $this;
     }
 
     /**
-     * Get description
+     * Get datedebut
      *
-     * @return string 
+     * @return \DateTime 
      */
-    public function getDescription()
+    public function getDatedebut()
     {
-        return $this->description;
+        return $this->datedebut;
+    }
+
+    /**
+     * Set datefin
+     *
+     * @param \DateTime $datefin
+     * @return Evenement
+     */
+    public function setDatefin($datefin)
+    {
+        $this->datefin = $datefin;
+
+        return $this;
+    }
+
+    /**
+     * Get datefin
+     *
+     * @return \DateTime 
+     */
+    public function getDatefin()
+    {
+        return $this->datefin;
     }
 
     /**
@@ -169,49 +214,26 @@ class Evenement
     }
 
     /**
-     * Set lienKid
+     * Set description
      *
-     * @param string $lienKid
+     * @param string $description
      * @return Evenement
      */
-    public function setLienKid($lienKid)
+    public function setDescription($description)
     {
-        $this->lienKid = $lienKid;
+        $this->description = $description;
 
         return $this;
     }
 
     /**
-     * Get lienKid
+     * Get description
      *
      * @return string 
      */
-    public function getLienKid()
+    public function getDescription()
     {
-        return $this->lienKid;
-    }
-
-    /**
-     * Set alias
-     *
-     * @param string $alias
-     * @return Evenement
-     */
-    public function setAlias($alias)
-    {
-        $this->alias = $alias;
-
-        return $this;
-    }
-
-    /**
-     * Get alias
-     *
-     * @return string 
-     */
-    public function getAlias()
-    {
-        return $this->alias;
+        return $this->description;
     }
 
     /**
@@ -238,58 +260,58 @@ class Evenement
     }
 
     /**
-     * Set dateDebut
+     * Set alias
      *
-     * @param \DateTime $dateDebut
+     * @param string $alias
      * @return Evenement
      */
-    public function setDateDebut($dateDebut)
+    public function setAlias($alias)
     {
-        $this->dateDebut = $dateDebut;
+        $this->alias = $alias;
 
         return $this;
     }
 
     /**
-     * Get dateDebut
+     * Get alias
      *
-     * @return \DateTime 
+     * @return string 
      */
-    public function getDateDebut()
+    public function getAlias()
     {
-        return $this->dateDebut;
+        return $this->alias;
     }
 
     /**
-     * Set dateFin
+     * Set lienkid
      *
-     * @param \DateTime $dateFin
+     * @param string $lienkid
      * @return Evenement
      */
-    public function setDateFin($dateFin)
+    public function setLienkid($lienkid)
     {
-        $this->dateFin = $dateFin;
+        $this->lienkid = $lienkid;
 
         return $this;
     }
 
     /**
-     * Get dateFin
+     * Get lienkid
      *
-     * @return \DateTime 
+     * @return string 
      */
-    public function getDateFin()
+    public function getLienkid()
     {
-        return $this->dateFin;
+        return $this->lienkid;
     }
 
     /**
      * Set createur
      *
-     * @param \Site\TrailBundle\Entity\Utilisateur $createur
+     * @param \Site\TrailBundle\Entity\Membre $createur
      * @return Evenement
      */
-    public function setCreateur(\Site\TrailBundle\Entity\Utilisateur $createur = null)
+    public function setCreateur(\Site\TrailBundle\Entity\Membre $createur = null)
     {
         $this->createur = $createur;
 
@@ -299,10 +321,43 @@ class Evenement
     /**
      * Get createur
      *
-     * @return \Site\TrailBundle\Entity\Utilisateur 
+     * @return \Site\TrailBundle\Entity\Membre 
      */
     public function getCreateur()
     {
         return $this->createur;
+    }
+
+    /**
+     * Add itineraire
+     *
+     * @param \Site\TrailBundle\Entity\Itineraire $itineraire
+     * @return Evenement
+     */
+    public function addItineraire(\Site\TrailBundle\Entity\Itineraire $itineraire)
+    {
+        $this->itineraire[] = $itineraire;
+
+        return $this;
+    }
+
+    /**
+     * Remove itineraire
+     *
+     * @param \Site\TrailBundle\Entity\Itineraire $itineraire
+     */
+    public function removeItineraire(\Site\TrailBundle\Entity\Itineraire $itineraire)
+    {
+        $this->itineraire->removeElement($itineraire);
+    }
+
+    /**
+     * Get itineraire
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getItineraire()
+    {
+        return $this->itineraire;
     }
 }

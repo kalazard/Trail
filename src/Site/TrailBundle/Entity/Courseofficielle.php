@@ -5,12 +5,12 @@ namespace Site\TrailBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * CourseOfficielle
+ * Courseofficielle
  *
- * @ORM\Table(name="course_officielle", uniqueConstraints={@ORM\UniqueConstraint(name="id_UNIQUE", columns={"id"})}, indexes={@ORM\Index(name="fk_course_officielle_1_idx", columns={"evenement"})})
+ * @ORM\Table(name="courseofficielle", indexes={@ORM\Index(name="fk_courseofficielle_evenement_idx", columns={"evenement"})})
  * @ORM\Entity
  */
-class CourseOfficielle
+class Courseofficielle
 {
     /**
      * @var integer
@@ -24,9 +24,9 @@ class CourseOfficielle
     /**
      * @var string
      *
-     * @ORM\Column(name="url_site", type="string", length=45, nullable=false)
+     * @ORM\Column(name="site_utl", type="string", length=255, nullable=false)
      */
-    private $urlSite;
+    private $siteUtl;
 
     /**
      * @var \Evenement
@@ -51,33 +51,33 @@ class CourseOfficielle
     }
 
     /**
-     * Set urlSite
+     * Set siteUtl
      *
-     * @param string $urlSite
-     * @return CourseOfficielle
+     * @param string $siteUtl
+     * @return Courseofficielle
      */
-    public function setUrlSite($urlSite)
+    public function setSiteUtl($siteUtl)
     {
-        $this->urlSite = $urlSite;
+        $this->siteUtl = $siteUtl;
 
         return $this;
     }
 
     /**
-     * Get urlSite
+     * Get siteUtl
      *
      * @return string 
      */
-    public function getUrlSite()
+    public function getSiteUtl()
     {
-        return $this->urlSite;
+        return $this->siteUtl;
     }
 
     /**
      * Set evenement
      *
      * @param \Site\TrailBundle\Entity\Evenement $evenement
-     * @return CourseOfficielle
+     * @return Courseofficielle
      */
     public function setEvenement(\Site\TrailBundle\Entity\Evenement $evenement = null)
     {

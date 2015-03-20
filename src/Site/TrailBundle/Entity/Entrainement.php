@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Entrainement
  *
- * @ORM\Table(name="entrainement", uniqueConstraints={@ORM\UniqueConstraint(name="id_UNIQUE", columns={"id"})}, indexes={@ORM\Index(name="fk_entrainement_1_idx", columns={"lieu_rendez_vous"}), @ORM\Index(name="fk_entrainement_2_idx", columns={"programme"}), @ORM\Index(name="fk_entrainement_3_idx", columns={"evenement"})})
+ * @ORM\Table(name="entrainement", indexes={@ORM\Index(name="fk_entrainement_programme_idx", columns={"programme"}), @ORM\Index(name="fk_entrainement_evenement_idx", columns={"evenement"}), @ORM\Index(name="fk_entrainement_rdv_idx", columns={"lieurendezvous"})})
  * @ORM\Entity
  */
 class Entrainement
@@ -20,16 +20,6 @@ class Entrainement
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
-
-    /**
-     * @var \LieuRendezVous
-     *
-     * @ORM\ManyToOne(targetEntity="LieuRendezVous")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="lieu_rendez_vous", referencedColumnName="id")
-     * })
-     */
-    private $lieuRendezVous;
 
     /**
      * @var \Programme
@@ -51,6 +41,16 @@ class Entrainement
      */
     private $evenement;
 
+    /**
+     * @var \Lieurendezvous
+     *
+     * @ORM\ManyToOne(targetEntity="Lieurendezvous")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="lieurendezvous", referencedColumnName="id")
+     * })
+     */
+    private $lieurendezvous;
+
 
 
     /**
@@ -61,29 +61,6 @@ class Entrainement
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set lieuRendezVous
-     *
-     * @param \Site\TrailBundle\Entity\LieuRendezVous $lieuRendezVous
-     * @return Entrainement
-     */
-    public function setLieuRendezVous(\Site\TrailBundle\Entity\LieuRendezVous $lieuRendezVous = null)
-    {
-        $this->lieuRendezVous = $lieuRendezVous;
-
-        return $this;
-    }
-
-    /**
-     * Get lieuRendezVous
-     *
-     * @return \Site\TrailBundle\Entity\LieuRendezVous 
-     */
-    public function getLieuRendezVous()
-    {
-        return $this->lieuRendezVous;
     }
 
     /**
@@ -130,5 +107,28 @@ class Entrainement
     public function getEvenement()
     {
         return $this->evenement;
+    }
+
+    /**
+     * Set lieurendezvous
+     *
+     * @param \Site\TrailBundle\Entity\Lieurendezvous $lieurendezvous
+     * @return Entrainement
+     */
+    public function setLieurendezvous(\Site\TrailBundle\Entity\Lieurendezvous $lieurendezvous = null)
+    {
+        $this->lieurendezvous = $lieurendezvous;
+
+        return $this;
+    }
+
+    /**
+     * Get lieurendezvous
+     *
+     * @return \Site\TrailBundle\Entity\Lieurendezvous 
+     */
+    public function getLieurendezvous()
+    {
+        return $this->lieurendezvous;
     }
 }

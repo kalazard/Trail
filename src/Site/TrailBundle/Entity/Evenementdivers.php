@@ -5,12 +5,12 @@ namespace Site\TrailBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * EntrainementPersonnel
+ * Evenementdivers
  *
- * @ORM\Table(name="entrainement_personnel", uniqueConstraints={@ORM\UniqueConstraint(name="id_UNIQUE", columns={"id"})}, indexes={@ORM\Index(name="fk_entrainement_personnel_1_idx", columns={"evenement"})})
+ * @ORM\Table(name="evenementdivers", indexes={@ORM\Index(name="fk_evenementdivers_evenement_idx", columns={"evenement"})})
  * @ORM\Entity
  */
-class EntrainementPersonnel
+class Evenementdivers
 {
     /**
      * @var integer
@@ -20,6 +20,13 @@ class EntrainementPersonnel
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="description", type="string", length=255, nullable=false)
+     */
+    private $description;
 
     /**
      * @var \Evenement
@@ -44,10 +51,33 @@ class EntrainementPersonnel
     }
 
     /**
+     * Set description
+     *
+     * @param string $description
+     * @return Evenementdivers
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string 
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
      * Set evenement
      *
      * @param \Site\TrailBundle\Entity\Evenement $evenement
-     * @return EntrainementPersonnel
+     * @return Evenementdivers
      */
     public function setEvenement(\Site\TrailBundle\Entity\Evenement $evenement = null)
     {

@@ -2,18 +2,15 @@
 
 namespace Site\TrailBundle\Entity;
 
-namespace Site\TrailBundle\Entity;
-use JsonSerializable;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\Role\RoleInterface;
 
 /**
  * Role
  *
- * @ORM\Table(name="role", uniqueConstraints={@ORM\UniqueConstraint(name="id_UNIQUE", columns={"id"})})
+ * @ORM\Table(name="role", uniqueConstraints={@ORM\UniqueConstraint(name="label_UNIQUE", columns={"label"})})
  * @ORM\Entity
  */
-class Role implements RoleInterface, JsonSerializable
+class Role
 {
     /**
      * @var integer
@@ -27,39 +24,17 @@ class Role implements RoleInterface, JsonSerializable
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="string", length=45, nullable=false)
+     * @ORM\Column(name="label", type="string", length=45, nullable=false)
      */
-    private $name;
+    private $label;
 
     /**
-     * @var string
+     * @var integer
      *
-     * @ORM\Column(name="niveau", type="string", length=45, nullable=false)
+     * @ORM\Column(name="niveau", type="integer", nullable=true)
      */
     private $niveau;
 
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     *
-     * @ORM\ManyToMany(targetEntity="MenuItem", inversedBy="role")
-     * @ORM\JoinTable(name="acces",
-     *   joinColumns={
-     *     @ORM\JoinColumn(name="role", referencedColumnName="id")
-     *   },
-     *   inverseJoinColumns={
-     *     @ORM\JoinColumn(name="menu_item", referencedColumnName="id")
-     *   }
-     * )
-     */
-    private $menuItem;
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->menuItem = new \Doctrine\Common\Collections\ArrayCollection();
-    }
 
 
     /**
@@ -73,32 +48,32 @@ class Role implements RoleInterface, JsonSerializable
     }
 
     /**
-     * Set name
+     * Set label
      *
-     * @param string $name
+     * @param string $label
      * @return Role
      */
-    public function setName($name)
+    public function setLabel($label)
     {
-        $this->name = $name;
+        $this->label = $label;
 
         return $this;
     }
 
     /**
-     * Get name
+     * Get label
      *
      * @return string 
      */
-    public function getName()
+    public function getLabel()
     {
-        return $this->name;
+        return $this->label;
     }
 
     /**
      * Set niveau
      *
-     * @param string $niveau
+     * @param integer $niveau
      * @return Role
      */
     public function setNiveau($niveau)
@@ -111,56 +86,10 @@ class Role implements RoleInterface, JsonSerializable
     /**
      * Get niveau
      *
-     * @return string 
+     * @return integer 
      */
     public function getNiveau()
     {
         return $this->niveau;
     }
-
-    /**
-     * Add menuItem
-     *
-     * @param \Site\TrailBundle\Entity\MenuItem $menuItem
-     * @return Role
-     */
-    public function addMenuItem(\Site\TrailBundle\Entity\MenuItem $menuItem)
-    {
-        $this->menuItem[] = $menuItem;
-
-        return $this;
-    }
-
-    /**
-     * Remove menuItem
-     *
-     * @param \Site\TrailBundle\Entity\MenuItem $menuItem
-     */
-    public function removeMenuItem(\Site\TrailBundle\Entity\MenuItem $menuItem)
-    {
-        $this->menuItem->removeElement($menuItem);
-    }
-
-    /**
-     * Get menuItem
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getMenuItem()
-    {
-        return $this->menuItem;
-    }
-    
-    public function getRole() {
-        return array("ROLE_".$this->getName());
-    }
-    
-    public function jsonSerialize()
-    {
-        return array(
-            'id' => $this->id,
-            'name'=> $this->getName(),
-        );
-    }
-    
 }

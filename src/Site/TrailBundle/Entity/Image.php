@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Image
  *
- * @ORM\Table(name="image", uniqueConstraints={@ORM\UniqueConstraint(name="id_UNIQUE", columns={"id"})}, indexes={@ORM\Index(name="fk_image_1_idx", columns={"auteur"}), @ORM\Index(name="fk_image_2_idx", columns={"categorie"})})
+ * @ORM\Table(name="image", indexes={@ORM\Index(name="fk_image_auteur_idx", columns={"auteur"}), @ORM\Index(name="fk_image_categorie_idx", columns={"categorie"})})
  * @ORM\Entity
  */
 class Image
@@ -24,21 +24,21 @@ class Image
     /**
      * @var string
      *
-     * @ORM\Column(name="titre", type="string", length=45, nullable=false)
+     * @ORM\Column(name="titre", type="string", length=255, nullable=false)
      */
     private $titre;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="description", type="string", length=45, nullable=false)
+     * @ORM\Column(name="description", type="string", length=255, nullable=false)
      */
     private $description;
 
     /**
-     * @var string
+     * @var float
      *
-     * @ORM\Column(name="taille", type="string", length=45, nullable=false)
+     * @ORM\Column(name="taille", type="float", precision=10, scale=0, nullable=false)
      */
     private $taille;
 
@@ -50,9 +50,16 @@ class Image
     private $poids;
 
     /**
-     * @var \Utilisateur
+     * @var string
      *
-     * @ORM\ManyToOne(targetEntity="Utilisateur")
+     * @ORM\Column(name="path", type="string", length=255, nullable=false)
+     */
+    private $path;
+
+    /**
+     * @var \Membre
+     *
+     * @ORM\ManyToOne(targetEntity="Membre")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="auteur", referencedColumnName="id")
      * })
@@ -130,7 +137,7 @@ class Image
     /**
      * Set taille
      *
-     * @param string $taille
+     * @param float $taille
      * @return Image
      */
     public function setTaille($taille)
@@ -143,7 +150,7 @@ class Image
     /**
      * Get taille
      *
-     * @return string 
+     * @return float 
      */
     public function getTaille()
     {
@@ -174,12 +181,35 @@ class Image
     }
 
     /**
-     * Set auteur
+     * Set path
      *
-     * @param \Site\TrailBundle\Entity\Utilisateur $auteur
+     * @param string $path
      * @return Image
      */
-    public function setAuteur(\Site\TrailBundle\Entity\Utilisateur $auteur = null)
+    public function setPath($path)
+    {
+        $this->path = $path;
+
+        return $this;
+    }
+
+    /**
+     * Get path
+     *
+     * @return string 
+     */
+    public function getPath()
+    {
+        return $this->path;
+    }
+
+    /**
+     * Set auteur
+     *
+     * @param \Site\TrailBundle\Entity\Membre $auteur
+     * @return Image
+     */
+    public function setAuteur(\Site\TrailBundle\Entity\Membre $auteur = null)
     {
         $this->auteur = $auteur;
 
@@ -189,7 +219,7 @@ class Image
     /**
      * Get auteur
      *
-     * @return \Site\TrailBundle\Entity\Utilisateur 
+     * @return \Site\TrailBundle\Entity\Membre 
      */
     public function getAuteur()
     {

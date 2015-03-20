@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Participation
  *
- * @ORM\Table(name="participation", uniqueConstraints={@ORM\UniqueConstraint(name="id_UNIQUE", columns={"id"})})
+ * @ORM\Table(name="participation")
  * @ORM\Entity
  */
 class Participation
@@ -24,21 +24,21 @@ class Participation
     /**
      * @var string
      *
-     * @ORM\Column(name="etat_inscription", type="string", length=45, nullable=true)
+     * @ORM\Column(name="etatinscription", type="string", length=45, nullable=false)
      */
-    private $etatInscription;
+    private $etatinscription;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="resulat", type="string", length=45, nullable=true)
+     * @ORM\Column(name="resultat", type="string", length=45, nullable=false)
      */
-    private $resulat;
+    private $resultat;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="divers", type="string", length=45, nullable=true)
+     * @ORM\Column(name="divers", type="string", length=45, nullable=false)
      */
     private $divers;
 
@@ -55,49 +55,49 @@ class Participation
     }
 
     /**
-     * Set etatInscription
+     * Set etatinscription
      *
-     * @param string $etatInscription
+     * @param string $etatinscription
      * @return Participation
      */
-    public function setEtatInscription($etatInscription)
+    public function setEtatinscription($etatinscription)
     {
-        $this->etatInscription = $etatInscription;
+        $this->etatinscription = $etatinscription;
 
         return $this;
     }
 
     /**
-     * Get etatInscription
+     * Get etatinscription
      *
      * @return string 
      */
-    public function getEtatInscription()
+    public function getEtatinscription()
     {
-        return $this->etatInscription;
+        return $this->etatinscription;
     }
 
     /**
-     * Set resulat
+     * Set resultat
      *
-     * @param string $resulat
+     * @param string $resultat
      * @return Participation
      */
-    public function setResulat($resulat)
+    public function setResultat($resultat)
     {
-        $this->resulat = $resulat;
+        $this->resultat = $resultat;
 
         return $this;
     }
 
     /**
-     * Get resulat
+     * Get resultat
      *
      * @return string 
      */
-    public function getResulat()
+    public function getResultat()
     {
-        return $this->resulat;
+        return $this->resultat;
     }
 
     /**

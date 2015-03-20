@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Participants
  *
- * @ORM\Table(name="participants", indexes={@ORM\Index(name="fk_participants_1_idx", columns={"evenement"}), @ORM\Index(name="fk_participants_3_idx", columns={"participation"}), @ORM\Index(name="IDX_716970928D93D649", columns={"user"})})
+ * @ORM\Table(name="participants", indexes={@ORM\Index(name="fk_participants_membre_idx", columns={"membre"}), @ORM\Index(name="fk_participants_evenement_idx", columns={"evenement"}), @ORM\Index(name="fk_participants_participation_idx", columns={"participation"})})
  * @ORM\Entity
  */
 class Participants
@@ -25,16 +25,16 @@ class Participants
     private $evenement;
 
     /**
-     * @var \Utilisateur
+     * @var \Membre
      *
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="NONE")
-     * @ORM\OneToOne(targetEntity="Utilisateur")
+     * @ORM\OneToOne(targetEntity="Membre")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="user", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="membre", referencedColumnName="id")
      * })
      */
-    private $user;
+    private $membre;
 
     /**
      * @var \Participation
@@ -72,26 +72,26 @@ class Participants
     }
 
     /**
-     * Set user
+     * Set membre
      *
-     * @param \Site\TrailBundle\Entity\Utilisateur $user
+     * @param \Site\TrailBundle\Entity\Membre $membre
      * @return Participants
      */
-    public function setUser(\Site\TrailBundle\Entity\Utilisateur $user)
+    public function setMembre(\Site\TrailBundle\Entity\Membre $membre)
     {
-        $this->user = $user;
+        $this->membre = $membre;
 
         return $this;
     }
 
     /**
-     * Get user
+     * Get membre
      *
-     * @return \Site\TrailBundle\Entity\Utilisateur 
+     * @return \Site\TrailBundle\Entity\Membre 
      */
-    public function getUser()
+    public function getMembre()
     {
-        return $this->user;
+        return $this->membre;
     }
 
     /**

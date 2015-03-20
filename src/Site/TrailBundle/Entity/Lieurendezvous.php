@@ -5,12 +5,12 @@ namespace Site\TrailBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * LieuRendezVous
+ * Lieurendezvous
  *
- * @ORM\Table(name="lieu_rendez_vous", uniqueConstraints={@ORM\UniqueConstraint(name="id_UNIQUE", columns={"id"})}, indexes={@ORM\Index(name="fk_lieu_rendez_vous_1_idx", columns={"coordonnees"})})
+ * @ORM\Table(name="lieurendezvous")
  * @ORM\Entity
  */
-class LieuRendezVous
+class Lieurendezvous
 {
     /**
      * @var integer
@@ -24,24 +24,21 @@ class LieuRendezVous
     /**
      * @var string
      *
-     * @ORM\Column(name="titre", type="string", length=45, nullable=false)
+     * @ORM\Column(name="titre", type="string", length=255, nullable=false)
      */
     private $titre;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="description", type="string", length=45, nullable=false)
+     * @ORM\Column(name="description", type="string", length=255, nullable=false)
      */
     private $description;
 
     /**
-     * @var \Coordonnees
+     * @var integer
      *
-     * @ORM\ManyToOne(targetEntity="Coordonnees")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="coordonnees", referencedColumnName="id")
-     * })
+     * @ORM\Column(name="coordonnees", type="integer", nullable=false)
      */
     private $coordonnees;
 
@@ -61,7 +58,7 @@ class LieuRendezVous
      * Set titre
      *
      * @param string $titre
-     * @return LieuRendezVous
+     * @return Lieurendezvous
      */
     public function setTitre($titre)
     {
@@ -84,7 +81,7 @@ class LieuRendezVous
      * Set description
      *
      * @param string $description
-     * @return LieuRendezVous
+     * @return Lieurendezvous
      */
     public function setDescription($description)
     {
@@ -106,10 +103,10 @@ class LieuRendezVous
     /**
      * Set coordonnees
      *
-     * @param \Site\TrailBundle\Entity\Coordonnees $coordonnees
-     * @return LieuRendezVous
+     * @param integer $coordonnees
+     * @return Lieurendezvous
      */
-    public function setCoordonnees(\Site\TrailBundle\Entity\Coordonnees $coordonnees = null)
+    public function setCoordonnees($coordonnees)
     {
         $this->coordonnees = $coordonnees;
 
@@ -119,7 +116,7 @@ class LieuRendezVous
     /**
      * Get coordonnees
      *
-     * @return \Site\TrailBundle\Entity\Coordonnees 
+     * @return integer 
      */
     public function getCoordonnees()
     {
