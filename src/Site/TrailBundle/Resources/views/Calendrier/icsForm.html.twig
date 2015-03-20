@@ -1,31 +1,28 @@
-{% extends "SiteTrailBundle::layout.html.twig" %}
-
-{% block body %}
-    <div class="popupIcs">
-        <p>Télécharger mon calendrier (.ics)</p>
-        <!--<input type='button' value='Télécharger' id='dlButton' />-->
-        <label>Date début : </label>
-        <input type="text" name="dateDebut" id="dateDebut" class="date"><br/>
-        <label>Date fin : </label>
-        <input type="text" name="dateFin" id="dateFin" class="date"><br/>
-        <div id="lienDl"></div><br/>
-        
-        <p>Lien de votre calendrier : <a href="{{ path('ics') }}/{{ app.user.getTokenics() }}">http://130.79.214.167/TrailCal/web/app_dev.php/ics/{{ app.user.getTokenics() }}</a></p>
-        <strong>Seule l'URL permet une mise à jour des évènements !</strong><br/>
-        <input type="button" value="Annuler" id="btnAnnuler"/>
+<div id="modalIcs" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Télécharger mon calendrier (.ics)</h4>
+            </div>
+            <div class="modal-body">
+                <!--<input type='button' value='Télécharger' id='dlButton' />-->
+                <label>Date début : </label>
+                <input type="text" name="dateDebut" id="dateDebut" class="date"><br/>
+                <label>Date fin : </label>
+                <input type="text" name="dateFin" id="dateFin" class="date"><br/>
+                <div id="lienDl"></div><br/>
+                <p>Lien de votre calendrier : <a href="{{ path('site_trail_calendrier_ics') }}/{{ app.user.getTokenics() }}">http://130.79.214.167/Trail/web/app_dev.php/ics/{{ app.user.getTokenics() }}</a></p>
+                <p class="text-warning"><small>Seule l'URL permet une mise à jour des évènements !</small></p>
+            </div>
+        </div>
     </div>
-    <script>
-        $( "body" ).on( "click", "#btnAnnuler", function()
-        {
-            $('.popupIcs').children().remove();
-            $('.popupIcs').remove();
-            $('#overlay').remove();
-        }); 
-        
+</div>
+    <script>        
         $( "body" ).on( "change", ".date", function()
         {
             $('#lienDl').children().remove();
-            $("#lienDl").append("<a id='lienDl' href='{{ path('ics') }}/default/" + $( "#dateDebut" ).val() + "/" +  $( "#dateFin" ).val() + "'>Télécharger</a>");   
+            $("#lienDl").append("<a id='lienDl' href='{{ path('site_trail_calendrier_ics') }}/default/" + $( "#dateDebut" ).val() + "/" +  $( "#dateFin" ).val() + "'>Télécharger</a>");   
         }); 
         
         $(function()
@@ -37,6 +34,5 @@
         $( ".date" ).datepicker( "option", "dateFormat", "yy-mm-dd" );
         $("#dateFin").datepicker('setDate', +7);
         
-        $("#lienDl").append("<a id='lienDl' href='{{ path('ics') }}/default/" + $( "#dateDebut" ).val() + "/" +  $( "#dateFin" ).val() + "'>Télécharger</a>");   
+        $("#lienDl").append("<a id='lienDl' href='{{ path('site_trail_calendrier_ics') }}/default/" + $( "#dateDebut" ).val() + "/" +  $( "#dateFin" ).val() + "'>Télécharger</a>");   
     </script>
-{% endblock %}

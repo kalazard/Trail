@@ -190,8 +190,8 @@ class CalendrierController extends Controller
         $event = new Evenement;
         $formBuilder = $this->get('form.factory')->createBuilder('form', $event);
         $formBuilder
-                ->setAction($this->generateUrl('calendrierForm'))
-                ->add('titre', 'text')
+                ->setAction($this->generateUrl('site_trail_calendrier_calendrierForm'))
+                ->add('titre', 'text', array('attr' => array('class' => 'form-control')))
                 ->add('description', 'text')
                 ->add('lienKid', 'url')
                 ->add('alias', 'text')
@@ -279,7 +279,7 @@ class CalendrierController extends Controller
 
             $request->getSession()->getFlashBag()->add('notice', 'Evènement ajouté');
 
-            return $this->redirect($this->generateUrl('calendrier'));
+            return $this->redirect($this->generateUrl('site_trail_calendrier_calendrier'));
         }
         
         $manager=$this->getDoctrine()->getManager();

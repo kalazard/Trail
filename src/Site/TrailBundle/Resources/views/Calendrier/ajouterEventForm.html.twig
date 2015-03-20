@@ -1,54 +1,66 @@
-{% extends "SiteTrailBundle::layout.html.twig" %}
+<div id="modalAjoutEventForm" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Ajouter un évênement</h4>
+            </div>
+            <div class="modal-body">
+                {{ form_start(form, {'attr': {'id': 'ajouterEvent'}}) }}
+                {{ form_errors(form) }}
+                {% if app.user.id is defined %} 
+                    <input type="hidden" name="createur" value="{{ app.user.id }}"/>
+                {% else %}
+                    <input type="hidden" name="createur" value="0"/>
+                {% endif %}
 
+                {{ form_row(form.titre, {'attr': {'maxlength': '45'}}) }}
+                {{ form_row(form.description, {'attr': {'maxlength': '45'}}) }} 
+                {{ form_row(form.lienKid, {'attr': {'maxlength': '45'}}) }}
+                {{ form_row(form.alias, {'attr': {'maxlength': '45'}}) }}
+                {{ form_row(form.status, {'attr': {'maxlength': '45'}}) }}
+                {{ form_row(form.date_debut) }}
+                {{ form_row(form.date_fin) }}
 
-{% block body %}
-    
-{{ form_start(form, {'attr': {'id': 'ajouterEvent'}}) }}
-    {{ form_errors(form) }}
-    {% if app.user.id is defined %} 
-        <input type="hidden" name="createur" value="{{ app.user.id }}"/>
-    {% else %}
-        <input type="hidden" name="createur" value="0"/>
-    {% endif %}
-    
-    {{ form_row(form.titre, {'attr': {'maxlength': '45'}}) }}
-    {{ form_row(form.description, {'attr': {'maxlength': '45'}}) }} 
-    {{ form_row(form.lienKid, {'attr': {'maxlength': '45'}}) }}
-    {{ form_row(form.alias, {'attr': {'maxlength': '45'}}) }}
-    {{ form_row(form.status, {'attr': {'maxlength': '45'}}) }}
-    {{ form_row(form.date_debut) }}
-    {{ form_row(form.date_fin) }}
-    
-    <label>Participants :</label>
-    <select name="participants[]" multiple>
-        {% for monUser in listeUser %}
-            <option value='{{monUser.id}}'>{{monUser.userName}}</option>
-        {% endfor %}
-    </select><br/>
-    
-    <select id="selectTypeEvent" name="type">
-        <option value="1">Entrainement</option>
-        <option value="2">Entrainement personnel</option>
-        <option value="3">Evenement divers</option>
-        <option value="4">Sortie découverte</option>
-    </select>
-    <div id="specificites">
-        <label>Programme</label>
-        <select name='programme'>
-        {% for monProgramme in listeProgramme %}
-            <option value='{{monProgramme.id}}'>{{monProgramme.label}} ({{monProgramme.duree|date('Y-m-d')}})</option>
-        {% endfor %}
-        </select><br/>
-        <label>Lieu de rendez-vous</label>
-        <select name='lieu'>
-        {% for monLieu in listeLieuRendezVous %}
-            <option value='{{monLieu.id}}'>{{monLieu.titre}}</option>
-        {% endfor %}
-        </select>
+                <label>Participants :</label>
+                <select name="participants[]" multiple>
+                    {% for monUser in listeUser %}
+                        <option value='{{monUser.id}}'>{{monUser.userName}}</option>
+                    {% endfor %}
+                </select><br/>
+
+                <select id="selectTypeEvent" name="type">
+                    <option value="1">Entrainement</option>
+                    <option value="2">Entrainement personnel</option>
+                    <option value="3">Evenement divers</option>
+                    <option value="4">Sortie découverte</option>
+                </select>
+                <div id="specificites">
+                    <label>Programme</label>
+                    <select name='programme'>
+                    {% for monProgramme in listeProgramme %}
+                        <option value='{{monProgramme.id}}'>{{monProgramme.label}} ({{monProgramme.duree|date('Y-m-d')}})</option>
+                    {% endfor %}
+                    </select><br/>
+                    <label>Lieu de rendez-vous</label>
+                    <select name='lieu'>
+                    {% for monLieu in listeLieuRendezVous %}
+                        <option value='{{monLieu.id}}'>{{monLieu.titre}}</option>
+                    {% endfor %}
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-primary" value="Ajouter" />
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+                </div>
+            {{ form_end(form) }}
+            </div>
+        </div>
     </div>
-    <input type="submit" value="Ajouter" />
-    <input type="button" value="Annuler" id="btnAnnuler"/>
-{{ form_end(form) }}
+</div>
+
+
+    
+
 
 <script>
     $( "body" ).on( "change", "#selectTypeEvent", function()
@@ -91,5 +103,3 @@
 {% javascripts '@SiteTrailBundle/Resources/js/calendar/*' %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
 {% endjavascripts %}
-
-{% endblock %}

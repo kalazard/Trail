@@ -74,3 +74,6 @@ site_trail_getPoi:
 site_trail_getAllLieux:
     path:     /map/getAllLieux/
     defaults: { _controller: SiteTrailBundle:TypeLieu:getAllLieux }
+site_trail_getByIditineraire:
+    path:     /itineraire_getById/{id}
+    defaults: { _controller: SiteTrailBundle:Itiniraire:getById }
