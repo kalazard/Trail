@@ -1,0 +1,27 @@
+Entrainementpersonnel:
+    type: entity
+    table: entrainementpersonnel
+    indexes:
+        fk_entrainementpersonnel_evenement_idx:
+            columns:
+                - evenement
+    id:
+        id:
+            type: integer
+            nullable: false
+            unsigned: false
+            comment: ''
+            id: true
+            generator:
+                strategy: IDENTITY
+    manyToOne:
+        evenement:
+            targetEntity: Evenement
+            cascade: {  }
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                evenement:
+                    referencedColumnName: id
+            orphanRemoval: false
+    lifecycleCallbacks: {  }

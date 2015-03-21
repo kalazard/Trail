@@ -41,21 +41,6 @@ class Commentaire
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\ManyToMany(targetEntity="Itineraire", inversedBy="commentaire")
-     * @ORM\JoinTable(name="commentaireitineraire",
-     *   joinColumns={
-     *     @ORM\JoinColumn(name="commentaire", referencedColumnName="id")
-     *   },
-     *   inverseJoinColumns={
-     *     @ORM\JoinColumn(name="itineraire", referencedColumnName="id")
-     *   }
-     * )
-     */
-    private $itineraire;
-
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     *
      * @ORM\ManyToMany(targetEntity="News", mappedBy="commentaire")
      */
     private $new;
@@ -65,7 +50,6 @@ class Commentaire
      */
     public function __construct()
     {
-        $this->itineraire = new \Doctrine\Common\Collections\ArrayCollection();
         $this->new = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
@@ -124,39 +108,6 @@ class Commentaire
     public function getAuteur()
     {
         return $this->auteur;
-    }
-
-    /**
-     * Add itineraire
-     *
-     * @param \Site\TrailBundle\Entity\Itineraire $itineraire
-     * @return Commentaire
-     */
-    public function addItineraire(\Site\TrailBundle\Entity\Itineraire $itineraire)
-    {
-        $this->itineraire[] = $itineraire;
-
-        return $this;
-    }
-
-    /**
-     * Remove itineraire
-     *
-     * @param \Site\TrailBundle\Entity\Itineraire $itineraire
-     */
-    public function removeItineraire(\Site\TrailBundle\Entity\Itineraire $itineraire)
-    {
-        $this->itineraire->removeElement($itineraire);
-    }
-
-    /**
-     * Get itineraire
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getItineraire()
-    {
-        return $this->itineraire;
     }
 
     /**

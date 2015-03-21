@@ -90,44 +90,6 @@ class Membre
      */
     private $avatar;
 
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     *
-     * @ORM\ManyToMany(targetEntity="Itineraire", inversedBy="membres")
-     * @ORM\JoinTable(name="favoris",
-     *   joinColumns={
-     *     @ORM\JoinColumn(name="membres", referencedColumnName="id")
-     *   },
-     *   inverseJoinColumns={
-     *     @ORM\JoinColumn(name="itinerairefavoris", referencedColumnName="id")
-     *   }
-     * )
-     */
-    private $itinerairefavoris;
-
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     *
-     * @ORM\ManyToMany(targetEntity="Itineraire", inversedBy="membre")
-     * @ORM\JoinTable(name="note",
-     *   joinColumns={
-     *     @ORM\JoinColumn(name="membre", referencedColumnName="id")
-     *   },
-     *   inverseJoinColumns={
-     *     @ORM\JoinColumn(name="itineraire", referencedColumnName="id")
-     *   }
-     * )
-     */
-    private $itineraire;
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->itinerairefavoris = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->itineraire = new \Doctrine\Common\Collections\ArrayCollection();
-    }
 
 
     /**
@@ -345,71 +307,5 @@ class Membre
     public function getAvatar()
     {
         return $this->avatar;
-    }
-
-    /**
-     * Add itinerairefavoris
-     *
-     * @param \Site\TrailBundle\Entity\Itineraire $itinerairefavoris
-     * @return Membre
-     */
-    public function addItinerairefavori(\Site\TrailBundle\Entity\Itineraire $itinerairefavoris)
-    {
-        $this->itinerairefavoris[] = $itinerairefavoris;
-
-        return $this;
-    }
-
-    /**
-     * Remove itinerairefavoris
-     *
-     * @param \Site\TrailBundle\Entity\Itineraire $itinerairefavoris
-     */
-    public function removeItinerairefavori(\Site\TrailBundle\Entity\Itineraire $itinerairefavoris)
-    {
-        $this->itinerairefavoris->removeElement($itinerairefavoris);
-    }
-
-    /**
-     * Get itinerairefavoris
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getItinerairefavoris()
-    {
-        return $this->itinerairefavoris;
-    }
-
-    /**
-     * Add itineraire
-     *
-     * @param \Site\TrailBundle\Entity\Itineraire $itineraire
-     * @return Membre
-     */
-    public function addItineraire(\Site\TrailBundle\Entity\Itineraire $itineraire)
-    {
-        $this->itineraire[] = $itineraire;
-
-        return $this;
-    }
-
-    /**
-     * Remove itineraire
-     *
-     * @param \Site\TrailBundle\Entity\Itineraire $itineraire
-     */
-    public function removeItineraire(\Site\TrailBundle\Entity\Itineraire $itineraire)
-    {
-        $this->itineraire->removeElement($itineraire);
-    }
-
-    /**
-     * Get itineraire
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getItineraire()
-    {
-        return $this->itineraire;
     }
 }

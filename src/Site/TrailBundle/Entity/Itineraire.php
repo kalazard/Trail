@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Itineraire
  *
- * @ORM\Table(name="itineraire", indexes={@ORM\Index(name="fk_itineraire_difficulte_idx", columns={"difficulte"}), @ORM\Index(name="fk_itineraire_1_idx", columns={"auteur"})})
+ * @ORM\Table(name="itineraire")
  * @ORM\Entity
  */
 class Itineraire
@@ -85,6 +85,13 @@ class Itineraire
     private $typechemin;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="difficulte", type="integer", nullable=false)
+     */
+    private $difficulte;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="status", type="string", length=255, nullable=false)
@@ -92,63 +99,12 @@ class Itineraire
     private $status;
 
     /**
-     * @var \Membre
+     * @var integer
      *
-     * @ORM\ManyToOne(targetEntity="Membre")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="auteur", referencedColumnName="id")
-     * })
+     * @ORM\Column(name="auteur", type="integer", nullable=false)
      */
     private $auteur;
 
-    /**
-     * @var \Difficulteparcours
-     *
-     * @ORM\ManyToOne(targetEntity="Difficulteparcours")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="difficulte", referencedColumnName="id")
-     * })
-     */
-    private $difficulte;
-
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     *
-     * @ORM\ManyToMany(targetEntity="Commentaire", mappedBy="itineraire")
-     */
-    private $commentaire;
-
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     *
-     * @ORM\ManyToMany(targetEntity="Membre", mappedBy="itinerairefavoris")
-     */
-    private $membres;
-
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     *
-     * @ORM\ManyToMany(targetEntity="Membre", mappedBy="itineraire")
-     */
-    private $membre;
-
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     *
-     * @ORM\ManyToMany(targetEntity="Evenement", mappedBy="itineraire")
-     */
-    private $evenement;
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->commentaire = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->membres = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->membre = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->evenement = new \Doctrine\Common\Collections\ArrayCollection();
-    }
 
 
     /**
@@ -369,6 +325,29 @@ class Itineraire
     }
 
     /**
+     * Set difficulte
+     *
+     * @param integer $difficulte
+     * @return Itineraire
+     */
+    public function setDifficulte($difficulte)
+    {
+        $this->difficulte = $difficulte;
+
+        return $this;
+    }
+
+    /**
+     * Get difficulte
+     *
+     * @return integer 
+     */
+    public function getDifficulte()
+    {
+        return $this->difficulte;
+    }
+
+    /**
      * Set status
      *
      * @param string $status
@@ -394,10 +373,10 @@ class Itineraire
     /**
      * Set auteur
      *
-     * @param \Site\TrailBundle\Entity\Membre $auteur
+     * @param integer $auteur
      * @return Itineraire
      */
-    public function setAuteur(\Site\TrailBundle\Entity\Membre $auteur = null)
+    public function setAuteur($auteur)
     {
         $this->auteur = $auteur;
 
@@ -407,142 +386,10 @@ class Itineraire
     /**
      * Get auteur
      *
-     * @return \Site\TrailBundle\Entity\Membre 
+     * @return integer 
      */
     public function getAuteur()
     {
         return $this->auteur;
-    }
-
-    /**
-     * Set difficulte
-     *
-     * @param \Site\TrailBundle\Entity\Difficulteparcours $difficulte
-     * @return Itineraire
-     */
-    public function setDifficulte(\Site\TrailBundle\Entity\Difficulteparcours $difficulte = null)
-    {
-        $this->difficulte = $difficulte;
-
-        return $this;
-    }
-
-    /**
-     * Get difficulte
-     *
-     * @return \Site\TrailBundle\Entity\Difficulteparcours 
-     */
-    public function getDifficulte()
-    {
-        return $this->difficulte;
-    }
-
-    /**
-     * Add commentaire
-     *
-     * @param \Site\TrailBundle\Entity\Commentaire $commentaire
-     * @return Itineraire
-     */
-    public function addCommentaire(\Site\TrailBundle\Entity\Commentaire $commentaire)
-    {
-        $this->commentaire[] = $commentaire;
-
-        return $this;
-    }
-
-    /**
-     * Remove commentaire
-     *
-     * @param \Site\TrailBundle\Entity\Commentaire $commentaire
-     */
-    public function removeCommentaire(\Site\TrailBundle\Entity\Commentaire $commentaire)
-    {
-        $this->commentaire->removeElement($commentaire);
-    }
-
-    /**
-     * Get commentaire
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getCommentaire()
-    {
-        return $this->commentaire;
-    }
-
-    /**
-     * Add membres
-     *
-     * @param \Site\TrailBundle\Entity\Membre $membres
-     * @return Itineraire
-     */
-    public function addMembre(\Site\TrailBundle\Entity\Membre $membres)
-    {
-        $this->membres[] = $membres;
-
-        return $this;
-    }
-
-    /**
-     * Remove membres
-     *
-     * @param \Site\TrailBundle\Entity\Membre $membres
-     */
-    public function removeMembre(\Site\TrailBundle\Entity\Membre $membres)
-    {
-        $this->membres->removeElement($membres);
-    }
-
-    /**
-     * Get membres
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getMembres()
-    {
-        return $this->membres;
-    }
-
-    /**
-     * Get membre
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getMembre()
-    {
-        return $this->membre;
-    }
-
-    /**
-     * Add evenement
-     *
-     * @param \Site\TrailBundle\Entity\Evenement $evenement
-     * @return Itineraire
-     */
-    public function addEvenement(\Site\TrailBundle\Entity\Evenement $evenement)
-    {
-        $this->evenement[] = $evenement;
-
-        return $this;
-    }
-
-    /**
-     * Remove evenement
-     *
-     * @param \Site\TrailBundle\Entity\Evenement $evenement
-     */
-    public function removeEvenement(\Site\TrailBundle\Entity\Evenement $evenement)
-    {
-        $this->evenement->removeElement($evenement);
-    }
-
-    /**
-     * Get evenement
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getEvenement()
-    {
-        return $this->evenement;
     }
 }

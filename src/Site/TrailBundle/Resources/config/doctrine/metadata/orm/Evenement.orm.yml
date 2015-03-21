@@ -1,0 +1,70 @@
+Evenement:
+    type: entity
+    table: evenement
+    indexes:
+        fk_evenement_createur_idx:
+            columns:
+                - createur
+    id:
+        id:
+            type: integer
+            nullable: false
+            unsigned: false
+            comment: ''
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        datecreation:
+            type: date
+            nullable: false
+            comment: ''
+        datedebut:
+            type: datetime
+            nullable: false
+            comment: ''
+        datefin:
+            type: datetime
+            nullable: false
+            comment: ''
+        titre:
+            type: string
+            nullable: false
+            length: 255
+            fixed: false
+            comment: ''
+        description:
+            type: string
+            nullable: false
+            length: 255
+            fixed: false
+            comment: ''
+        status:
+            type: string
+            nullable: false
+            length: 255
+            fixed: false
+            comment: ''
+        alias:
+            type: string
+            nullable: false
+            length: 255
+            fixed: false
+            comment: ''
+        lienkid:
+            type: string
+            nullable: false
+            length: 255
+            fixed: false
+            comment: ''
+    manyToOne:
+        createur:
+            targetEntity: Membre
+            cascade: {  }
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                createur:
+                    referencedColumnName: id
+            orphanRemoval: false
+    lifecycleCallbacks: {  }

@@ -87,28 +87,6 @@ class Evenement
      */
     private $createur;
 
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     *
-     * @ORM\ManyToMany(targetEntity="Itineraire", inversedBy="evenement")
-     * @ORM\JoinTable(name="parcours",
-     *   joinColumns={
-     *     @ORM\JoinColumn(name="evenement", referencedColumnName="id")
-     *   },
-     *   inverseJoinColumns={
-     *     @ORM\JoinColumn(name="itineraire", referencedColumnName="id")
-     *   }
-     * )
-     */
-    private $itineraire;
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->itineraire = new \Doctrine\Common\Collections\ArrayCollection();
-    }
 
 
     /**
@@ -326,38 +304,5 @@ class Evenement
     public function getCreateur()
     {
         return $this->createur;
-    }
-
-    /**
-     * Add itineraire
-     *
-     * @param \Site\TrailBundle\Entity\Itineraire $itineraire
-     * @return Evenement
-     */
-    public function addItineraire(\Site\TrailBundle\Entity\Itineraire $itineraire)
-    {
-        $this->itineraire[] = $itineraire;
-
-        return $this;
-    }
-
-    /**
-     * Remove itineraire
-     *
-     * @param \Site\TrailBundle\Entity\Itineraire $itineraire
-     */
-    public function removeItineraire(\Site\TrailBundle\Entity\Itineraire $itineraire)
-    {
-        $this->itineraire->removeElement($itineraire);
-    }
-
-    /**
-     * Get itineraire
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getItineraire()
-    {
-        return $this->itineraire;
     }
 }
