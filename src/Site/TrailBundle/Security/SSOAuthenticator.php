@@ -4,57 +4,55 @@ use Symfony\Component\Security\Core\Authentication\SimplePreAuthenticatorInterfa
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Authentication\Token\PreAuthenticatedToken;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
+use \Site\TrailBundle\Entity\Membre;
 class SSOAuthenticator implements SimplePreAuthenticatorInterface
 {
     protected $userProvider;
+    protected $em;
 
     public function __construct(CustomUserProvider $userProvider)
     {
         $this->userProvider = $userProvider;
+        
     }
 
     public function createToken(Request $request, $providerKey)
     {
-        // look for an apikey query parameter
-        $apiKey = $request->query->get('apikey');
-
-        // or if you want to use an "apikey" header, then do something like this:
-        // $apiKey = $request->headers->get('apikey');
-
-        if (!$apiKey) {
-            //throw new BadCredentialsException('No API key found');
-            $apiKey=null;
-            // or to just skip api key authentication
-            // return null;
-        }
-
-        return new PreAuthenticatedToken(
-            'anon.',
-            $apiKey,
-            $providerKey
-        );
+        
+        return new PreAuthenticatedToken("",null,$providerKey,array());
     }
 
     public function authenticateToken(TokenInterface $token, UserProviderInterface $userProvider, $providerKey)
     {
         
-        $username = $this->userProvider->getEmail();
-
-        if (!$username) {
+        //Récupère l'id de l'utilisateur dans le cookie
+        $userid = $this->userProvider->getCookieToken();
+        
+        //Si le cookie n'existe pas !
+        if (!$userid) {
             return new \Symfony\Component\Security\Core\Authentication\Token\AnonymousToken($providerKey,"anon.");
         }
-
-        $user = $this->userProvider->loadUserByUsername($username);
-
-        return new PreAuthenticatedToken(
-            $user,
+        
+        //On récupère l'utilisateur dans la base de données
+        $membre = new Membre();
+        $membre = $this->userProvider->loadUserByUsername($userid);
+        if($membre == null)
+        {
+            return new \Symfony\Component\Security\Core\Authentication\Token\AnonymousToken($providerKey,"anon.");
+        }
+        //IMPORTANT 
+        $token = new UsernamePasswordToken(
+            $membre,
             null,
             $providerKey,
-            $user->getRoles()
+            $membre->getRoles()
         );
+        
+        return $token;
     }
 
     public function supportsToken(TokenInterface $token, $providerKey)

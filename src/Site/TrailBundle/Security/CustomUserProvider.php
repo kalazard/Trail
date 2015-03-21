@@ -1,43 +1,69 @@
 <?php
+
 namespace Site\TrailBundle\Security;
+
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\User\User;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
+use \Site\TrailBundle\Entity\Membre;
 
-class CustomUserProvider implements UserProviderInterface
-{
-    public function getEmail()
+class CustomUserProvider implements UserProviderInterface {
+
+    protected $entityManager;
+
+
+    public function __construct(\Doctrine\ORM\EntityManager $em)
     {
-        // Look up the username based on the token in the database, via
-        // an API call, or do something entirely different
+        $this->entityManager = $em;
         
+        
+    }
+    
+    public function getCookieToken() {
+        //Permet de récupérer l'id de l'utilisateur dans le cookie !
+        
+        if(isset($_COOKIE["TrailAuthCookie"]))
+        {
+            return intval($_COOKIE["TrailAuthCookie"]);
+        }
+        else
+        {
+            return false;
+        }
 
-        return null;
+        
     }
 
-    public function loadUserByUsername($username)
-    {
-        return new User(
-            $username,
-            null,
-            // the roles for the user - you may choose to determine
-            // these dynamically somehow based on the user
-            array('ROLE_USER')
-        );
+    public function loadUserByUsername($userid) {
+        
+        // On récupère le membre dans la base de données si il existe
+        $membre = $this->entityManager->getRepository("SiteTrailBundle:Membre")->find($userid);
+        
+        return $membre;
+        
     }
 
-    public function refreshUser(UserInterface $user)
-    {
+    public function refreshUser(UserInterface $user) {
         // this is used for storing authentication in the session
         // but in this example, the token is sent in each request,
         // so authentication can be stateless. Throwing this exception
         // is proper to make things stateless
-        throw new UnsupportedUserException();
+        
+        if(isset($_COOKIE["TrailAuthCookie"]))
+        {
+            return $user;
+        }
+        else
+        {
+            throw new UnsupportedUserException();
+        }
+        
+        //throw new UnsupportedUserException();
     }
 
-    public function supportsClass($class)
-    {
-        return 'Symfony\Component\Security\Core\User\User' === $class;
+    public function supportsClass($class) {
+        return 'Site\TrailBundle\Entity\Membre' === $class;
     }
+
 }

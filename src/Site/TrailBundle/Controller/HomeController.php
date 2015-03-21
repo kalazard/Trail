@@ -15,8 +15,20 @@ class HomeController extends Controller
     //Affichage de la page d'accueil
     public function indexAction()
     {
-        $content = $this->get("templating")->render("SiteTrailBundle:Home:index.html.twig");       
+        $content = $this->get("templating")->render("SiteTrailBundle:Home:index.html.twig"); 
         return new Response($content);
     }   
+    
+    public function testAction()
+    {
+        if ($this->getUser())
+        {
+            return new Response($this->getUser()->getId());
+        }
+        else
+        {
+            return new Response("broken");
+        }
+    }
 }
 

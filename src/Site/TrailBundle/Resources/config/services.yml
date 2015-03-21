@@ -2,14 +2,9 @@ services:
 #    site_trail.example:
 #        class: Site\TrailBundle\Example
 #        arguments: [@service_id, "plain_value", %parameter%]
-    site_trail.authentication_handler:
-        class: Site\TrailBundle\WebServices\AuthenticationHandler
-        public: false
-        arguments:
-            - @router
-            - @session
     custom_user_provider:
         class: Site\TrailBundle\Security\CustomUserProvider
+        arguments: ["@doctrine.orm.entity_manager"]
     sso_authenticator:
         class: Site\TrailBundle\Security\SSOAuthenticator
         arguments: ["@custom_user_provider"]

@@ -3,14 +3,14 @@
 namespace Site\TrailBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-
+use JsonSerializable;
 /**
  * Membre
  *
  * @ORM\Table(name="membre", uniqueConstraints={@ORM\UniqueConstraint(name="email_UNIQUE", columns={"email"})}, indexes={@ORM\Index(name="fk_membre_role_idx", columns={"role"}), @ORM\Index(name="fk_membre_avatar_idx", columns={"avatar"})})
  * @ORM\Entity
  */
-class Membre
+class Membre implements \Symfony\Component\Security\Core\User\UserInterface, \Serializable
 {
     /**
      * @var integer
@@ -308,4 +308,56 @@ class Membre
     {
         return $this->avatar;
     }
+
+    public function eraseCredentials() {
+        
+    }
+
+    public function getPassword() {
+        
+    }
+
+    public function getRoles() {
+        return $this->role->getRole();
+    }
+
+    public function getSalt() {
+        
+    }
+
+    public function getUsername() {
+        return $this->email;
+    }
+
+    public function jsonSerialize() {
+        
+    }
+    //Ajouter ce qui est necessaire ici
+    public function serialize()
+    {
+        return serialize(array(
+            $this->id,
+            $this->email,
+            $this->role
+            
+            // see section on salt below
+            // $this->salt,
+        ));
+    }
+
+    /**
+     * @see \Serializable::unserialize()
+     */
+    //de meme
+    public function unserialize($serialized)
+    {
+        list (
+            $this->id,
+            $this->email,
+            $this->role
+            // see section on salt below
+            // $this->salt
+        ) = unserialize($serialized);
+    }
+
 }

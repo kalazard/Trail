@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Exception;
+use SoapClient;
 
 class UserController extends Controller {
 
@@ -337,7 +338,7 @@ class UserController extends Controller {
                         $response = new Response(json_encode($return));
                         $response->headers->set('Content-Type', 'application/json');
                         return $response;
-                    }                    
+                    }
                     //On récupère le role spécifié pour la mise à jour dans la base de données
                     $role = $repository->find($roleupdate);
                     if (is_null($role)) {
@@ -394,10 +395,10 @@ class UserController extends Controller {
 
 
                     //On set l'email
-                    $user->setEmail($email);                    
-                   
+                    $user->setEmail($email);
+
                     // On définit le rôle de l'utilisateur (récupéré dans la base de donnée)
-                    $user->setRoles($role);                    
+                    $user->setRoles($role);
 
                     //On déclenche l'enregistrement dans la base de données
                     $manager->flush();
@@ -417,6 +418,81 @@ class UserController extends Controller {
             //La requête n'es pas une requête ajax, on envoie une erreur
             throw new NotFoundHttpException('Impossible de trouver la page demandée');
         }
+    }
+
+    public function logInAction() {
+        $request = $this->getRequest();
+        //On regarde qu'il s'agit bien d'une requête ajax
+        if ($request->isXmlHttpRequest()) {
+            try {
+                //On récupère l'email
+                $email = $request->request->get('_email');
+                //On récupère son mot de passe
+                $password = $request->request->get('_password');
+                if ($email == "" || $password == "") {
+                    $return = array('success' => false, 'serverError' => false, 'message' => "Le nom d'utilisateur ou le mot de passe ne doivent pas être vide");
+                    $response = new Response(json_encode($return));
+                    $response->headers->set('Content-Type', 'application/json');
+                    return $response;
+                }
+                //Ensuite on essaye de se connecter avec le webservice
+                $clientSOAP = new SoapClient(null, array(
+                    'uri' => 'http://localhost/auth_serv/index.php',
+                    'location' => 'http://localhost/auth_serv/index.php',
+                    'trace' => 1,
+                    'exceptions' => 0
+                ));
+
+                //On appel la méthode du webservice qui permet de se connecter
+                $response = $clientSOAP->__call('logUserIn', array('username' => $email, 'password' => $password));
+                //L'utilisateur n'existe pas dans la base de données ou les identifiants sont incorrects
+                if ($response['connected'] == false) {
+                    $return = array('success' => false, 'serverError' => false, 'message' => "Les identifiants sont incorrects");
+                    $response = new Response(json_encode($return));
+                    $response->headers->set('Content-Type', 'application/json');
+                    return $response;
+                }
+                //Le webservice possède bien un compte d'utilisateur pour les informations saisies.
+                //Il faut donc vérifier si l'utilisateur existe dans la base de données de ce site
+                $manager = $this->getDoctrine()->getManager();
+
+                // On récupère le membre dans la base de données si il existe
+                $membre = $manager->getRepository("SiteTrailBundle:Membre")->find($response['userid']);
+
+                //Si l'utilisateur n'existe pas dans notre base de données
+                if (is_null($membre)) {
+                    $return = array('success' => false, 'serverError' => false, 'message' => "Les identifiants sont incorrects");
+                    $response = new Response(json_encode($return));
+                    $response->headers->set('Content-Type', 'application/json');
+                    return $response;
+                }
+
+                //L'utilisateur existe dans notre base de données et il est connecté, on créé le cookie d'authentufication
+                setcookie("TrailAuthCookie", "1", 0, '/');
+
+                $return = array('success' => true, 'serverError' => false);
+                $response = new Response(json_encode($return));
+                $response->headers->set('Content-Type', 'application/json');
+                return $response;
+            } catch (Exception $e) {
+                //Il y a une erreur côté serveur
+                $return = array('success' => false, 'serverError' => true, 'message' => $e->getMessage());
+                $response = new Response(json_encode($return));
+                $response->headers->set('Content-Type', 'application/json');
+                return $response;
+            }
+        } else {
+            //La requête n'es pas une requête ajax, on envoie une erreur
+            throw new NotFoundHttpException('Impossible de trouver la page demandée');
+        }
+    }
+
+    public function logOutAction() {
+        $this->get('security.token_storage')->setToken(null);
+        $this->get('request')->getSession()->invalidate();
+        $response = new Response("/");
+        $response->headers->clearCookie("TrailAuthCookie");
+        return $response;
     }
 
     //Affichage de la liste des membres

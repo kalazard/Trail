@@ -8,16 +8,16 @@
         %}
         <link rel="stylesheet" href="{{ asset_url }}" type="text/css" />
         {% endstylesheets %}
-         <!--<script src='http://fullcalendar.io/js/fullcalendar-2.1.1/lib/jquery.min.js'></script>-->
-       <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+        <!--<script src='http://fullcalendar.io/js/fullcalendar-2.1.1/lib/jquery.min.js'></script>-->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
         <!--<script src="../../src/Site/TrailBundle/Resources/js/menu.js"></script>-->
         <script src='http://fullcalendar.io/js/fullcalendar-2.1.1/lib/moment.min.js'></script>
         <script src="http://fullcalendar.io/js/fullcalendar-2.1.1/lib/jquery-ui.custom.min.js"></script>
 
-        
+
         <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
         <script src='http://fullcalendar.io/js/fullcalendar-2.1.1/fullcalendar.min.js'></script>
-         <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+        <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 
         <meta charset="utf-8">
         <title>{% block title %}Trail{% endblock %}</title>
@@ -45,7 +45,7 @@
                         <li>
                             <a href="{{path('site_trail_evenement')}}">Evenements</a>
                         </li>
-                        {% if app.user %}
+                        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                             {% if is_granted('ROLE_Administrateur') %}
                                 <li>
                                     <a href="{{path('site_trail_annuaire')}}">Annuaire</a>
@@ -66,8 +66,8 @@
                     <ul class="nav navbar-nav navbar-right">
 
                         <li class="dropdown">
-                            {% if app.user %}
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{app.user.username}} <span class="caret"></span></a>
+                            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{app.user.email}} <span class="caret"></span></a>
                                 {% else %}
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Mon espace personnel <span class="caret"></span></a>
                                 {% endif %}
@@ -82,8 +82,8 @@
                                                 </p>
                                             </div>
                                             <div class="col-lg-8">
-                                                {% if app.user %}
-                                                    <p class="text-left"><strong>{{app.user.username}}</strong></p>
+                                                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                                                    <p class="text-left"><strong>{{app.user.email}}</strong></p>
                                                     <p class="text-left small">Vous êtes connecté</p>
                                                     <p class="text-left">
                                                         <a href="#" class="btn btn-primary btn-block btn-sm">Mon compte</a>
@@ -93,7 +93,7 @@
                                                     <p class="text-left"><strong>Anonyme</strong></p>
                                                     <p class="text-left small">Vous n'êtes pas connecté</p>
                                                     <p class="text-left">
-                                                        <a href="#" class="btn btn-primary btn-block btn-sm" data-toggle="modal" data-target=".bs-modal-sm">Me connecter</a>
+                                                        <a href="#loginModal" class="btn btn-primary btn-block btn-sm" data-toggle="modal" data-target="#myModal">Me connecter</a>
                                                     </p>
                                                 {% endif %}                                        
                                             </div>
@@ -105,7 +105,7 @@
                                     <div class="navbar-login navbar-login-session">
                                         <div class="row">
                                             <div class="col-lg-12">
-                                                {% if app.user %}
+                                                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                                                     {%if is_granted('ROLE_Administrateur')%}
                                                         <p><a href="#" class="btn btn-primary btn-block" data-toggle="modal" data-target=".bs-modal-sm">Créer un utilisateur</a></p>
                                                     {%endif%}
@@ -146,273 +146,172 @@
 
         <!-- /#page-content-wrapper -->
 
-    </div>
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+                        <h4 class="modal-title custom_align" id="Heading">Bienvenue sur le Site du Trail</h4>
+                    </div>
+                    <form id="loginform">
+                        <div class="modal-body">
 
-    <div class="modal fade bs-modal-sm" id="myModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <br>
-                <div class="bs-example bs-example-tabs">
-                    <ul id="myTab" class="nav nav-tabs">
-
-                        {% if app.user %}
-                            {% if is_granted('ROLE_Administrateur') %}
-                                <li class="active"><a href="#signup" data-toggle="tab">Créer un utilisateur</a></li>
-                                {%endif%}
-                            {% else %}
-                            <li class="active"><a href="#signin" data-toggle="tab">Se connecter</a></li>
-                            <li class=""><a href="#signup" data-toggle="tab">S'inscrire</a></li>
-                            {% endif %}
-
-
-                    </ul>
-                </div>
-                <div class="modal-body">
-                    <div id="myTabContent" class="tab-content">
-                        {% if app.user %}
-                            {% if is_granted('ROLE_Administrateur') %}
-                                <div class="tab-pane fade in" id="signin">
-                                {%else%}
-                                    <div class="tab-pane active fade in" id="signin">
-                                    {%endif%}
-
-                                {%else%}
-                                    <div class="tab-pane active fade in" id="signin">       
-                                    {%endif%}
-
-
-                                    <form id="loginform" action="{{ path('login_check') }}" method="post" class="form-horizontal">
-                                        <fieldset>
-                                            <!-- Sign In Form -->
-                                            <!-- Text input-->
-                                            <div class="control-group">
-                                                <label class="control-label" for="_email">Email :</label>
-                                                <div class="controls">
-                                                    <input required="" id="userid" name="_email" type="text" class="form-control" placeholder="login" class="input-medium" required="">
-                                                </div>
-                                            </div>
-
-                                            <!-- Password input-->
-                                            <div class="control-group">
-                                                <label class="control-label" for="_password">Mot de passe :</label>
-                                                <div class="controls">
-                                                    <input required="" id="passwordinput" name="_password" class="form-control" type="password" placeholder="********" class="input-medium">
-                                                </div>
-                                            </div>
-
-                                            <!-- Button -->
-                                            <div class="control-group">
-                                                <label class="control-label" for="signin"></label>
-                                                <div class="controls">
-                                                    <button id="signin" name="signin" class="btn btn-success">Se connecter</button>
-                                                </div>
-                                            </div>
-
-                                        </fieldset>
-                                    </form>
-                                </div>
-                                {% if app.user %}
-                                    {% if is_granted('ROLE_Administrateur') %}
-                                        <div class="tab-pane fade in active" id="signup">
-                                        {%else%}
-                                            <div class="tab-pane fade" id="signup">
-                                            {%endif%}
-
-                                        {%else%}
-                                            <div class="tab-pane fade" id="signup">       
-                                            {%endif%}
-
-                                            <form id="signupform" class="form-horizontal">
-                                                <fieldset>
-                                                    <!-- Sign Up Form -->
-                                                    <!-- Text input-->
-
-                                                    <div class="control-group">
-                                                        <label class="control-label" for="Email">Email :</label>
-                                                        <div class="controls">
-                                                            <input id="Email" name="Email" class="form-control" type="email" placeholder="exemple@exemple.com" class="input-large" required="">
-                                                        </div>
-                                                    </div>
-
-
-
-                                                    <!-- Password input-->
-                                                    <div class="control-group">
-                                                        <label class="control-label" for="password">Mot de passe :</label>
-                                                        <div class="controls">
-                                                            <input id="password" name="password" class="form-control" type="password" placeholder="********" class="input-large" required="">
-
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Text input-->
-                                                    <div class="control-group">
-                                                        <label class="control-label" for="reenterpassword">Ressaisir le mot de passe :</label>
-                                                        <div class="controls">
-                                                            <input id="reenterpassword" class="form-control" name="reenterpassword" type="password" placeholder="********" class="input-large" required="">
-                                                        </div>
-                                                    </div>
-                                                    {% if app.user %}
-                                                        {% if is_granted('ROLE_Administrateur') %}
-                                                            <div class="control-group">
-                                                                <label class="control-label" for="selectRole">Selectionner un rôle :</label>
-                                                                <div class="controls">
-                                                                    <select id="selectRole" class="form-control" name="selectRole" class="input-large">
-                                                                    </select>
-                                                                </div>
-                                                            </div>               
-                                                        {% endif %}
-
-                                                    {% endif %}
-
-                                                    <br>
-
-
-                                                    <!-- Button -->
-                                                    <div class="control-group">
-                                                        <label class="control-label" for="confirmsignup"></label>
-                                                        <div class="controls">
-                                                            <button id="confirmsignup" name="confirmsignup" class="btn btn-success">S'inscrire</button>
-                                                        </div>
-                                                    </div>
-                                                </fieldset>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <center>
-                                        <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
-                                    </center>
-                                </div>
+                            <div class="form-group">
+                                <label>Email:</label>
+                                <input id="userid" class="form-control" type="text" placeholder="Email">
                             </div>
+                            <div class="form-group">
+                                <label>Mot de passe:</label>
+                                <input id="passwordinput" class="form-control " type="password" placeholder="Mot de passe">
+                            </div> 
+
                         </div>
-                    </div>    
-                    <script>
-                        $(document).ready(function () {
+                        <div class="modal-footer ">
+                            <button id="btn_login" type="submit" class="btn btn-warning btn-block"><span class="glyphicon glyphicon-ok-sign"></span> Se connecter</button>
+                        </div>
+                    </form> 
+                </div>
+                <!-- /.modal-content --> 
+            </div>
+            <!-- /.modal-dialog --> 
+        </div>
 
 
-                            $("#loginform").submit(function () {
-                                var email = $("#userid").val();
-                                var password = $("#passwordinput").val();
-                                $.ajax({
-                                    type: "POST",
-                                    url: "{{path('login_check')}}",
-                                    data: {_email: email, _password: password},
-                                    cache: false,
-                                    success: function (data) {
-                                        if (data.success)
-                                        {
-                                            location.reload();
-                                        }
-                                        else
-                                        {
-                                            $.notify(data.message, "error");
-                                        }
+        <script>
+            $(document).ready(function () {
 
-                                    }
-                                });
-                                return false;
-                            });
 
-                            //Inscription ou création d'un utilisateur
-                            $("#signupform").submit(function () {
-                                var email = $("#Email").val();
-                                var password = $("#password").val();
-                                var reenterpassword = $('#reenterpassword').val();
-                                var role = $("#selectRole").val();
-                                var data = {email: email, password: password};
-                                if (role != "")
-                                {
-                                    data = {email: email, password: password, role: role}
-                                }
-                                var error = false;
-                                if (email == "")
-                                {
-                                    $.notify("Le champs email ne doit pas être vide", "error");
-                                    error = true;
-                                }
-                                if (password == "")
-                                {
-                                    $.notify("Le champs mot de passe ne doit pas être vide", "error");
-                                    error = true;
-                                }
-                                if (password != reenterpassword)
-                                {
-                                    $.notify("Les mots de passe ne sont pas identiques", "error");
-                                    error = true;
-                                }
-                                if (error)
-                                {
-                                    return false;
-                                }
-                                $.ajax({
-                                    type: "POST",
-                                    url: "{{path('site_trail_createUser')}}",
-                                    data: data,
-                                    cache: false,
-                                    success: function (data) {
-                                        if (!data.serverError)
-                                        {
-                                            if (data.success)
-                                            {
-                                                $.notify(data.message, "success");
-                                            }
-                                            else
-                                            {
-                                                $.notify(data.message);
-                                            }
-
-                                        }
-                                        else
-                                        {
-                                            console.log(data.message);
-                                        }
-
-                                    }
-                                });
-                                return false;
-                            });
-
-                            //Chargement de la liste des rôles
-                            function load_combobox_roles(combobox)
+                $("#loginform").submit(function () {
+                    var email = $("#userid").val();
+                    var password = $("#passwordinput").val();
+                    $.ajax({
+                        type: "POST",
+                        url: "{{path('login_check')}}",
+                        data: {_email: email, _password: password},
+                        cache: false,
+                        success: function (data) {
+                            if (!data.serverError)
                             {
-                                $.ajax({
-                                    type: "POST",
-                                    url: "{{ path('site_trail_loadRoles') }}",
-                                    data: {},
-                                    cache: false,
-                                    success: function (data) {
-                                        if (!data.serverError)
-                                        {
-                                            if (data.success)
-                                            {
-                                                combobox.empty();
-                                                //On remplit la liste déroulante
-                                                $.each(data.roles, function (index, value) {
-                                                    combobox.append('<option value="' + value.id + '">' + value.name + '</option>');
-                                                });
-                                            }
-                                            else
-                                            {
-                                                combobox.empty();
-                                            }
-                                        }
-                                        else
-                                        {
-                                            console.log(data.message);
-                                        }
-                                    }
-                                });
+                                if (data.success)
+                                {
+                                    location.reload();
+                                    //console.log(data.test);
+                                }
+                                else
+                                {
+                                    
+                                    $.notify(data.message, "error");
+
+                                }
+                            }
+                            else
+                            {
+                                console.log(data.message);
                             }
 
-                            load_combobox_roles($("#selectRole"));
-                        });
-                    </script>
-                    {% javascripts '@SiteTrailBundle/Resources/js/*' '@SiteTrailBundle/Resources/js/user/*'
+                        }
+                    });
+                    return false;
+                });
+
+                //Inscription ou création d'un utilisateur
+                $("#signupform").submit(function () {
+                    var email = $("#Email").val();
+                    var password = $("#password").val();
+                    var reenterpassword = $('#reenterpassword').val();
+                    var role = $("#selectRole").val();
+                    var data = {email: email, password: password};
+                    if (role != "")
+                    {
+                        data = {email: email, password: password, role: role}
+                    }
+                    var error = false;
+                    if (email == "")
+                    {
+                        $.notify("Le champs email ne doit pas être vide", "error");
+                        error = true;
+                    }
+                    if (password == "")
+                    {
+                        $.notify("Le champs mot de passe ne doit pas être vide", "error");
+                        error = true;
+                    }
+                    if (password != reenterpassword)
+                    {
+                        $.notify("Les mots de passe ne sont pas identiques", "error");
+                        error = true;
+                    }
+                    if (error)
+                    {
+                        return false;
+                    }
+                    $.ajax({
+                        type: "POST",
+                        url: "{{path('site_trail_createUser')}}",
+                        data: data,
+                        cache: false,
+                        success: function (data) {
+                            if (!data.serverError)
+                            {
+                                if (data.success)
+                                {
+                                    $.notify(data.message, "success");
+                                }
+                                else
+                                {
+                                    $.notify(data.message);
+                                }
+
+                            }
+                            else
+                            {
+                                console.log(data.message);
+                            }
+
+                        }
+                    });
+                    return false;
+                });
+
+                //Chargement de la liste des rôles
+                function load_combobox_roles(combobox)
+                {
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ path('site_trail_loadRoles') }}",
+                        data: {},
+                        cache: false,
+                        success: function (data) {
+                            if (!data.serverError)
+                            {
+                                if (data.success)
+                                {
+                                    combobox.empty();
+                                    //On remplit la liste déroulante
+                                    $.each(data.roles, function (index, value) {
+                                        combobox.append('<option value="' + value.id + '">' + value.name + '</option>');
+                                    });
+                                }
+                                else
+                                {
+                                    combobox.empty();
+                                }
+                            }
+                            else
+                            {
+                                console.log(data.message);
+                            }
+                        }
+                    });
+                }
+
+                //load_combobox_roles($("#selectRole"));
+            });
+        </script>
+        {% javascripts '@SiteTrailBundle/Resources/js/*' '@SiteTrailBundle/Resources/js/user/*'
                    
-                    %}
-                    <script type="text/javascript" src="{{ asset_url }}"></script>
-                    {% endjavascripts %}
-                    </body>
-                    </html>
+        %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+        {% endjavascripts %}
+    </body>
+</html>

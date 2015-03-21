@@ -4,6 +4,9 @@ site_trail_homepage_empty:
 site_trail_homepage:
     path:     /home
     defaults: { _controller: SiteTrailBundle:Home:index }
+site_trail_test:
+    path:     /test
+    defaults: { _controller: SiteTrailBundle:Home:test }
 site_trail_map:
     path:     /map
     defaults: { _controller: SiteTrailBundle:Map:index }
@@ -14,9 +17,11 @@ site_trail_map_createPoi:
     path:     /map/createPoi
     defaults: { _controller: SiteTrailBundle:Map:createPoi }
 login_check:
-    pattern:   /login_check
+    path:   /login_check
+    defaults: { _controller:SiteTrailBundle:User:logIn }
 logout:
-    pattern:   /logout
+    path:   /logout
+    defaults: { _controller:SiteTrailBundle:User:logOut }
 site_trail_evenement:
     path: /calendrier
     defaults: { _controller: SiteTrailBundle:Evenement:index }
