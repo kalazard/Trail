@@ -490,8 +490,9 @@ class UserController extends Controller {
     public function logOutAction() {
         $this->get('security.token_storage')->setToken(null);
         $this->get('request')->getSession()->invalidate();
-        $response = new Response("/");
+        $response = new RedirectResponse($this->generateUrl('site_trail_homepage_empty'));
         $response->headers->clearCookie("TrailAuthCookie");
+        
         return $response;
     }
 

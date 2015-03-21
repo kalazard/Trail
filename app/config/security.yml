@@ -29,6 +29,9 @@ security:
             stateless: true
             simple_preauth:
                 authenticator: sso_authenticator
+            #logout:
+             #   path: /logout
+              #  target: /
             #anonymous: ~
             #http_basic:
             #    realm: "Secured Demo Area"
