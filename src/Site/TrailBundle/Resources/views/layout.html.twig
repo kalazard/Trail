@@ -42,25 +42,36 @@
                         <li>
                             <a href="{{path('site_trail_homepage_empty')}}">Accueil</a>
                         </li>
-                        <li>
-                            <a href="{{path('site_trail_evenement')}}">Evenements</a>
-                        </li>
-                        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                            {% if is_granted('ROLE_Administrateur') %}
+						{% if not is_granted('IS_AUTHENTICATED_FULLY') %}
+							<li>
+								<a href="#">Nouveautés</a>
+							</li>
+							<li>
+								<a href="#">Le club</a>
+							</li>
+							<li>
+								<a href="#">Le Trail</a>
+							</li>
+							<li>
+								<a href="#">Contact</a>
+							</li>
+						{% endif %}
+						{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+							<li>
+								<a href="{{path('site_trail_evenement')}}">Calendrier</a>
+							</li>
+							<li>
+								<a href="{{path('site_trail_map')}}">Carte</a>
+							</li>
+							<li>
+								<a href="#">Galerie</a>
+							</li>
+							{% if is_granted('ROLE_Administrateur') %}
                                 <li>
                                     <a href="{{path('site_trail_annuaire')}}">Annuaire</a>
                                 </li>
                             {% endif %}
-                        {% endif %}
-                        <li>
-                            <a href="#">Galerie</a>
-                        </li>
-                        <li>
-                            <a href="{{path('site_trail_map')}}">Carte</a>
-                        </li>
-                        <li>
-                            <a href="{{path('site_trail_listitineraire')}}">Itinéraires</a>
-                        </li>
+						{% endif %}
                     </ul>
 
                     <ul class="nav navbar-nav navbar-right">
@@ -69,7 +80,7 @@
                             {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{app.user.email}} <span class="caret"></span></a>
                                 {% else %}
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Mon espace personnel <span class="caret"></span></a>
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Connexion<span class="caret"></span></a>
                                 {% endif %}
 
                             <ul class="dropdown-menu" role="menu">
