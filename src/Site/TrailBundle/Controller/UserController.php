@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Exception;
 use SoapClient;
+use Site\TrailBundle\Security\CustomCrypto;
 
 class UserController extends Controller {
 
@@ -419,7 +420,8 @@ class UserController extends Controller {
             throw new NotFoundHttpException('Impossible de trouver la page demandée');
         }
     }
-
+    
+    //Permettra de connecter un utilisateur
     public function logInAction() {
         $request = $this->getRequest();
         //On regarde qu'il s'agit bien d'une requête ajax
@@ -437,17 +439,18 @@ class UserController extends Controller {
                 }
                 //Ensuite on essaye de se connecter avec le webservice
                 $clientSOAP = new SoapClient(null, array(
-                    'uri' => 'http://localhost/auth_serv/index.php',
-                    'location' => 'http://localhost/auth_serv/index.php',
+                    'uri' => $this->container->getParameter("auth_server_host"),
+                    'location' => $this->container->getParameter("auth_server_host"),
                     'trace' => 1,
                     'exceptions' => 0
                 ));
 
                 //On appel la méthode du webservice qui permet de se connecter
-                $response = $clientSOAP->__call('logUserIn', array('username' => $email, 'password' => $password));
+                $response = $clientSOAP->__call('logUserIn', array('username' => CustomCrypto::encrypt($email), 'password' => CustomCrypto::encrypt($password), 'server' => CustomCrypto::encrypt($_SERVER['SERVER_ADDR'])));
                 //L'utilisateur n'existe pas dans la base de données ou les identifiants sont incorrects
+                
                 if ($response['connected'] == false) {
-                    $return = array('success' => false, 'serverError' => false, 'message' => "Les identifiants sont incorrects");
+                    $return = array('success' => false, 'serverError' => false, 'message' => $response['message']);
                     $response = new Response(json_encode($return));
                     $response->headers->set('Content-Type', 'application/json');
                     return $response;
@@ -457,18 +460,19 @@ class UserController extends Controller {
                 $manager = $this->getDoctrine()->getManager();
 
                 // On récupère le membre dans la base de données si il existe
-                $membre = $manager->getRepository("SiteTrailBundle:Membre")->find($response['userid']);
+                $userid = CustomCrypto::decrypt($response['userid']);
+                $membre = $manager->getRepository("SiteTrailBundle:Membre")->find($userid);
 
                 //Si l'utilisateur n'existe pas dans notre base de données
                 if (is_null($membre)) {
-                    $return = array('success' => false, 'serverError' => false, 'message' => "Les identifiants sont incorrects");
+                    $return = array('success' => false, 'serverError' => false, 'message' => "Existe pas dans la bdd");
                     $response = new Response(json_encode($return));
                     $response->headers->set('Content-Type', 'application/json');
                     return $response;
                 }
 
                 //L'utilisateur existe dans notre base de données et il est connecté, on créé le cookie d'authentufication
-                setcookie("TrailAuthCookie", "1", 0, '/');
+                setcookie($this->container->getParameter("auth_cookie"), CustomCrypto::encrypt($membre->getId()), 0, '/');
 
                 $return = array('success' => true, 'serverError' => false);
                 $response = new Response(json_encode($return));
@@ -491,15 +495,14 @@ class UserController extends Controller {
         $this->get('security.token_storage')->setToken(null);
         $this->get('request')->getSession()->invalidate();
         $response = new RedirectResponse($this->generateUrl('site_trail_homepage_empty'));
-        $response->headers->clearCookie("TrailAuthCookie");
-        
+        $response->headers->clearCookie($this->container->getParameter("auth_cookie"));
+
         return $response;
     }
 
     //Affichage de la liste des membres
     public function annuaireAction() {
-        $content = $this->get("templating")->render("SiteTrailBundle:User:annuaire.html.twig");
-        return new Response($content);
+        
+        return new Response(CustomCrypto::encrypt("zizi"));
     }
-
 }

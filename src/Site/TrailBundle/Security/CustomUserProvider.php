@@ -21,11 +21,10 @@ class CustomUserProvider implements UserProviderInterface {
     }
     
     public function getCookieToken() {
-        //Permet de récupérer l'id de l'utilisateur dans le cookie !
-        
+        //Permet de récupérer l'id de l'utilisateur dans le cookie !        
         if(isset($_COOKIE["TrailAuthCookie"]))
         {
-            return intval($_COOKIE["TrailAuthCookie"]);
+            return intval(CustomCrypto::decrypt($_COOKIE["TrailAuthCookie"]));
         }
         else
         {

@@ -21,14 +21,7 @@ class HomeController extends Controller
     
     public function testAction()
     {
-        if ($this->getUser())
-        {
-            return new Response($this->getUser()->getId());
-        }
-        else
-        {
-            return new Response("broken");
-        }
+        return new Response();
     }
 }
 
