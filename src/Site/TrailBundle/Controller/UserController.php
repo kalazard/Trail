@@ -503,6 +503,6 @@ class UserController extends Controller {
     //Affichage de la liste des membres
     public function annuaireAction() {
         
-        return new Response(CustomCrypto::encrypt("zizi"));
+        return new Response($this->getUser()->getAvatar()->getPath());
     }
 }
