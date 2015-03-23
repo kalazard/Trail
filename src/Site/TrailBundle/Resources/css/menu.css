@@ -27,3 +27,24 @@
     background-position: center center;
     background-size: cover;
 }
+
+.trail
+{
+	margin-top: 10px;
+	padding: 10px;
+	color: #fff;
+	background-color: #F79B23;
+}
+
+footer
+{
+	margin-top: 20px;
+	padding: 10px;
+	color: #FFF;
+	background-color: #222;
+}
+
+.colored-title
+{
+	color: #F79B23;
+}
