@@ -5,13 +5,13 @@ namespace Site\TrailBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Site\TrailBundle\Entity\Evenement;
-use Site\TrailBundle\Entity\Utilisateur;
+use Site\TrailBundle\Entity\Membre;
 use Site\TrailBundle\Entity\Entrainement;
-use Site\TrailBundle\Entity\EntrainementPersonnel;
-use Site\TrailBundle\Entity\EvenementDivers;
-use Site\TrailBundle\Entity\SortieDecouverte;
+use Site\TrailBundle\Entity\Entrainementpersonnel;
+use Site\TrailBundle\Entity\Evenementdivers;
+use Site\TrailBundle\Entity\Sortiedecouverte;
 use Site\TrailBundle\Entity\Programme;
-use Site\TrailBundle\Entity\LieuRendezVous;
+use Site\TrailBundle\Entity\Lieurendezvous;
 use Site\TrailBundle\Entity\Participants;
 
 use Symfony\Component\HttpFoundation\Response;
@@ -44,7 +44,7 @@ class EvenementController extends Controller
         $req .= "FROM SiteTrailBundle:Participants sd, SiteTrailBundle:Evenement e ";
         $req .= "WHERE sd.evenement = e.id ";
         $req .= $bonusWhere;
-        $req .= "AND sd.user = ".$idUser;        
+        $req .= "AND sd.membre = ".$idUser;        
         $query = $em->createQuery($req);
         $listeIdEvenementParticipation = $query->getResult();
         
@@ -74,7 +74,7 @@ class EvenementController extends Controller
 
             //Selection des entrainementPersonnel auxquels on participe
             $req = "SELECT ep ";
-            $req .= "FROM SiteTrailBundle:EntrainementPersonnel ep, SiteTrailBundle:Evenement e ";
+            $req .= "FROM SiteTrailBundle:Entrainementpersonnel ep, SiteTrailBundle:Evenement e ";
             $req .= "WHERE ep.evenement = e.id ";
             $req .= $bonusWhere;
             $req .= "AND e.id IN (" . $idEvenementParticipation . ")";
@@ -83,7 +83,7 @@ class EvenementController extends Controller
 
             //Selection des evenementDivers auxquels on participe
             $req = "SELECT ed ";
-            $req .= "FROM SiteTrailBundle:EvenementDivers ed, SiteTrailBundle:Evenement e ";
+            $req .= "FROM SiteTrailBundle:Evenementdivers ed, SiteTrailBundle:Evenement e ";
             $req .= "WHERE ed.evenement = e.id ";
             $req .= $bonusWhere;
             $req .= "AND e.id IN (" . $idEvenementParticipation . ")";
@@ -93,7 +93,7 @@ class EvenementController extends Controller
 
             //Selection des sortieDecouverte auxquels on participe
             $req = "SELECT sd ";
-            $req .= "FROM SiteTrailBundle:SortieDecouverte sd, SiteTrailBundle:Evenement e ";
+            $req .= "FROM SiteTrailBundle:Sortiedecouverte sd, SiteTrailBundle:Evenement e ";
             $req .= "WHERE sd.evenement = e.id ";
             $req .= $bonusWhere;
             $req .= "AND e.id IN (" . $idEvenementParticipation . ")";
@@ -120,7 +120,7 @@ class EvenementController extends Controller
         
         //Selection des entrainementPersonnel
         $req = "SELECT ep ";
-        $req .= "FROM SiteTrailBundle:EntrainementPersonnel ep, SiteTrailBundle:Evenement e ";
+        $req .= "FROM SiteTrailBundle:Entrainementpersonnel ep, SiteTrailBundle:Evenement e ";
         $req .= "WHERE ep.evenement = e.id ";
         $req .= $bonusWhere;
         $req .= "AND e.createur = " . $idUser;
@@ -129,7 +129,7 @@ class EvenementController extends Controller
         
         //Selection des evenementDivers
         $req = "SELECT ed ";
-        $req .= "FROM SiteTrailBundle:EvenementDivers ed, SiteTrailBundle:Evenement e ";
+        $req .= "FROM SiteTrailBundle:Evenementdivers ed, SiteTrailBundle:Evenement e ";
         $req .= "WHERE ed.evenement = e.id ";
         $req .= $bonusWhere;
         $req .= "AND e.createur = " . $idUser;
@@ -138,7 +138,7 @@ class EvenementController extends Controller
         
         //Selection des sortieDecouverte
         $req = "SELECT sd ";
-        $req .= "FROM SiteTrailBundle:SortieDecouverte sd, SiteTrailBundle:Evenement e ";
+        $req .= "FROM SiteTrailBundle:Sortiedecouverte sd, SiteTrailBundle:Evenement e ";
         $req .= "WHERE sd.evenement = e.id ";
         $req .= $bonusWhere;
         $req .= "AND e.createur = " . $idUser;
@@ -156,7 +156,7 @@ class EvenementController extends Controller
         }
         else
         {
-            $idUser = 0;
+            $idUser = 1;
         }
         
         $listeEvenement = EvenementController::getAllEventFrom($idUser, $this->getDoctrine()->getManager());
@@ -209,7 +209,7 @@ class EvenementController extends Controller
             $idCreateur = htmlspecialchars($_POST['createur']);
             
             $manager=$this->getDoctrine()->getManager();
-            $repository=$manager->getRepository("SiteTrailBundle:Utilisateur");
+            $repository=$manager->getRepository("SiteTrailBundle:Membre");
             $event->setCreateur($repository->findOneById($idCreateur));
             $event->setDateCreation(new \DateTime("now"));
             
@@ -223,7 +223,7 @@ class EvenementController extends Controller
                     $repository=$manager->getRepository("SiteTrailBundle:Programme");
                     $idProgramme = htmlspecialchars($_POST['programme']);
                     $programme = $repository->findOneById($idProgramme);
-                    $repository=$manager->getRepository("SiteTrailBundle:LieuRendezVous");
+                    $repository=$manager->getRepository("SiteTrailBundle:Lieurendezvous");
                     $idLieu = htmlspecialchars($_POST['lieu']);
                     $lieu = $repository->findOneById($idLieu);
                     $entrainement = new Entrainement;
@@ -234,24 +234,24 @@ class EvenementController extends Controller
                     $manager->flush();
                     break;
                 case '2': //Entrainement personnel
-                    $entrainementPerso = new EntrainementPersonnel;
+                    $entrainementPerso = new Entrainementpersonnel;
                     $entrainementPerso->setEvenement($event);
                     $manager->persist($entrainementPerso);
                     $manager->flush();
                     break;
                 case '3': //Evenement divers
                     $label = htmlspecialchars($_POST['label']);
-                    $evenementDivers = new EvenementDivers;
+                    $evenementDivers = new Evenementdivers;
                     $evenementDivers->setLabel($label);
                     $evenementDivers->setEvenement($event);
                     $manager->persist($evenementDivers);
                     $manager->flush();
                     break;
                 case '4': //Sortie découverte
-                    $repository=$manager->getRepository("SiteTrailBundle:LieuRendezVous");
+                    $repository=$manager->getRepository("SiteTrailBundle:Lieurendezvous");
                     $idLieu = htmlspecialchars($_POST['lieu']);
                     $lieu = $repository->findOneById($idLieu);
-                    $sortieDecouverte = new SortieDecouverte;
+                    $sortieDecouverte = new Sortiedecouverte;
                     $sortieDecouverte->setLieuRendezVous($lieu);
                     $sortieDecouverte->setEvenement($event);
                     $manager->persist($sortieDecouverte);
@@ -265,7 +265,7 @@ class EvenementController extends Controller
             {
                 foreach($_REQUEST['participants'] as $monParticipant)
                 {
-                    $repository=$manager->getRepository("SiteTrailBundle:Utilisateur");
+                    $repository=$manager->getRepository("SiteTrailBundle:Membre");
                     $idParticipant = htmlspecialchars($monParticipant);
                     $userParticip = $repository->findOneById($idParticipant);
                     $participant = new Participants;
@@ -284,12 +284,12 @@ class EvenementController extends Controller
         $manager=$this->getDoctrine()->getManager();
         $repository=$manager->getRepository("SiteTrailBundle:Programme");        
         $listeProgramme = $repository->findAll();
-        $repository=$manager->getRepository("SiteTrailBundle:LieuRendezVous");        
+        $repository=$manager->getRepository("SiteTrailBundle:Lieurendezvous");        
         $listeLieuRendezVous = $repository->findAll();
        
         $query = $manager->createQuery(
             'SELECT u
-            FROM SiteTrailBundle:Utilisateur u
+            FROM SiteTrailBundle:Membre u
             WHERE u.id != :createur'
         )->setParameter('createur', $idUser);
         $listeUser = $query->getResult();        
@@ -318,17 +318,17 @@ class EvenementController extends Controller
                 break;
             case '2': //Entrainement personnel
                 $manager=$this->getDoctrine()->getManager();
-                $repository=$manager->getRepository("SiteTrailBundle:EntrainementPersonnel");        
+                $repository=$manager->getRepository("SiteTrailBundle:Entrainementpersonnel");        
                 $evenement = $repository->findOneById($idObj);
                 break;
             case '3': //Evenement divers
                 $manager=$this->getDoctrine()->getManager();
-                $repository=$manager->getRepository("SiteTrailBundle:EvenementDivers");        
+                $repository=$manager->getRepository("SiteTrailBundle:Evenementdivers");        
                 $evenement = $repository->findOneById($idObj);
                 break;
             case '4': //Sortie découverte
                 $manager=$this->getDoctrine()->getManager();
-                $repository=$manager->getRepository("SiteTrailBundle:SortieDecouverte");        
+                $repository=$manager->getRepository("SiteTrailBundle:Sortiedecouverte");        
                 $evenement = $repository->findOneById($idObj);
                 break;
             default:
