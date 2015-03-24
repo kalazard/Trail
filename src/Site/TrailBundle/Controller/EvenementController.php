@@ -212,6 +212,7 @@ class EvenementController extends Controller
             $repository=$manager->getRepository("SiteTrailBundle:Membre");
             $event->setCreateur($repository->findOneById($idCreateur));
             $event->setDateCreation(new \DateTime("now"));
+            $event->setAlias("alias");
             
             $manager = $this->getDoctrine()->getManager();
             $manager->persist($event);
@@ -278,7 +279,7 @@ class EvenementController extends Controller
 
             $request->getSession()->getFlashBag()->add('notice', 'Evènement ajouté');
 
-            return $this->redirect($this->generateUrl('site_trail_evenement_calendrier'));
+            return $this->redirect($this->generateUrl('site_trail_evenement'));
         }
         
         $manager=$this->getDoctrine()->getManager();
