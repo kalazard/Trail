@@ -427,9 +427,9 @@ class UserController extends Controller {
         //On regarde qu'il s'agit bien d'une requête ajax
         if ($request->isXmlHttpRequest()) {
             try {
-                if($this->isCsrfTokenValid('default', $request->get('token')))
+                if(!$this->isCsrfTokenValid('default', $request->get('_csrf_token')))
                 {
-                    throw new Exception("PUTAIN DE MERDE", 500);
+                    throw new Exception("CSRF TOKEN ATTAK MAGGLE", 500);
                 }
                 //On récupère l'email
                 $email = $request->request->get('_email');
