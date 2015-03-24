@@ -3,11 +3,12 @@
 {% block title %}{{ parent() }} - Accueil{% endblock %}
 
 {% block body %}
-    <h1>Mes événements</h1>
-    <div class='text-center'>
-        <input id="dlCal" type="button" class='btn btn-default center' value="Télécharger mon calendrier" />
-    </div><br/>
-    <div id="listeAction">
+	<div class="container">
+		<h1>Mes événements</h1>
+		<button id="dlCal" type="button" class='btn btn-warning center-block'>Télécharger mon calendrier</button>
+	</div>
+   
+    <div id="listeAction" class="btn btn-warning">
         <a id="lienAjoutEvent">Ajouter un événement</a>
     </div>
     <div id='calendar'></div>
