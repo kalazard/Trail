@@ -207,6 +207,16 @@
                     $('#grRdv').append('</div>');
                     $('#specificites').append('</div>');
                     break;
+                case '5': //Course officielle
+                    $('#specificites').append('<div class="form-group" id="grLabelRow">');
+                    $('#grLabelRow').append('<div class="row" id="grLabel">');
+                    $('#grLabel').append('<label class="col-sm-3 control-label">Site URL :</label>');
+                    $('#grLabel').append('<div class="col-sm-9" id="grLabInp">');
+                    $('#grLabInp').append('<input type="url" class="form-control" name="siteUrl" maxlength="45"/>');
+                    $('#grLabel').append('</div>');
+                    $('#grLabel').append('</div>');
+                    $('#specificites').append('</div>');
+                    break;
                 default:
             }
         });
