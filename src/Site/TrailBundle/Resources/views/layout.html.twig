@@ -25,18 +25,16 @@
     <body>
         <nav class="navbar navbar-default navbar-fixed-top">
             <div class="container-fluid">
-                <!-- Brand and toggle get grouped for better mobile display -->
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+				<div class="navbar-header">
+                    <img src="http://zupimages.net/up/15/13/90hd.png">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
                         <span class="sr-only">Toggle navigation</span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#">Trail</a>
                 </div>
-
-                <!-- Collect the nav links, forms, and other content for toggling -->
+				
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
                         <li>
@@ -136,8 +134,8 @@
                     </ul>
                     </li>
                     </ul>
-                </div><!-- /.navbar-collapse -->
-            </div><!-- /.container-fluid -->
+                </div>
+            </div>
         </nav>
 
         <div id="page-content-wrapper">
@@ -148,8 +146,6 @@
 			<p>ASCPA Strasbourg - 20 rue de la plaine de Bouchers - 67100 Strasbourg - 03.88.39.68.24 - ascpa@wanadoo.fr</p>
 			<p>© Copyright 2004-2015</p>
 		</footer>
-
-        <!-- /#page-content-wrapper -->
 
         <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
             <div class="modal-dialog modal-sm">
@@ -174,6 +170,7 @@
                         <div class="modal-footer ">
                             <button id="btn_login" type="submit" class="btn btn-warning btn-block"><span class="glyphicon glyphicon-ok-sign"></span> Se connecter</button>
                         </div>
+                        <input id="csfrtoken" type="hidden" name="_csrf_token" value="{{ csrf_token('default') }}">
                     </form> 
                 </div>
                 <!-- /.modal-content --> 
@@ -189,10 +186,11 @@
                 $("#loginform").submit(function () {
                     var email = $("#userid").val();
                     var password = $("#passwordinput").val();
+                    var token = $("#csfrtoken").val();
                     $.ajax({
                         type: "POST",
                         url: "{{path('login_check')}}",
-                        data: {_email: email, _password: password},
+                        data: {_email: email, _password: password, _csrf_token: token},
                         cache: false,
                         success: function (data) {
                             if (!data.serverError)

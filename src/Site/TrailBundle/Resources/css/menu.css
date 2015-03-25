@@ -28,12 +28,9 @@
     background-size: cover;
 }
 
-.trail
+body 
 {
-	margin-top: 10px;
-	padding: 10px;
-	color: #fff;
-	background-color: #F79B23;
+	margin-top: 50px;
 }
 
 footer
@@ -44,7 +41,92 @@ footer
 	background-color: #222;
 }
 
+a {
+	color: #F79B23;
+	text-decoration: none;
+	font-weight: bold;
+}
+
+a:hover
+{
+	color: #F79B23;
+	text-decoration: none;
+	font-weight: bold;
+}
+
 .colored-title
 {
 	color: #F79B23;
+}
+
+.navbar-default
+{
+	background-color: #F79B23;
+}
+
+.navbar-default .navbar-brand {
+    color: #fff;
+}
+.navbar-default .navbar-brand:hover,
+.navbar-default .navbar-brand:focus {
+    color: #fff;
+}
+
+.navbar-default .navbar-nav > li > a {
+    color: #fff;
+}
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus {
+    color: #fff;
+}
+.navbar-default .navbar-nav > .active > a, 
+.navbar-default .navbar-nav > .active > a:hover, 
+.navbar-default .navbar-nav > .active > a:focus {
+    color: #fff;
+    background-color: #F79B23;
+}
+.navbar-default .navbar-nav > .open > a, 
+.navbar-default .navbar-nav > .open > a:hover, 
+.navbar-default .navbar-nav > .open > a:focus {
+    color: #fff;
+    background-color: #F79B23;
+}
+
+.navbar-default .navbar-toggle,
+.navbar-default .navbar-toggle:hover,
+.navbar-default .navbar-toggle:focus
+{
+	color: #fff;
+    background-color: #F79B23;
+	border: none;
+}
+
+.news
+{
+	margin-top: 30px;
+}
+
+.news button
+{
+	margin-top: 20px;
+}
+
+.trail
+{
+	margin-top: 50px;
+	padding-bottom: 20px;
+	color: #fff;
+	background-color: #F79B23;
+}
+
+.trail a
+{
+	color: #000;
+	text-decoration: none;
+}
+
+.contact
+{
+	margin-top: 30px;
+	margin-bottom: 50px;
 }
