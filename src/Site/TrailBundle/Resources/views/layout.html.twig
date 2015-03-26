@@ -42,16 +42,16 @@
                         </li>
 						{% if not is_granted('IS_AUTHENTICATED_FULLY') %}
 							<li>
-								<a href="#">Nouveautés</a>
+								<a href="{{path('site_trail_news')}}">Nouveautés</a>
 							</li>
 							<li>
-								<a href="#">Le club</a>
+								<a href="{{path('site_trail_club')}}">Le club</a>
 							</li>
 							<li>
-								<a href="#">Le Trail</a>
+								<a href="{{path('site_trail_trail')}}">Le Trail</a>
 							</li>
 							<li>
-								<a href="#">Contact</a>
+								<a href="{{path('site_trail_contact')}}">Contact</a>
 							</li>
 						{% endif %}
 						{% if is_granted('IS_AUTHENTICATED_FULLY') %}
@@ -62,7 +62,7 @@
 								<a href="{{path('site_trail_map')}}">Carte</a>
 							</li>
 							<li>
-								<a href="#">Galerie</a>
+								<a href="{{path('site_trail_gallery')}}">Galerie</a>
 							</li>
 							{% if is_granted('ROLE_Administrateur') %}
                                 <li>
