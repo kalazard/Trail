@@ -24,9 +24,9 @@ class Courseofficielle
     /**
      * @var string
      *
-     * @ORM\Column(name="site_utl", type="string", length=255, nullable=false)
+     * @ORM\Column(name="site_url", type="string", length=255, nullable=false)
      */
-    private $siteUtl;
+    private $siteUrl;
 
     /**
      * @var \Evenement
@@ -56,9 +56,9 @@ class Courseofficielle
      * @param string $siteUtl
      * @return Courseofficielle
      */
-    public function setSiteUtl($siteUtl)
+    public function setSiteUrl($siteUrl)
     {
-        $this->siteUtl = $siteUtl;
+        $this->siteUrl = $siteUrl;
 
         return $this;
     }
@@ -68,7 +68,7 @@ class Courseofficielle
      *
      * @return string 
      */
-    public function getSiteUtl()
+    public function getSiteUrl()
     {
         return $this->siteUtl;
     }

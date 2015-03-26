@@ -8,7 +8,7 @@
         %}
         <link rel="stylesheet" href="{{ asset_url }}" type="text/css" />
         {% endstylesheets %}
-		
+
         <!--<script src='http://fullcalendar.io/js/fullcalendar-2.1.1/lib/jquery.min.js'></script>-->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
         <!--<script src="../../src/Site/TrailBundle/Resources/js/menu.js"></script>-->
@@ -18,23 +18,24 @@
         <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
         <script src='http://fullcalendar.io/js/fullcalendar-2.1.1/fullcalendar.min.js'></script>
         <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-
+        <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+        <script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
         <meta charset="utf-8">
         <title>{% block title %}Trail{% endblock %}</title>
     </head>
     <body>
         <nav class="navbar navbar-default navbar-fixed-top">
             <div class="container-fluid">
-				<div class="navbar-header">
+                <div class="navbar-header">
                     <img src="http://zupimages.net/up/15/13/7nnr.png">
-					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
                         <span class="sr-only">Toggle navigation</span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
                 </div>
-				
+
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
                         <li>
@@ -69,7 +70,7 @@
                                     <a href="{{path('site_trail_annuaire')}}">Annuaire</a>
                                 </li>
                             {% endif %}
-						{% endif %}
+                        {% endif %}
                     </ul>
 
                     <ul class="nav navbar-nav navbar-right">
@@ -88,9 +89,9 @@
 
                                                     {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                                                     <div class="img-size" style="background-image: url('{{app.user.avatar.path}}');"></div>
-                                                    {% else %}
-                                                        <span class="glyphicon glyphicon-user icon-size"></span>
-                                                    {% endif %}
+                                                {% else %}
+                                                    <span class="glyphicon glyphicon-user icon-size"></span>
+                                                {% endif %}
                                                 </p>
                                             </div>
                                             <div class="col-lg-8">
@@ -142,10 +143,10 @@
             {% block body %}
             {% endblock %}
         </div>
-		<footer class="text-center">
-			<p>ASCPA Strasbourg - 20 rue de la plaine de Bouchers - 67100 Strasbourg - 03.88.39.68.24 - ascpa@wanadoo.fr</p>
-			<p>© Copyright 2004-2015</p>
-		</footer>
+        <footer class="text-center">
+            <p>ASCPA Strasbourg - 20 rue de la plaine de Bouchers - 67100 Strasbourg - 03.88.39.68.24 - ascpa@wanadoo.fr</p>
+            <p>© Copyright 2004-2015</p>
+        </footer>
 
         <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
             <div class="modal-dialog modal-sm">

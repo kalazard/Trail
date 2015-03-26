@@ -3,7 +3,7 @@
 {% block title %}{{ parent() }} - Calendrier{% endblock %}
 
 {% block body %}
-	<div class="container">
+    <div class="container">
 		<div class="col-sm-6">
 			<h1>Calendrier</h1>
 		</div>
@@ -11,14 +11,12 @@
 			<button id="dlCal" type="button" class='btn btn-warning pull-right'>Télécharger mon calendrier</button>
 		</div>
 	</div>
-   
+	
     <div id="listeAction">
         <a id="lienAjoutEvent" class="btn btn-warning">Ajouter un événement</a>
     </div>
     <div id='calendar'></div>
-    
-    
-    
+	
 {% javascripts '@SiteTrailBundle/Resources/js/*' %}
     <script type="text/javascript" src="{{ asset_url }}"></script>
 {% endjavascripts %}
@@ -38,6 +36,8 @@
             eventAffiches.push(tabEvent);
         {% endfor %}
     {% endfor %}
+        
+        //console.dir(eventAffiches);
         
     function afficherDetail(idClasse, idObj)
     {        
@@ -90,7 +90,7 @@
                 {
                     $("#listeAction").css({
                         "display": "inline",
-                        "margin-top": jsEvent.pageY-175,                    
+                        "margin-top": jsEvent.pageY-150,                    
                         "margin-left": jsEvent.pageX
                     });
 

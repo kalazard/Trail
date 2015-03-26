@@ -12,6 +12,7 @@ use Site\TrailBundle\Entity\Programme;
 use Site\TrailBundle\Entity\Lieurendezvous;
 use Site\TrailBundle\Entity\Participants;
 use Site\TrailBundle\Entity\Courseofficielle;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 use Symfony\Component\HttpFoundation\Response;
 
@@ -97,10 +98,20 @@ class EvenementController extends Controller
             $req .= $bonusWhere;
             $req .= "AND e.id IN (" . $idEvenementParticipation . ")";
             $query = $em->createQuery($req);
-            $listeEvenementParticipation[] = $query->getResult();  
+            $listeEvenementParticipation[] = $query->getResult();
+            
+            //Selection des courseOfficielle auxquelles on participe
+            $req = "SELECT co ";
+            $req .= "FROM SiteTrailBundle:Courseofficielle co, SiteTrailBundle:Evenement e ";
+            $req .= "WHERE co.evenement = e.id ";
+            $req .= $bonusWhere;
+            $req .= "AND e.id IN (" . $idEvenementParticipation . ")";
+            $query = $em->createQuery($req);
+            $listeEvenementParticipation[] = $query->getResult();
         }
         else
         {
+            $listeEvenementParticipation[] = array();
             $listeEvenementParticipation[] = array();
             $listeEvenementParticipation[] = array();
             $listeEvenementParticipation[] = array();
@@ -144,6 +155,15 @@ class EvenementController extends Controller
         $query = $em->createQuery($req);
         $listeEvenement[] = array_merge($query->getResult(), $listeEvenementParticipation[3]);
         
+        //Selection des courseOfficielle
+        $req = "SELECT co ";
+        $req .= "FROM SiteTrailBundle:Courseofficielle co, SiteTrailBundle:Evenement e ";
+        $req .= "WHERE co.evenement = e.id ";
+        $req .= $bonusWhere;
+        $req .= "AND e.createur = " . $idUser;
+        $query = $em->createQuery($req);
+        $listeEvenement[] = array_merge($query->getResult(), $listeEvenementParticipation[4]);
+        
         return $listeEvenement;
     }
     
@@ -152,18 +172,16 @@ class EvenementController extends Controller
         if($this->getUser())
         {
             $idUser = $this->getUser()->getId();
+            $listeEvenement = EvenementController::getAllEventFrom($idUser, $this->getDoctrine()->getManager());
+            $content = $this->get("templating")->render("SiteTrailBundle:Event:calendrier.html.twig", array(
+                                                        'listeEvenement' => $listeEvenement));
+
+            return new Response($content);
         }
         else
         {
-            $idUser = 0;
-        }
-        
-        $listeEvenement = EvenementController::getAllEventFrom($idUser, $this->getDoctrine()->getManager());
-
-        $content = $this->get("templating")->render("SiteTrailBundle:Event:calendrier.html.twig", array(
-                                                    'listeEvenement' => $listeEvenement));
-        
-        return new Response($content);
+            throw new NotFoundHttpException('Impossible de trouver la page demandée');
+        } 
     }
     
     public function afficherFormAction(Request $request)
@@ -193,7 +211,7 @@ class EvenementController extends Controller
                 ->setAction($this->generateUrl('site_trail_evenement_calendrierForm'))
                 ->add('titre', 'text')
                 ->add('description', 'text')
-                ->add('lienKid', 'url')
+                ->add('lienKid', 'url', array('required' => false))
                 ->add('status', 'text')
                 ->add('date_debut', 'datetime', array(
                                     'data' => new \DateTime($dateCliquee)))
@@ -268,7 +286,7 @@ class EvenementController extends Controller
                     $repository=$manager->getRepository("SiteTrailBundle:Courseofficielle");
                     $siteUrl = $request->request->get('siteUrl', '');
                     $courseOfficielle = new Courseofficielle();
-                    $courseOfficielle->setSiteUtl($siteUrl);
+                    $courseOfficielle->setSiteUrl($siteUrl);
                     $courseOfficielle->setEvenement($event);
                     $manager->persist($courseOfficielle);
                     $manager->flush();
@@ -320,12 +338,13 @@ class EvenementController extends Controller
         return new Response($formulaire);
     }
     
-    public function afficherDetailEvenementAction()
+    public function afficherDetailEvenementAction(Request $request)
     {
         //$idClasse = htmlspecialchars($_REQUEST['idClasse']);
         $idClasse = $request->request->get('idClasse', '');
         //$idObj = htmlspecialchars($_REQUEST['idObj']);
         $idObj = $request->request->get('idObj', '');
+        
         
         switch ($idClasse)
         {
@@ -349,15 +368,21 @@ class EvenementController extends Controller
                 $repository=$manager->getRepository("SiteTrailBundle:Sortiedecouverte");        
                 $evenement = $repository->findOneById($idObj);
                 break;
+            case '5': //Course officielle
+                $manager=$this->getDoctrine()->getManager();
+                $repository=$manager->getRepository("SiteTrailBundle:Courseofficielle");        
+                $evenement = $repository->findOneById($idObj);
+                break;
             default:
                 break;
         }
+        
         
         $resp = $this->get("templating")->render("SiteTrailBundle:Event:detailEvenement.html.twig", array(
                                                             'evenement' => $evenement,
                                                             'idClasse' => $idClasse
                                                         ));
         
-        return new Response($resp);
+        return new Response("coucou");//$resp);
     }
 }

@@ -1,6 +1,8 @@
 site_trail_homepage_empty:
     path:     /
     defaults: { _controller: SiteTrailBundle:Home:index }
+    options:
+        expose: true
 site_trail_homepage:
     path:     /home
     defaults: { _controller: SiteTrailBundle:Home:index }
