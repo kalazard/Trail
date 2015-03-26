@@ -1,11 +1,15 @@
 {% extends "SiteTrailBundle::layout.html.twig" %}
 
-{% block title %}{{ parent() }} - Accueil{% endblock %}
+{% block title %}{{ parent() }} - Calendrier{% endblock %}
 
 {% block body %}
 	<div class="container">
-		<h1>Mes événements</h1>
-		<button id="dlCal" type="button" class='btn btn-warning center-block'>Télécharger mon calendrier</button>
+		<div class="col-sm-6">
+			<h1>Calendrier</h1>
+		</div>
+		<div class="col-sm-6">
+			<button id="dlCal" type="button" class='btn btn-warning pull-right'>Télécharger mon calendrier</button>
+		</div>
 	</div>
    
     <div id="listeAction" class="btn btn-warning">

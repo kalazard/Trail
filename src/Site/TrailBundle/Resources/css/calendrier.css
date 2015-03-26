@@ -4,6 +4,11 @@
     width: 900px;
 }
 
+#dlCal
+{
+	margin-top: 20px;
+}
+
 #listeAction
 {
     position: absolute;
@@ -49,4 +54,9 @@
 #lienAjoutEvent
 {
     cursor: pointer;
+}
+
+.container
+{
+	margin-bottom: 30px;
 }
