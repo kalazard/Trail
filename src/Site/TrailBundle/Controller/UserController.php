@@ -8,7 +8,7 @@
 
 namespace Site\TrailBundle\Controller;
 
-use Site\TrailBundle\Entity\Utilisateur;
+use Site\TrailBundle\Entity\Membre;
 use Site\TrailBundle\Entity\Role;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,6 +18,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Exception;
 use SoapClient;
 use Site\TrailBundle\Security\CustomCrypto;
+use DateTime;
 
 class UserController extends Controller {
 
@@ -36,28 +37,35 @@ class UserController extends Controller {
         //On regarde qu'il s'agit bien d'une requête AJAX
         if ($request->isXmlHttpRequest()) {
             try {
-                //On récupère la variable email qui servira aussi de nom d'utilisateur
-                $email = $request->request->get('email');
-                //On récupère le paramètre mot de passe de la requête
-                $password = $request->request->get('password');
-                //Le role de base lors de l'inscription est le role "ROLE_Utilisateur" 
-                $role_base = 2;
-                //Si l'utilisateur qui créé un utilisateur est administrateur, il spécifie forcément le role
-                if ($this->get('security.context')->isGranted('ROLE_Administrateur')) {
-                    //Le role sera celui qu'aura spécifié l'administrateur donc on récupère ce paramètre de la requête
-                    $role_base = intval($request->request->get('role'));
+                if (!$this->isCsrfTokenValid('default', $request->get('_csrf_token'))) {
+                    throw new Exception("CSRF TOKEN ATTAK", 500);
                 }
                 //On récupère le manager de Doctrine
                 $manager = $this->getDoctrine()->getManager();
-                //On récupère le depot role
-                $repository = $manager->getRepository("SiteTrailBundle:Role");
+                //On récupère la variable email qui servira aussi de nom d'utilisateur
+                $email = $request->request->get('email');
+                //On récupère le nom du membre
+                $nom = $request->request->get('nom');
+                //On récupère le prénom de l'utilisateur
+                $prenom = $request->request->get('prenom');
+                //On récupère la date de naissance de l'utilisateur
+                $datenaissance = $request->request->get('datenaissance');
+                //On récupère le numéro de téléphone de l'utilisateur
+                $telephone = $request->request->get('telephone');
+                //On associe à l'utilisateur une image de base
+                $avatar = $manager->getRepository("SiteTrailBundle:Image")->find(1);
+                //On récupère la licence
+                $licence = $request->request->get('licence');
+                
+                //On récupère le paramètre mot de passe de la requête
+                $password = $request->request->get('password');
+                
+                //Le role sera celui qu'aura spécifié l'administrateur donc on récupère ce paramètre de la requête
+                $role_base = intval($request->request->get('role'));
 
-                // On crée l'utilisateur vide
-                $user = new Utilisateur();
-                //On créé un nouveau role vide
-                $role = new Role();
-                //On récupère le role spécifié dans la base de données
-                $role = $repository->find($role_base);
+                                
+                //TokenIcs
+                $tokenics = md5(uniqid('', true));                
 
                 //On fait des vérifications pour voir que les informations saisies sont valide
                 //Si l'email est vide
@@ -77,11 +85,51 @@ class UserController extends Controller {
                     return $response;
                 }
                 //Si l'email n'existe pas déjà dans la base de données
-                $userWithEmail = $manager->getRepository('SiteTrailBundle:Utilisateur')->findOneBy(array('email' => $email));
+                $userWithEmail = $manager->getRepository('SiteTrailBundle:Membre')->findOneBy(array('email' => $email));
 
                 if (!is_null($userWithEmail)) {
                     //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
                     $return = array('success' => false, 'serverError' => false, 'message' => "Cet email est déjà utilisé");
+                    $response = new Response(json_encode($return));
+                    $response->headers->set('Content-Type', 'application/json');
+                    return $response;
+                }
+                //Si le nom est vide
+                if ($nom == "") {
+                    //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
+                    $return = array('success' => false, 'serverError' => false, 'message' => "Le nom ne doît pas être vide");
+                    $response = new Response(json_encode($return));
+                    $response->headers->set('Content-Type', 'application/json');
+                    return $response;
+                }
+                //Si la date de naissance est vide
+                if ($datenaissance == "") {
+                    //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
+                    $return = array('success' => false, 'serverError' => false, 'message' => "La date de naissance ne doît pas être vide");
+                    $response = new Response(json_encode($return));
+                    $response->headers->set('Content-Type', 'application/json');
+                    return $response;
+                }
+                //Si le prenom est vide
+                if ($prenom == "") {
+                    //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
+                    $return = array('success' => false, 'serverError' => false, 'message' => "Le prénom ne doît pas être vide");
+                    $response = new Response(json_encode($return));
+                    $response->headers->set('Content-Type', 'application/json');
+                    return $response;
+                }
+                //Si le telephone est vide
+                if ($telephone == "") {
+                    //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
+                    $return = array('success' => false, 'serverError' => false, 'message' => "Le telephone ne doît pas être vide");
+                    $response = new Response(json_encode($return));
+                    $response->headers->set('Content-Type', 'application/json');
+                    return $response;
+                }
+                //Si la licence est vide
+                if ($licence == "") {
+                    //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
+                    $return = array('success' => false, 'serverError' => false, 'message' => "La licence ne doît pas être vide");
                     $response = new Response(json_encode($return));
                     $response->headers->set('Content-Type', 'application/json');
                     return $response;
@@ -94,6 +142,17 @@ class UserController extends Controller {
                     $response->headers->set('Content-Type', 'application/json');
                     return $response;
                 }
+                                
+                
+                
+                // On crée l'utilisateur vide
+                $user = new Membre();
+                //On créé un nouveau role vide
+                $role = new Role();
+                //On récupère le depot role
+                $repository = $manager->getRepository("SiteTrailBundle:Role");
+                //On récupère le role spécifié dans la base de données
+                $role = $repository->find($role_base);
                 //Si le role est null
                 if (is_null($role)) {
                     //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
@@ -102,26 +161,38 @@ class UserController extends Controller {
                     $response->headers->set('Content-Type', 'application/json');
                     return $response;
                 }
-
-                //On récupère l'encoder factory du fichier security.yml (ici sha512)
-                $factory = $this->get('security.encoder_factory');
-                //On set l'email et le mot de passe
                 $user->setEmail($email);
-                //On génère une nouvelle clé de salage en md5
-                $user->setSalt(md5(uniqid('', true)));
-                $encoder = $factory->getEncoder($user);
-                //On crypte le mot de passe avec la clé de salage
-                $password = $encoder->encodePassword($password, $user->getSalt());
-                $user->setPassword($password);    //On indique le mot de passe
-                // On définit le rôle de l'utilisateur (récupéré dans la base de donnée)
-                $user->setRoles($role);
-                //On ajoute le token pour le calendrier ICS
-                $user->setTokenics(md5(uniqid('', true)));
+                $user->setNom($nom);
+                $user->setPrenom($prenom);
+                $user->setDatenaissance(DateTime::createFromFormat('d/m/Y', $datenaissance));
+                $user->setTelephone($telephone);
+                $user->setAvatar($avatar);
+                $user->setLicence($licence);
+                $user->setTokenics($tokenics);
+                $user->setRole($role);
                 // On persite l'utilisateur
                 $manager->persist($user);
-
+                
                 //On déclenche l'enregistrement dans la base de données
                 $manager->flush();
+                //Ensuite on essaye de se connecter avec le webservice
+                $clientSOAP = new SoapClient(null, array(
+                    'uri' => $this->container->getParameter("auth_server_host"),
+                    'location' => $this->container->getParameter("auth_server_host"),
+                    'trace' => 1,
+                    'exceptions' => 0
+                ));
+
+                //On appel la méthode du webservice qui permet de se connecter
+                $response = $clientSOAP->__call('createUser', array('id' => CustomCrypto::encrypt($user->getId()),'username' => CustomCrypto::encrypt($email), 'password' => CustomCrypto::encrypt($password), 'server' => CustomCrypto::encrypt($_SERVER['SERVER_ADDR'])));
+                //L'utilisateur n'existe pas dans la base de données ou les identifiants sont incorrects
+
+                if ($response['error'] == true) {
+                    $return = array('success' => false, 'serverError' => false, 'message' => $response['message']);
+                    $response = new Response(json_encode($return));
+                    $response->headers->set('Content-Type', 'application/json');
+                    return $response;
+                }
                 //Tout s'est déroulé correctement
                 $return = array('success' => true, 'serverError' => false, 'message' => "L'utilisateur est inscrit");
                 $response = new Response(json_encode($return));
@@ -420,15 +491,14 @@ class UserController extends Controller {
             throw new NotFoundHttpException('Impossible de trouver la page demandée');
         }
     }
-    
+
     //Permettra de connecter un utilisateur
     public function logInAction() {
         $request = $this->getRequest();
         //On regarde qu'il s'agit bien d'une requête ajax
         if ($request->isXmlHttpRequest()) {
             try {
-                if(!$this->isCsrfTokenValid('default', $request->get('_csrf_token')))
-                {
+                if (!$this->isCsrfTokenValid('default', $request->get('_csrf_token'))) {
                     throw new Exception("CSRF TOKEN ATTAK MAGGLE", 500);
                 }
                 //On récupère l'email
@@ -452,7 +522,7 @@ class UserController extends Controller {
                 //On appel la méthode du webservice qui permet de se connecter
                 $response = $clientSOAP->__call('logUserIn', array('username' => CustomCrypto::encrypt($email), 'password' => CustomCrypto::encrypt($password), 'server' => CustomCrypto::encrypt($_SERVER['SERVER_ADDR'])));
                 //L'utilisateur n'existe pas dans la base de données ou les identifiants sont incorrects
-                
+
                 if ($response['connected'] == false) {
                     $return = array('success' => false, 'serverError' => false, 'message' => $response['message']);
                     $response = new Response(json_encode($return));
@@ -494,8 +564,7 @@ class UserController extends Controller {
             throw new NotFoundHttpException('Impossible de trouver la page demandée');
         }
     }
-    
-    
+
     public function logOutAction() {
         $this->get('security.token_storage')->setToken(null);
         $this->get('request')->getSession()->invalidate();
@@ -504,15 +573,14 @@ class UserController extends Controller {
 
         return $response;
     }
-    
-    //Affichage du formulaire d'ajout d'un utilisateur
-    
 
+    //Affichage du formulaire d'ajout d'un utilisateur
     //Affichage de la liste des membres
     public function annuaireAction() {
-        
-       $content = $this->get("templating")->render("SiteTrailBundle:User:annuaire.html.twig");
+
+        $content = $this->get("templating")->render("SiteTrailBundle:User:annuaire.html.twig");
 
         return new Response($content);
     }
+
 }
