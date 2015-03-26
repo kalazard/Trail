@@ -6,19 +6,19 @@
                     <h4 class="modal-title">
                         {% if idClasse == 1 %} <!-- Entrainement -->
                             <p>Entrainement - {{evenement.getEvenement().getTitre()}}<br/>
-                                <label class='petitTexte'>test</label>
+                                <label class='petitTexte'>Créé par {{evenement.getEvenement().getCreateur().getPrenom()}} {{evenement.getEvenement().getCreateur().getNom()}} le {{evenement.getEvenement().getDateCreation()|date('d/m/Y', false)}}</label>
                             </p>
                         {% elseif idClasse == 2 %} <!-- Entrainement personnel -->
                             <p>Entrainement personnel - {{evenement.getEvenement().getTitre()}}<br/>
-                                <label class='petitTexte'>test</label>
+                                <label class='petitTexte'>Créé par {{evenement.getEvenement().getCreateur().getPrenom()}} {{evenement.getEvenement().getCreateur().getNom()}} le {{evenement.getEvenement().getDateCreation()|date('d/m/Y', false)}}</label>
                             </p>
                         {% elseif idClasse == 3 %} <!-- Evenement divers -->
                             <p>Evenement divers - {{evenement.getEvenement().getTitre()}}<br/>
-                                <label class='petitTexte'>Créé par {{evenement.getEvenement().getCreateur().getUserName()}} le {{evenement.getEvenement().getDateCreation()|date('d/m/Y', false)}}</label>
+                                <label class='petitTexte'>Créé par {{evenement.getEvenement().getCreateur().getPrenom()}} {{evenement.getEvenement().getCreateur().getNom()}} le {{evenement.getEvenement().getDateCreation()|date('d/m/Y', false)}}</label>
                             </p>
                         {% elseif idClasse == 4 %} <!-- Sortie découverte -->
                             <p>Sortie découverte - {{evenement.getEvenement().getTitre()}}<br/>
-                                <label class='petitTexte'>test</label>
+                                <label class='petitTexte'>Créé par {{evenement.getEvenement().getCreateur().getPrenom()}} {{evenement.getEvenement().getCreateur().getNom()}} le {{evenement.getEvenement().getDateCreation()|date('d/m/Y', false)}}</label>
                             </p>
                         {% else %}
                         {% endif %}

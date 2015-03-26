@@ -39,7 +39,7 @@
         $( "body" ).on( "change", ".date", function()
         {
             $('#lienDl').children().remove();
-            $("#lienDl").append("<a class='btn btn-default'>test</a><a class='btn btn-default' role='button' href='{{ path('site_trail_evenement_ics') }}/default/" + $( "#dateDebut" ).val() + "/" +  $( "#dateFin" ).val() + "'>Télécharger5</a>");   
+            $("#lienDl").append("<a class='btn btn-default' role='button' href='{{ path('site_trail_evenement_ics') }}/default/" + $( "#dateDebut" ).val() + "/" +  $( "#dateFin" ).val() + "'>Télécharger</a>");   
         }); 
         
         $(function()
@@ -51,5 +51,5 @@
         $( ".date" ).datepicker( "option", "dateFormat", "yy-mm-dd" );
         $("#dateFin").datepicker('setDate', +7);
         
-        $("#lienDl").append("<a class='btn btn-default' role='button' href='{{ path('site_trail_evenement_ics') }}/default/" + $( "#dateDebut" ).val() + "/" +  $( "#dateFin" ).val() + "'>Téléchargers</a>");   
+        $("#lienDl").append("<a class='btn btn-default' role='button' href='{{ path('site_trail_evenement_ics') }}/default/" + $( "#dateDebut" ).val() + "/" +  $( "#dateFin" ).val() + "'>Télécharger</a>");   
     </script>

@@ -427,6 +427,10 @@ class UserController extends Controller {
         //On regarde qu'il s'agit bien d'une requête ajax
         if ($request->isXmlHttpRequest()) {
             try {
+                if(!$this->isCsrfTokenValid('default', $request->get('_csrf_token')))
+                {
+                    throw new Exception("CSRF TOKEN ATTAK MAGGLE", 500);
+                }
                 //On récupère l'email
                 $email = $request->request->get('_email');
                 //On récupère son mot de passe
@@ -490,7 +494,8 @@ class UserController extends Controller {
             throw new NotFoundHttpException('Impossible de trouver la page demandée');
         }
     }
-
+    
+    
     public function logOutAction() {
         $this->get('security.token_storage')->setToken(null);
         $this->get('request')->getSession()->invalidate();
@@ -499,6 +504,9 @@ class UserController extends Controller {
 
         return $response;
     }
+    
+    //Affichage du formulaire d'ajout d'un utilisateur
+    
 
     //Affichage de la liste des membres
     public function annuaireAction() {
