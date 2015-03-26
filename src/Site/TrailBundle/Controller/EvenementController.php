@@ -99,10 +99,20 @@ class EvenementController extends Controller
             $req .= $bonusWhere;
             $req .= "AND e.id IN (" . $idEvenementParticipation . ")";
             $query = $em->createQuery($req);
-            $listeEvenementParticipation[] = $query->getResult();  
+            $listeEvenementParticipation[] = $query->getResult();
+            
+            //Selection des courseOfficielle auxquelles on participe
+            $req = "SELECT co ";
+            $req .= "FROM SiteTrailBundle:Courseofficielle co, SiteTrailBundle:Evenement e ";
+            $req .= "WHERE co.evenement = e.id ";
+            $req .= $bonusWhere;
+            $req .= "AND e.id IN (" . $idEvenementParticipation . ")";
+            $query = $em->createQuery($req);
+            $listeEvenementParticipation[] = $query->getResult();
         }
         else
         {
+            $listeEvenementParticipation[] = array();
             $listeEvenementParticipation[] = array();
             $listeEvenementParticipation[] = array();
             $listeEvenementParticipation[] = array();
@@ -145,6 +155,15 @@ class EvenementController extends Controller
         $req .= "AND e.createur = " . $idUser;
         $query = $em->createQuery($req);
         $listeEvenement[] = array_merge($query->getResult(), $listeEvenementParticipation[3]);
+        
+        //Selection des courseOfficielle
+        $req = "SELECT co ";
+        $req .= "FROM SiteTrailBundle:Courseofficielle co, SiteTrailBundle:Evenement e ";
+        $req .= "WHERE co.evenement = e.id ";
+        $req .= $bonusWhere;
+        $req .= "AND e.createur = " . $idUser;
+        $query = $em->createQuery($req);
+        $listeEvenement[] = array_merge($query->getResult(), $listeEvenementParticipation[4]);
         
         return $listeEvenement;
     }
@@ -322,12 +341,15 @@ class EvenementController extends Controller
         return new Response($formulaire);
     }
     
-    public function afficherDetailEvenementAction()
+    public function afficherDetailEvenementAction(Request $request)
     {
         //$idClasse = htmlspecialchars($_REQUEST['idClasse']);
         $idClasse = $request->request->get('idClasse', '');
         //$idObj = htmlspecialchars($_REQUEST['idObj']);
         $idObj = $request->request->get('idObj', '');
+        
+        var_dump($idClasse);
+        var_dump($idObj);
         
         switch ($idClasse)
         {
@@ -351,9 +373,16 @@ class EvenementController extends Controller
                 $repository=$manager->getRepository("SiteTrailBundle:Sortiedecouverte");        
                 $evenement = $repository->findOneById($idObj);
                 break;
+            case '5': //Course officielle
+                $manager=$this->getDoctrine()->getManager();
+                $repository=$manager->getRepository("SiteTrailBundle:Courseofficielle");        
+                $evenement = $repository->findOneById($idObj);
+                break;
             default:
                 break;
         }
+        
+        var_dump($evenement);
         
         $resp = $this->get("templating")->render("SiteTrailBundle:Event:detailEvenement.html.twig", array(
                                                             'evenement' => $evenement,

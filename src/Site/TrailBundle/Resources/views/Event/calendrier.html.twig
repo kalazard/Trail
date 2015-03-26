@@ -4,20 +4,18 @@
 
 {% block body %}
     {% if app.user %}
-        <h1>Mes événements</h1>
-        <div class='text-center'>
-            <input id="dlCal" type="button" class='btn btn-default center' value="Télécharger mon calendrier" />
-        </div><br/>
+        <div class="container">
+            <h1>Mes événements</h1>
+            <div class='text-center'>
+                <input id="dlCal" type="button" class='btn btn-default center' value="Télécharger mon calendrier" />
+            </div><br/>
+        </div>
         <div id="listeAction">
             <a id="lienAjoutEvent">Ajouter un événement</a>
         </div>
         <div id='calendar'></div>
     {% else %}
-        <p>Vous devez vous connecter pour avoir accès à ce contenu.</p>
-        <p>Vous devez vous connecter pour avoir accès à ce contenu.</p>
-        <p>Vous devez vous connecter pour avoir accès à ce contenu.</p>
-        <p>Vous devez vous connecter pour avoir accès à ce contenu.</p>
-        
+        <p>Vous devez vous connecter pour avoir accès à ce contenu.</p>        
     {% endif %}
 
 {% javascripts '@SiteTrailBundle/Resources/js/*' %}
@@ -39,6 +37,8 @@
             eventAffiches.push(tabEvent);
         {% endfor %}
     {% endfor %}
+        
+        console.dir(eventAffiches);
         
     function afficherDetail(idClasse, idObj)
     {        
