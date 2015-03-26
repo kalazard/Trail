@@ -511,6 +511,8 @@ class UserController extends Controller {
     //Affichage de la liste des membres
     public function annuaireAction() {
         
-        return new Response($this->getUser()->getAvatar()->getPath());
+       $content = $this->get("templating")->render("SiteTrailBundle:User:annuaire.html.twig");
+
+        return new Response($content);
     }
 }
