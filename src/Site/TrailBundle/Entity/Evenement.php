@@ -73,7 +73,7 @@ class Evenement
     /**
      * @var string
      *
-     * @ORM\Column(name="lienkid", type="string", length=255, nullable=false)
+     * @ORM\Column(name="lienkid", type="string", length=255, nullable=true)
      */
     private $lienkid;
 
