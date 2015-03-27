@@ -21,7 +21,16 @@ class HomeController extends Controller
     
     public function testAction()
     {
-        return new Response();
+        $clientSOAP = new \SoapClient(null, array(
+                    'uri' => "http://localhost/carto/web/app_dev.php/itineraire",
+                    'location' => "http://localhost/carto/web/app_dev.php/itineraire",
+                    'trace' => true,
+                    'exceptions' => true
+                ));
+
+                //On appel la méthode du webservice qui permet de se connecter
+                $response = $clientSOAP->__call('zizitede', array());
+        return new Response($response);
     }
 }
 
