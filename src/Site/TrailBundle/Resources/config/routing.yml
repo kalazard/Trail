@@ -85,13 +85,13 @@ site_trail_getByIditineraire:
     path:     /itineraire_getById/{id}
     defaults: { _controller: SiteTrailBundle:Itiniraire:getById }
 site_trail_gallery:
-    path :    /gallerie
+    path :    /galerie
     defaults: { _controller: SiteTrailBundle:Gallery:index }
 site_trail_category:
-    path :    /gallerie/categorie
+    path :    /galerie/categorie
     defaults: { _controller: SiteTrailBundle:Gallery:category }
 site_trail_picture:
-    path :    /gallerie/image
+    path :    /galerie/image
     defaults: { _controller: SiteTrailBundle:Gallery:picture }
 site_trail_news:
     path :    /nouveautes
