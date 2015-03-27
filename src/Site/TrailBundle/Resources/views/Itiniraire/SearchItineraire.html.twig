@@ -1,0 +1,41 @@
+{% extends "SiteTrailBundle::layout.html.twig" %}
+
+{% block title %}{{ parent() }} - Recherche d'itinéraire{% endblock %}
+
+{% block body %}
+	  {% if app.user %}
+		      <h1>Recherche d'itinéraire</h1>
+			  
+			  <form name="myform" action="{{ path('site_trail_searchitineraire') }}" method="POST">
+					<input name="nom" type="text" size="25" placeholder="Nom">
+					<input name="typechemin" type="text" size="25" placeholder="Type de chemin">
+					<input name="denivelep" type="text" size="25" placeholder="Dénivelé positif">
+					<input name="denivelen" type="text" size="25" placeholder="Dénivelé négatif">
+					<input name="datecrea" type="date" size="25" placeholder="Date de création">
+					<label for="recipient-name" class="control-label">Difficulté:</label>
+		                <select id="difficulte">
+		                  {% if diffs.difficultes is not empty %}
+									{% for diff in diffs.difficultes%}
+										<option value={{diff.niveau}}>{{diff.label}}
+									{% endfor %}
+						  {% endif %}
+		                </select>
+		            <input name="valid" type="hidden" value="ok">
+					<input type="submit" name="submit" value=" Rechercher ">
+				</form>
+			  
+			  {% if resultats is not empty %}
+			  
+					<h3>Résultats</h3>
+					{% if resultats.searchResults is not empty %}
+						{% for itineraire in resultats.searchResults %}
+							<p> Itinéaire: {{itineraire.nom}}  Type de chemin: {{itineraire.typechemin}}</p>
+						{% endfor %}
+					{% else %}
+						 <p>Aucun résultat</p>
+					{% endif %}
+			  {% endif %}
+	 {% else %}
+	     <p>Vous n'avez pas accès à cette page</p>
+	 {% endif %}
+{% endblock %}

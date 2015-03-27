@@ -529,8 +529,8 @@ class UserController extends Controller {
                 $clientSOAP = new SoapClient(null, array(
                     'uri' => $this->container->getParameter("auth_server_host"),
                     'location' => $this->container->getParameter("auth_server_host"),
-                    'trace' => 1,
-                    'exceptions' => 0
+                    'trace' => true,
+                    'exceptions' => true
                 ));
 
                 //On appel la méthode du webservice qui permet de se connecter
