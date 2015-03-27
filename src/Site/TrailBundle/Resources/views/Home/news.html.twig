@@ -3,5 +3,44 @@
 {% block title %}{{ parent() }} - News{% endblock %}
 
 {% block body %}
-	<p>News</p>
+	<div class="container">
+		<h1>News</h1>
+		<div class="content">
+			<a href="{{path('site_trail_article', {'slug': 'article' })}}" class="h3">Titre</a>
+			<div class="panel panel-default">
+			  <div class="panel-body">
+				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin viverra ante eu libero vulputate, quis molestie dui facilisis. Cras tincidunt porttitor risus, vehicula commodo nibh bibendum sit amet. Aenean in placerat orci. Suspendisse aliquam, purus vel pulvinar cursus, odio sem consequat arcu, sed dignissim sem enim eget nunc. Quisque luctus dolor id sapien posuere egestas. Praesent dapibus enim id placerat euismod. Vivamus eu auctor ex. Cras leo orci, aliquam pharetra pulvinar id, luctus et ipsum. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vivamus viverra nisl ipsum, at porttitor metus tempor ac. Nunc pellentesque scelerisque leo a hendrerit.</p>
+				<a href="{{path('site_trail_article', {'slug': 'article' })}}" class="pull-right">Voir la suite</a>
+			  </div>
+			</div>
+			<p class="text-right colored">
+				Auteur <br>
+				Date
+			</p>
+			
+			<a href="{{path('site_trail_article', {'slug': 'article' })}}" class="h3">Titre</a>
+			<div class="panel panel-default">
+			  <div class="panel-body">
+				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin viverra ante eu libero vulputate, quis molestie dui facilisis. Cras tincidunt porttitor risus, vehicula commodo nibh bibendum sit amet. Aenean in placerat orci. Suspendisse aliquam, purus vel pulvinar cursus, odio sem consequat arcu, sed dignissim sem enim eget nunc. Quisque luctus dolor id sapien posuere egestas. Praesent dapibus enim id placerat euismod. Vivamus eu auctor ex. Cras leo orci, aliquam pharetra pulvinar id, luctus et ipsum. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vivamus viverra nisl ipsum, at porttitor metus tempor ac. Nunc pellentesque scelerisque leo a hendrerit.</p>
+				<a href="{{path('site_trail_article', {'slug': 'article' })}}" class="pull-right">Voir la suite</a>
+			  </div>
+			</div>
+			<p class="text-right colored">
+				Auteur <br>
+				Date
+			</p>
+			
+			<a href="{{path('site_trail_article', {'slug': 'article' })}}" class="h3">Titre</a>
+			<div class="panel panel-default">
+			  <div class="panel-body">
+				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin viverra ante eu libero vulputate, quis molestie dui facilisis. Cras tincidunt porttitor risus, vehicula commodo nibh bibendum sit amet. Aenean in placerat orci. Suspendisse aliquam, purus vel pulvinar cursus, odio sem consequat arcu, sed dignissim sem enim eget nunc. Quisque luctus dolor id sapien posuere egestas. Praesent dapibus enim id placerat euismod. Vivamus eu auctor ex. Cras leo orci, aliquam pharetra pulvinar id, luctus et ipsum. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vivamus viverra nisl ipsum, at porttitor metus tempor ac. Nunc pellentesque scelerisque leo a hendrerit.</p>
+				<a href="{{path('site_trail_article', {'slug': 'article' })}}" class="pull-right">Voir la suite</a>
+			  </div>
+			</div>
+			<p class="text-right colored">
+				Auteur <br>
+				Date
+			</p>
+		</div>
+	</div>
 {% endblock %}

@@ -19,9 +19,15 @@ class HomeController extends Controller
         return new Response($content);
     }   
     
-    public function newsAction()
+    public function newsAction($slug = NULL)
     {
-        $content = $this->get("templating")->render("SiteTrailBundle:Home:news.html.twig"); 
+		$content = $this->get("templating")->render("SiteTrailBundle:Home:news.html.twig"); 
+	
+		if($slug != NULL)
+		{
+			$content = $this->get("templating")->render("SiteTrailBundle:Home:anews.html.twig"); 
+		}
+		
         return new Response($content);
     }
 	

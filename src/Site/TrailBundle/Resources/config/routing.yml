@@ -105,3 +105,6 @@ site_trail_trail:
 site_trail_contact:
     path :    /contact
     defaults: { _controller: SiteTrailBundle:Home:contact }
+site_trail_article:
+    path :    /nouveautes/{slug}
+    defaults: { _controller: SiteTrailBundle:Home:news }

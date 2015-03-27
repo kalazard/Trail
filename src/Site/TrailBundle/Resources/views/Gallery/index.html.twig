@@ -1,7 +1,113 @@
 {% extends "SiteTrailBundle::layout.html.twig" %}
 
-{% block title %}{{ parent() }} - Gallerie{% endblock %}
+{% block title %}{{ parent() }} - Galerie{% endblock %}
 
 {% block body %}
-	<p>Gallerie</p>
+	<div class="container">
+		<h1>Galerie</h1>
+			<div class="category">
+				<a class="h3" href="{{path('site_trail_category')}}">Categorie 1</a>
+				<div class="row move-bottom-xs">
+				  <div class="col-md-3 col-sm-6">
+					<div class="thumbnail">
+					  <a href="{{path('site_trail_picture')}}"><img src="http://www.altavaltellinabike.it/media/menu/00/262/cd/en/images/percorsi-1920x500-0.jpg" alt="Smiley face"></a>
+					  <div class="caption">
+						<a class="h4" href="{{path('site_trail_picture')}}">Thumbnail label</a>
+						<p>...</p>
+					  </div>
+					</div>
+				  </div>
+				  <div class="col-md-3 col-sm-6">
+					<div class="thumbnail">
+					  <a href="{{path('site_trail_picture')}}"><img src="http://www.altavaltellinabike.it/media/menu/00/262/cd/en/images/percorsi-1920x500-0.jpg" alt="Smiley face"></a>
+					  <div class="caption">
+						<a class="h4" href="{{path('site_trail_picture')}}">Thumbnail label</a>
+						<p>...</p>
+					  </div>
+					</div>
+				  </div>
+				  <div class="col-md-3 col-sm-6">
+					<div class="thumbnail">
+					  <a href="{{path('site_trail_picture')}}"><img src="http://www.altavaltellinabike.it/media/menu/00/262/cd/en/images/percorsi-1920x500-0.jpg" alt="Smiley face"></a>
+					  <div class="caption">
+						<a class="h4" href="{{path('site_trail_picture')}}">Thumbnail label</a>
+						<p>...</p>
+					  </div>
+					</div>
+				  </div>
+				  <div class="col-md-3 col-sm-6">
+					<div class="thumbnail">
+					  <a href="{{path('site_trail_picture')}}"><img src="http://www.altavaltellinabike.it/media/menu/00/262/cd/en/images/percorsi-1920x500-0.jpg" alt="Smiley face"></a>
+					  <div class="caption">
+						<a class="h4" href="{{path('site_trail_picture')}}">Thumbnail label</a>
+						<p>...</p>
+					  </div>
+					</div>
+				  </div>
+				</div>
+				<a class="colored pull-right" href="{{path('site_trail_category')}}">Voir Categorie 1</a>
+			</div>
+			<div class="category">
+				<a class="h3" href="{{path('site_trail_category')}}">Categorie 2</a>
+				<div class="row move-bottom-xs">
+				  <div class="col-md-3 col-sm-6">
+					<div class="thumbnail">
+					  <a href="{{path('site_trail_picture')}}"><img src="http://www.altavaltellinabike.it/media/menu/00/262/cd/en/images/percorsi-1920x500-0.jpg" alt="Smiley face"></a>
+					  <div class="caption">
+						<a class="h4" href="{{path('site_trail_picture')}}">Thumbnail label</a>
+						<p>...</p>
+					  </div>
+					</div>
+				  </div>
+				  <div class="col-md-3 col-sm-6">
+					<div class="thumbnail">
+					  <a href="{{path('site_trail_picture')}}"><img src="http://www.altavaltellinabike.it/media/menu/00/262/cd/en/images/percorsi-1920x500-0.jpg" alt="Smiley face"></a>
+					  <div class="caption">
+						<a class="h4" href="{{path('site_trail_picture')}}">Thumbnail label</a>
+						<p>...</p>
+					  </div>
+					</div>
+				  </div>
+				  <div class="col-md-3 col-sm-6">
+					<div class="thumbnail">
+					  <a href="{{path('site_trail_picture')}}"><img src="http://www.altavaltellinabike.it/media/menu/00/262/cd/en/images/percorsi-1920x500-0.jpg" alt="Smiley face"></a>
+					  <div class="caption">
+						<a class="h4" href="{{path('site_trail_picture')}}">Thumbnail label</a>
+						<p>...</p>
+					  </div>
+					</div>
+				  </div>
+				  <div class="col-md-3 col-sm-6">
+					<div class="thumbnail">
+					  <a href="{{path('site_trail_picture')}}"><img src="http://www.altavaltellinabike.it/media/menu/00/262/cd/en/images/percorsi-1920x500-0.jpg" alt="Smiley face"></a>
+					  <div class="caption">
+						<a class="h4" href="{{path('site_trail_picture')}}">Thumbnail label</a>
+						<p>...</p>
+					  </div>
+					</div>
+				  </div>
+				</div>
+				<a class="colored pull-right" href="{{path('site_trail_category')}}">Voir Categorie 1</a>
+			</div>
+			
+		<div class="text-center">
+		  <ul class="pagination">
+			<li>
+			  <a href="#" aria-label="Previous">
+				<span aria-hidden="true">&laquo;</span>
+			  </a>
+			</li>
+			<li><a href="#">1</a></li>
+			<li><a href="#">2</a></li>
+			<li><a href="#">3</a></li>
+			<li><a href="#">4</a></li>
+			<li><a href="#">5</a></li>
+			<li>
+			  <a href="#" aria-label="Next">
+				<span aria-hidden="true">&raquo;</span>
+			  </a>
+			</li>
+		  </ul>
+		</div>
+	</div>
 {% endblock %}
