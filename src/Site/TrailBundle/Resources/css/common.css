@@ -1,5 +1,32 @@
 /*************** BODY AND FOOTER ***************/
+.navbar-login
+{
+    width: 305px;
+    padding: 10px;
+    padding-bottom: 0px;
+}
 
+.navbar-login-session
+{
+    padding: 10px;
+    padding-bottom: 0px;
+    padding-top: 0px;
+}
+
+.icon-size
+{
+    font-size: 87px;
+}
+
+.img-size
+{
+    width: 87px;
+    height: 87px;
+    border-radius: 50%;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+}
 body
 {
 	margin-top: 50px;
@@ -178,3 +205,4 @@ h1,
 {
 	margin-left: 50px;
 }
+
