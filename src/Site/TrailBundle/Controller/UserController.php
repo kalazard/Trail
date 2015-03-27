@@ -56,16 +56,16 @@ class UserController extends Controller {
                 $avatar = $manager->getRepository("SiteTrailBundle:Image")->find(1);
                 //On récupère la licence
                 $licence = $request->request->get('licence');
-                
+
                 //On récupère le paramètre mot de passe de la requête
                 $password = $request->request->get('password');
-                
+
                 //Le role sera celui qu'aura spécifié l'administrateur donc on récupère ce paramètre de la requête
                 $role_base = intval($request->request->get('role'));
 
-                                
+
                 //TokenIcs
-                $tokenics = md5(uniqid('', true));                
+                $tokenics = md5(uniqid('', true));
 
                 //On fait des vérifications pour voir que les informations saisies sont valide
                 //Si l'email est vide
@@ -142,8 +142,22 @@ class UserController extends Controller {
                     $response->headers->set('Content-Type', 'application/json');
                     return $response;
                 }
-                                
-                
+                if (!filter_var($licence, FILTER_VALIDATE_URL)) {
+                    $return = array('success' => false, 'serverError' => false, 'message' => "La licence doit être un lien valide");
+                    $response = new Response(json_encode($return));
+                    $response->headers->set('Content-Type', 'application/json');
+                    return $response;
+                }
+
+
+                $datenaissance = DateTime::createFromFormat('d/m/Y', $datenaissance);
+                $date_errors = DateTime::getLastErrors();
+                if ($date_errors['warning_count'] + $date_errors['error_count'] > 0) {
+                    $return = array('success' => false, 'serverError' => false, 'message' => "Le format de la date est invalide");
+                    $response = new Response(json_encode($return));
+                    $response->headers->set('Content-Type', 'application/json');
+                    return $response;
+                }
                 
                 // On crée l'utilisateur vide
                 $user = new Membre();
@@ -164,7 +178,7 @@ class UserController extends Controller {
                 $user->setEmail($email);
                 $user->setNom($nom);
                 $user->setPrenom($prenom);
-                $user->setDatenaissance(DateTime::createFromFormat('d/m/Y', $datenaissance));
+                $user->setDatenaissance($datenaissance);
                 $user->setTelephone($telephone);
                 $user->setAvatar($avatar);
                 $user->setLicence($licence);
@@ -172,7 +186,7 @@ class UserController extends Controller {
                 $user->setRole($role);
                 // On persite l'utilisateur
                 $manager->persist($user);
-                
+
                 //On déclenche l'enregistrement dans la base de données
                 $manager->flush();
                 //Ensuite on essaye de se connecter avec le webservice
@@ -184,7 +198,7 @@ class UserController extends Controller {
                 ));
 
                 //On appel la méthode du webservice qui permet de se connecter
-                $response = $clientSOAP->__call('createUser', array('id' => CustomCrypto::encrypt($user->getId()),'username' => CustomCrypto::encrypt($email), 'password' => CustomCrypto::encrypt($password), 'server' => CustomCrypto::encrypt($_SERVER['SERVER_ADDR'])));
+                $response = $clientSOAP->__call('createUser', array('id' => CustomCrypto::encrypt($user->getId()), 'username' => CustomCrypto::encrypt($email), 'password' => CustomCrypto::encrypt($password), 'server' => CustomCrypto::encrypt($_SERVER['SERVER_ADDR'])));
                 //L'utilisateur n'existe pas dans la base de données ou les identifiants sont incorrects
 
                 if ($response['error'] == true) {
