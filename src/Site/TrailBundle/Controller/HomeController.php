@@ -19,9 +19,33 @@ class HomeController extends Controller
         return new Response($content);
     }   
     
-    public function testAction()
+    public function newsAction($slug = NULL)
     {
-        return new Response();
+		$content = $this->get("templating")->render("SiteTrailBundle:Home:news.html.twig"); 
+	
+		if($slug != NULL)
+		{
+			$content = $this->get("templating")->render("SiteTrailBundle:Home:anews.html.twig"); 
+		}
+		
+        return new Response($content);
+    }
+	
+	public function clubAction()
+    {
+        $content = $this->get("templating")->render("SiteTrailBundle:Home:club.html.twig"); 
+        return new Response($content);
+    }
+	
+	public function trailAction()
+    {
+        $content = $this->get("templating")->render("SiteTrailBundle:Home:trail.html.twig"); 
+        return new Response($content);
+    }
+	
+	public function contactAction()
+    {
+        $content = $this->get("templating")->render("SiteTrailBundle:Home:contact.html.twig"); 
+        return new Response($content);
     }
 }
-

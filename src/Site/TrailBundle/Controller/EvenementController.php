@@ -1,6 +1,4 @@
-<?php
-
-namespace Site\TrailBundle\Controller;
+<?php namespace Site\TrailBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;

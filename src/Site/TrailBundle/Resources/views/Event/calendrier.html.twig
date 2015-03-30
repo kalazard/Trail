@@ -3,8 +3,7 @@
 {% block title %}{{ parent() }} - Calendrier{% endblock %}
 
 {% block body %}
-    {% if app.user %}
-        <div class="container">
+    <div class="container">
 		<div class="col-sm-6">
 			<h1>Calendrier</h1>
 		</div>
@@ -12,16 +11,12 @@
 			<button id="dlCal" type="button" class='btn btn-warning pull-right'>Télécharger mon calendrier</button>
 		</div>
 	</div>
-        <div id="listeAction">
-            <a id="lienAjoutEvent">Ajouter un événement</a>
-        </div>
-        <div id='calendar'></div>
-    {% else %}
-        <div class="container">
-            <p>Vous devez vous connecter pour avoir accès à ce contenu.</p>
-        </div>
-    {% endif %}
-
+	
+    <div id="listeAction">
+        <a id="lienAjoutEvent" class="btn btn-warning">Ajouter un événement</a>
+    </div>
+    <div id='calendar'></div>
+	
 {% javascripts '@SiteTrailBundle/Resources/js/*' %}
     <script type="text/javascript" src="{{ asset_url }}"></script>
 {% endjavascripts %}

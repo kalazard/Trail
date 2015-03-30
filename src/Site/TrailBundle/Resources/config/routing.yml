@@ -1,6 +1,8 @@
 site_trail_homepage_empty:
     path:     /
     defaults: { _controller: SiteTrailBundle:Home:index }
+    options:
+        expose: true
 site_trail_homepage:
     path:     /home
     defaults: { _controller: SiteTrailBundle:Home:index }
@@ -88,3 +90,27 @@ site_trail_getAllLieux:
 site_trail_getByIditineraire:
     path:     /itineraire_getById/{id}
     defaults: { _controller: SiteTrailBundle:Itiniraire:getById }
+site_trail_gallery:
+    path :    /galerie
+    defaults: { _controller: SiteTrailBundle:Gallery:index }
+site_trail_category:
+    path :    /galerie/categorie
+    defaults: { _controller: SiteTrailBundle:Gallery:category }
+site_trail_picture:
+    path :    /galerie/image
+    defaults: { _controller: SiteTrailBundle:Gallery:picture }
+site_trail_news:
+    path :    /nouveautes
+    defaults: { _controller: SiteTrailBundle:Home:news }
+site_trail_club:
+    path :    /club
+    defaults: { _controller: SiteTrailBundle:Home:club }
+site_trail_trail:
+    path :    /trail
+    defaults: { _controller: SiteTrailBundle:Home:trail }
+site_trail_contact:
+    path :    /contact
+    defaults: { _controller: SiteTrailBundle:Home:contact }
+site_trail_article:
+    path :    /nouveautes/{slug}
+    defaults: { _controller: SiteTrailBundle:Home:news }

@@ -4,24 +4,30 @@
 {% block title %}{{ parent() }} - Annuaire{% endblock %}
 
 {% block body %}
-    <table class="table-bordered table-striped table sieve">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Email</th>
-                <th>Role</th>
-                    {% if app.user %}
-                        {% if is_granted('ROLE_Administrateur') %}
-                        <th>Editer</th>
-                        <th>Supprimer</th>
-                        {% endif %}
-                    {% endif %}
-            </tr>
-        </thead> 
-        <tbody id="table_user">
+	<div class="container">
+		<h1>Annuaire</h1>
+		<table class="table-striped table sieve">
+			<thead>
+				<tr>
+					<th>Id</th>
+					<th>Email</th>
+					<th>Role</th>
+						{% if app.user %}
+							{% if is_granted('ROLE_Administrateur') %}
+							<th>Editer</th>
+							<th>Supprimer</th>
+							{% endif %}
+						{% endif %}
+				</tr>
+			</thead> 
+			<tbody id="table_user">
 
-        </tbody>
-    </table>
+			</tbody>
+		</table>
+	</div>
+	
+	
+	
     <div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
