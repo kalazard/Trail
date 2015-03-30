@@ -1,10 +1,10 @@
+<div id="modalsEvent"> 
     <div id="modalEventDetail" class="modal fade">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header text-center">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     <h4 class="modal-title">
-                        {{dump(idClasse)}}
                         {% if idClasse == 1 %} <!-- Entrainement -->
                             <p>Entrainement - {{evenement.getEvenement().getTitre()}}<br/>
                                 <label class='petitTexte'>Créé par {{evenement.getEvenement().getCreateur().getPrenom()}} {{evenement.getEvenement().getCreateur().getNom()}} le {{evenement.getEvenement().getDateCreation()|date('d/m/Y', false)}}</label>
@@ -33,7 +33,9 @@
                     <p>Début : {{evenement.getEvenement().getDateDebut()|date('d/m/Y', false)}} à {{evenement.getEvenement().getDateDebut()|date('H:i')}}</p>
                     <p>Fin : {{evenement.getEvenement().getDateFin()|date('d/m/Y', false)}} à {{evenement.getEvenement().getDateFin()|date('H:i')}}</p>
                     <p>Description : {{evenement.getEvenement().getDescription()}}</p>
-                    <p>Lien KID : <a target="_blank" href="{{evenement.getEvenement().getLienKid()}}">{{evenement.getEvenement().getLienKid()}}</a></p>
+                    {% if evenement.getEvenement().getLienKid() != null %}
+                        <p>Lien KID : <a target="_blank" href="{{evenement.getEvenement().getLienKid()}}">{{evenement.getEvenement().getLienKid()}}</a></p>
+                    {% endif %}
                     <p>Status : {{evenement.getEvenement().getStatus()}}</p> 
                     {% if idClasse == 1 %} <!-- Entrainement -->
                         <p>Programme : {{evenement.getProgramme().getLabel()}} ({{evenement.getProgramme().getDuree()|date('H:i')}})</p>
@@ -44,10 +46,70 @@
                     {% elseif idClasse == 4 %} <!-- Sortie découverte -->
                         <p>Lieu de rendez-vous : {{evenement.getLieuRendezVous().getTitre()}} ({{evenement.getLieuRendezVous().getCoordonnees().getLongitude()}}X{{evenement.getLieuRendezVous().getCoordonnees().getLatitude()}}X{{evenement.getLieuRendezVous().getCoordonnees().getAltitude()}})</p>
                     {% elseif idClasse == 5 %} <!-- Course officielle -->
-                        <p>URL : {{evenement.getSiteUtl()}} </p>
+                        <p>URL du site : <a target="_blank" href="{{evenement.getSiteUrl()}}">{{evenement.getSiteUrl()}}</a></p>
                     {% else %}
                     {% endif %}
+                    
+                    {% if (app.user.getRole().getId() == 1 or evenement.getEvenement().getCreateur().getId() == app.user.getId()) %} 
+                        <div class="modal-footer">
+                            <div class='wrapper text-center'>
+                                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="modifEvenement()">Modifier</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="supprEvenementConfirm()">Supprimer</button>
+                            </div>
+                        </div>
+                    {% endif %}    
                 </div>
             </div>
         </div>
     </div>
+    <div id="modalAvertissement" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">      
+                <div class="modal-body text-center">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <p>Etes-vous sûr de vouloir supprimer cet événement ?</p>
+                    <div class='wrapper text-center'>
+                        <button type="button" class="btn btn-default" data-dismiss="modal" id="confirmSuppr">Oui</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal" >Non</button>
+                    </div>
+                </div>
+            </div>
+        </div>       
+    </div>
+</div>
+                
+<script>
+    function supprEvenementConfirm()
+    {
+        $("#modalAvertissement").modal('show');
+    }
+    
+    function modifEvenement()
+    {
+        $.ajax({
+            type: "POST",
+            url: "{{ path('site_trail_evenement_modif') }}",
+            data: {"idClasse" : {{idClasse}},
+                    "idObj" : {{evenement.getId()}}},
+            cache: false,
+            success: function(data){
+                $('body').append(data);
+                $("#modalModifEventForm").modal('show');
+            }
+        });
+    }
+    
+    $( "#confirmSuppr" ).click(function()
+    {
+        $.ajax({
+            type: "POST",
+            url: "{{ path('site_trail_evenement_suppr') }}",
+            data: {"idClasse" : {{idClasse}},
+                    "idObj" : {{evenement.getId()}}},
+            cache: false,
+            success: function(data){
+                document.location.href="{{path('site_trail_evenement')}}";
+            }
+        });
+    });
+</script>

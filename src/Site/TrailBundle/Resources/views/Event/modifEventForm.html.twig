@@ -1,8 +1,8 @@
-<div id="modalAjoutEventForm" class="modal fade">
+<div id="modalModifEventForm" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header text-center">
-                <h4 class="modal-title">Ajouter un événement</h4>
+                <h4 class="modal-title">Edition de </h4>
             </div>
             <div class="modal-body">
                 {{ form_start(form, {'attr': {'id': 'ajouterEvent'}}) }}
@@ -92,24 +92,9 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Champ type d'événement -->
-                <div class="form-group">
-                    <div class="row">
-                        <label class='col-sm-3 control-label'>Type d'événement :</label>
-                        <div class="col-sm-9">
-                            <select id="selectTypeEvent" class="form-control" name="type">
-                                <option value="1">Entrainement</option>
-                                <option value="2">Entrainement personnel</option>
-                                <option value="3">Evenement divers</option>
-                                <option value="4">Sortie découverte</option>
-                                <option value="5">Course officielle</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="specificites">
+                            <p> {{idClasse}}</p>           
+                <!-- Affichage des trucs supplémentaires -->
+                {% if idClasse == 1 %} <!-- Entrainement -->
                     <div class="form-group">
                         <div class="row">
                             <label class='col-sm-3 control-label'>Programme :</label>
@@ -122,7 +107,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="form-group">
                         <div class="row">
                             <label class='col-sm-3 control-label'>Lieu de rendez-vous :</label>
@@ -135,7 +119,27 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                {% elseif idClasse == 2 %} <!-- Entrainement personnel -->
+                {% elseif idClasse == 3 %} <!-- Evenement divers -->
+                    <p>Description</p>
+                {% elseif idClasse == 4 %} <!-- Sortie découverte -->
+                    <div class="form-group">
+                        <div class="row">
+                            <label class='col-sm-3 control-label'>Lieu de rendez-vous :</label>
+                            <div class="col-sm-9">
+                                <select name='lieu' class="form-control">
+                                    {% for monLieu in listeLieuRendezVous %}
+                                        <option value='{{monLieu.id}}'>{{monLieu.titre}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                {% elseif idClasse == 5 %} <!-- Course officielle -->
+                    <p>Site URL</p>
+                {% else %}
+                {% endif %}
+    
                 <div class="modal-footer">
                     <input type="submit" class="btn btn-primary" value="Ajouter" />
                     <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
@@ -146,81 +150,6 @@
     </div>
 </div>
 
-<!-- Script pour la modification dynamique du formulaire -->
-<script>
-    $("body").on("change", "#selectTypeEvent", function ()
-    {
-        $('#specificites').children().remove();
-
-        switch ($(this).val())
-        {
-            case '1': //Entrainement
-                $('#specificites').append('<div class="form-group" id="grPrRow">');
-                $('#grPrRow').append('<div class="row" id="grPr">');
-                $('#grPr').append('<label class="col-sm-3 control-label">Programme :</label>');
-                $('#grPr').append('<div class="col-sm-9" id="grPrSel">');
-                $('#grPrSel').append('<select name="programme" class="form-control" id="PrSel">');
-                {% for monProgramme in listeProgramme %}
-                    $('#PrSel').append("<option value='{{monProgramme.id}}'>{{monProgramme.label}} ({{monProgramme.duree|date('Y-m-d')}})</option>");
-                {% endfor %}
-                    $('#grPrSel').append('</select>');
-                    $('#grPr').append('</div>');
-                    $('#grPr').append('</div>');
-                    $('#specificites').append('</div>');
-
-                    $('#specificites').append('<div class="form-group" id="grRdvRow">');
-                    $('#grRdvRow').append('<div class="row" id="grRdv">');
-                    $('#grRdv').append('<label class="col-sm-4 control-label">Lieu de rendez vous :</label>');
-                    $('#grRdv').append('<div class="col-sm-8" id="grRdvSel">');
-                    $('#grRdvSel').append('<select name="programme" class="form-control" id="RdvSel">');
-                    {% for monLieu in listeLieuRendezVous %}
-                    $('#RdvSel').append("<option value='{{monLieu.id}}'>{{monLieu.titre}}</option>");
-                    {% endfor %}
-                    $('#grRdvSel').append('</select>');
-                    $('#grRdv').append('</div>');
-                    $('#grRdv').append('</div>');
-                    $('#specificites').append('</div>');
-                    break;
-                case '2': //Entrainement personnel
-                    break;
-                case '3': //Evenement divers
-                    $('#specificites').append('<div class="form-group" id="grLabelRow">');
-                    $('#grLabelRow').append('<div class="row" id="grLabel">');
-                    $('#grLabel').append('<label class="col-sm-3 control-label">Description :</label>');
-                    $('#grLabel').append('<div class="col-sm-9" id="grLabInp">');
-                    $('#grLabInp').append('<input type="text" class="form-control" name="desc" maxlength="255"/>');
-                    $('#grLabel').append('</div>');
-                    $('#grLabel').append('</div>');
-                    $('#specificites').append('</div>');
-                    break;
-                case '4': //Sortie découverte
-                    $('#specificites').append('<div class="form-group" id="grRdvRow">');
-                    $('#grRdvRow').append('<div class="row" id="grRdv">');
-                    $('#grRdv').append('<label class="col-sm-4 control-label">Lieu de rendez vous :</label>');
-                    $('#grRdv').append('<div class="col-sm-8" id="grRdvSel">');
-                    $('#grRdvSel').append('<select name="programme" class="form-control" id="RdvSel">');
-                    {% for monLieu in listeLieuRendezVous %}
-                    $('#RdvSel').append("<option value='{{monLieu.id}}'>{{monLieu.titre}}</option>");
-                    {% endfor %}
-                    $('#grRdvSel').append('</select>');
-                    $('#grRdv').append('</div>');
-                    $('#grRdv').append('</div>');
-                    $('#specificites').append('</div>');
-                    break;
-                case '5': //Course officielle
-                    $('#specificites').append('<div class="form-group" id="grLabelRow">');
-                    $('#grLabelRow').append('<div class="row" id="grLabel">');
-                    $('#grLabel').append('<label class="col-sm-3 control-label">Site URL :</label>');
-                    $('#grLabel').append('<div class="col-sm-9" id="grLabInp">');
-                    $('#grLabInp').append('<input type="url" class="form-control" name="siteUrl" maxlength="255"/>');
-                    $('#grLabel').append('</div>');
-                    $('#grLabel').append('</div>');
-                    $('#specificites').append('</div>');
-                    break;
-                default:
-            }
-        });
-</script>
 {% javascripts '@SiteTrailBundle/Resources/js/event/*' %}
 <script type="text/javascript" src="{{ asset_url }}"></script>
 {% endjavascripts %}

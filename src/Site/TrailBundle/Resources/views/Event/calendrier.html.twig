@@ -38,14 +38,27 @@
             tabEvent['start'] = '{{monEvenement.getEvenement().getDateDebut()|date('Y-m-d H:i:s')}}';
             tabEvent['end'] = '{{monEvenement.getEvenement().getDateFin()|date('Y-m-d H:i:s')}}';
             tabEvent['description'] = '{{monEvenement.getEvenement.getDescription()}}';
+            tabEvent['color'] = '#ff0590';
             eventAffiches.push(tabEvent);
         {% endfor %}
     {% endfor %}
         
-        //console.dir(eventAffiches);
-        
     function afficherDetail(idClasse, idObj)
-    {        
+    {
+        /*$('#modalEventDetail').children().remove();
+        $('#modalEventDetail').remove();*/
+        /*$('#modalAvertissement').children().remove();
+        $('#modalAvertissement').remove();*/
+        
+        //$('#modalAvertissement').append("<p>PD</p>");
+        
+       // modalsEvent
+       
+        $('#modalsEvent').children().remove();
+        $('#modalsEvent').remove();
+        $('#modalModifEventForm').children().remove();
+        $('#modalModifEventForm').remove();
+        
         $.ajax({
             type: "POST",
             url: "{{ path('site_trail_evenement_detailEvenement') }}",

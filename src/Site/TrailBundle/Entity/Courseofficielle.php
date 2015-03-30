@@ -70,7 +70,7 @@ class Courseofficielle
      */
     public function getSiteUrl()
     {
-        return $this->siteUtl;
+        return $this->siteUrl;
     }
 
     /**

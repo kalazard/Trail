@@ -25,6 +25,12 @@ logout:
 site_trail_evenement:
     path: /calendrier
     defaults: { _controller: SiteTrailBundle:Evenement:index }
+site_trail_evenement_modif:
+    path: /modifEvenement
+    defaults: { _controller: SiteTrailBundle:Evenement:modifEvenement }
+site_trail_evenement_suppr:
+    path: /supprEvenement
+    defaults: { _controller: SiteTrailBundle:Evenement:supprEvenement }
 site_trail_evenement_calendrierForm:
     path: /calendrierForm
     defaults: { _controller: SiteTrailBundle:Evenement:afficherForm }
