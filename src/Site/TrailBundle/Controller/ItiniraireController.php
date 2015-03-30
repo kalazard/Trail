@@ -49,6 +49,7 @@ class ItiniraireController extends Controller
 			$search["typechemin"] = $request->request->get("typechemin");
 			$search["denivelep"] = $request->request->get("denivelep");
 			$search["denivelen"] = $request->request->get("denivelen");
+			$search["datecrea"] = $request->request->get("datecrea");
 			$search["difficulte"] = $request->request->get("difficulte");
 			
 
@@ -72,6 +73,47 @@ class ItiniraireController extends Controller
 		$content = $this->get("templating")->render("SiteTrailBundle:Itiniraire:SearchItineraire.html.twig",array("resultats" => array(),"diffs" => $resDiff));
 		return new Response($content);
 	}
+
+	public function saveRouteAction(Request $request)
+    {
+      if ($request->isXMLHttpRequest()) 
+      {
+      	$clientSOAPDiff = new \SoapClient(null, array(
+                    'uri' => "http://localhost/carto/web/app_dev.php/itineraire",
+                    'location' => "http://localhost/carto/web/app_dev.php/itineraire",
+                    'trace' => true,
+                    'exceptions' => true
+                ));
+
+      	//Appel du service de sauvegarde
+        	$params = array();		
+			$params["nom"] = $request->request->get("nom");
+			$params["typechemin"] = $request->request->get("typechemin");
+			$params["denivelep"] = $request->request->get("denivelep");
+			$params["denivelen"] = $request->request->get("denivelen");
+			$params["datecrea"] = new \DateTime('now');
+			$params["difficulte"] = $request->request->get("difficulte");
+			$params["longueur"] = $request->request->get("longueur");
+			$params["description"] = $request->request->get("description");
+			$params["numero"] = $request->request->get("numero");
+			$params["auteur"] = $request->request->get("auteur");
+			$params["status"] = $request->request->get("status");
+			
+
+			$clientSOAP = new \SoapClient(null, array(
+	                    'uri' => "http://localhost/carto/web/app_dev.php/itineraire",
+	                    'location' => "http://localhost/carto/web/app_dev.php/itineraire",
+	                    'trace' => true,
+	                    'exceptions' => true
+	                ));
+
+	        $response = $clientSOAP->__call('save', $params);
+	        $res = json_decode($response);
+	        return new JsonResponse(array('data' => $response["result"]),$response["code"]);      
+      }
+      return new Response('This is not ajax!', 400);
+    }
+
 
 	public function getByIdAction(Request $request)
 	{
