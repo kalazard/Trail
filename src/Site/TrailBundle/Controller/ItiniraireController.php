@@ -98,6 +98,7 @@ class ItiniraireController extends Controller
 			$params["numero"] = $request->request->get("numero");
 			$params["auteur"] = $request->request->get("auteur");
 			$params["status"] = $request->request->get("status");
+			$params["points"] = $request->request->get("points");
 			
 
 			$clientSOAP = new \SoapClient(null, array(
@@ -115,35 +116,25 @@ class ItiniraireController extends Controller
     }
 
 
-	public function getByIdAction(Request $request)
+	public function getByIdAction($id)
 	{
-		//$itineraire = $this->getUser();
-		
-		//$search = "";
-		/*if(isset($_POST['enter']))
-		{
-			$search = $_POST['enter'];
-		}*/
-		$search = $request->query->get("id");
-		
-		$listItiniraire = array();
-			//on utilise un findBy pour r�cup�rer la liste des utilisateurs on fonction des donn�es de l'utilisateur
-			if(!empty($search))
-			{
-				$repository = $this
-					->getDoctrine()
-					->getManager()
-					->getRepository('SiteTrailBundle:Itineraire')
-				;
+        	//Appel du service de recherche
+        	$search = array();		
+			$search["id"] = $id;
+			
+			$clientSOAP = new \SoapClient(null, array(
+	                    'uri' => "http://localhost/carto/web/app_dev.php/itineraire",
+	                    'location' => "http://localhost/carto/web/app_dev.php/itineraire",
+	                    'trace' => true,
+	                    'exceptions' => true
+	                ));
 
-				$listItiniraire['id'] = $repository->findBy(array('id' => $search));
-				
-				//$listItiniraire['typechemin'] = $repository->findBy(array('typechemin' => $search));
+	        $response = $clientSOAP->__call('getById', $search);
 
-			}
-
-		$content = $this->get("templating")->render("SiteTrailBundle:Itineraire:ItiniraireDisplay.html.twig",array("resultats" => $listItiniraire));
-		return new Response($content);
+			$res = json_decode($response);
+			
+			$content = $this->get("templating")->render("SiteTrailBundle:Itiniraire:FicheItineraire.html.twig",array("resultats" => $res));
+			return new Response($content);
 	}
 
 }
