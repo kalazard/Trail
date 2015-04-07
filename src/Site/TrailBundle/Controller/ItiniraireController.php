@@ -14,8 +14,8 @@ class ItiniraireController extends Controller
 	public function listAction()
 	{
 		$clientSOAP = new \SoapClient(null, array(
-                    'uri' => "http://localhost/carto/web/app_dev.php/itineraire",
-                    'location' => "http://localhost/carto/web/app_dev.php/itineraire",
+                    'uri' => "http://localhost/Carto/web/app_dev.php/itineraire",
+                    'location' => "http://localhost/Carto/web/app_dev.php/itineraire",
                     'trace' => true,
                     'exceptions' => true
                 ));
@@ -33,8 +33,8 @@ class ItiniraireController extends Controller
 	{
 		//Chargement de la liste des difficultés dans le select
 		$clientSOAPDiff = new \SoapClient(null, array(
-                    'uri' => "http://localhost/carto/web/app_dev.php/itineraire",
-                    'location' => "http://localhost/carto/web/app_dev.php/itineraire",
+                    'uri' => "http://localhost/Carto/web/app_dev.php/itineraire",
+                    'location' => "http://localhost/Carto/web/app_dev.php/itineraire",
                     'trace' => true,
                     'exceptions' => true
                 ));
@@ -54,8 +54,8 @@ class ItiniraireController extends Controller
 			
 
 			$clientSOAP = new \SoapClient(null, array(
-	                    'uri' => "http://localhost/carto/web/app_dev.php/itineraire",
-	                    'location' => "http://localhost/carto/web/app_dev.php/itineraire",
+	                    'uri' => "http://localhost/Carto/web/app_dev.php/itineraire",
+	                    'location' => "http://localhost/Carto/web/app_dev.php/itineraire",
 	                    'trace' => true,
 	                    'exceptions' => true
 	                ));
@@ -79,8 +79,8 @@ class ItiniraireController extends Controller
       if ($request->isXMLHttpRequest()) 
       {
       	$clientSOAPDiff = new \SoapClient(null, array(
-                    'uri' => "http://localhost/carto/web/app_dev.php/itineraire",
-                    'location' => "http://localhost/carto/web/app_dev.php/itineraire",
+                    'uri' => "http://localhost/Carto/web/app_dev.php/itineraire",
+                    'location' => "http://localhost/Carto/web/app_dev.php/itineraire",
                     'trace' => true,
                     'exceptions' => true
                 ));
@@ -102,8 +102,8 @@ class ItiniraireController extends Controller
 			
 
 			$clientSOAP = new \SoapClient(null, array(
-	                    'uri' => "http://localhost/carto/web/app_dev.php/itineraire",
-	                    'location' => "http://localhost/carto/web/app_dev.php/itineraire",
+	                    'uri' => "http://localhost/Carto/web/app_dev.php/itineraire",
+	                    'location' => "http://localhost/Carto/web/app_dev.php/itineraire",
 	                    'trace' => true,
 	                    'exceptions' => true
 	                ));
@@ -123,8 +123,8 @@ class ItiniraireController extends Controller
 			$search["id"] = $id;
 			
 			$clientSOAP = new \SoapClient(null, array(
-	                    'uri' => "http://localhost/carto/web/app_dev.php/itineraire",
-	                    'location' => "http://localhost/carto/web/app_dev.php/itineraire",
+	                    'uri' => "http://localhost/Carto/web/app_dev.php/itineraire",
+	                    'location' => "http://localhost/Carto/web/app_dev.php/itineraire",
 	                    'trace' => true,
 	                    'exceptions' => true
 	                ));
