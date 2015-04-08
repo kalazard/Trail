@@ -5,7 +5,7 @@
                 <h4 class="modal-title">Edition de </h4>
             </div>
             <div class="modal-body">
-                {{ form_start(form, {'attr': {'id': 'ajouterEvent'}}) }}
+                {{ form_start(form, {'attr': {'id': 'modifierEvent', 'onSubmit': 'envoiFormModif(); return false;'}}) }}
                 {{ form_errors(form) }}
                 {% if app.user.id is defined %} 
                     <input type="hidden" name="createur" value="{{ app.user.id }}"/>
@@ -46,17 +46,6 @@
                     </div>
                 </div>
 
-                <!-- Champ status -->
-                <div class="form-group">
-                    <div class="row">
-                        {{ form_label(form.status, "Status : ", {'label_attr': {'class': 'col-sm-3 control-label'}}) }}
-                        {{ form_errors(form.status) }}
-                        <div class="col-sm-9">
-                            {{ form_widget(form.status, {'attr': {'class': 'form-control'}}) }}
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Champ date début -->
                 <div class="form-group">
                     <div class="row">
@@ -92,7 +81,7 @@
                         </div>
                     </div>
                 </div>
-                            <p> {{idClasse}}</p>           
+                            
                 <!-- Affichage des trucs supplémentaires -->
                 {% if idClasse == 1 %} <!-- Entrainement -->
                     <div class="form-group">
@@ -121,7 +110,15 @@
                     </div>
                 {% elseif idClasse == 2 %} <!-- Entrainement personnel -->
                 {% elseif idClasse == 3 %} <!-- Evenement divers -->
-                    <p>Description</p>
+                    <div class="form-group">
+                        <div class="row">
+                            {{ form_label(form.descrDivers, "Description : ", {'label_attr': {'class': 'col-sm-3 control-label'}}) }}
+                            {{ form_errors(form.descrDivers) }}
+                            <div class="col-sm-9">
+                                {{ form_widget(form.descrDivers, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+                        </div>
+                    </div>
                 {% elseif idClasse == 4 %} <!-- Sortie découverte -->
                     <div class="form-group">
                         <div class="row">
@@ -136,13 +133,21 @@
                         </div>
                     </div>
                 {% elseif idClasse == 5 %} <!-- Course officielle -->
-                    <p>Site URL</p>
+                    <div class="form-group">
+                        <div class="row">
+                            {{ form_label(form.siteUrl, "Site URL : ", {'label_attr': {'class': 'col-sm-3 control-label'}}) }}
+                            {{ form_errors(form.siteUrl) }}
+                            <div class="col-sm-9">
+                                {{ form_widget(form.siteUrl, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+                        </div>
+                    </div>
                 {% else %}
                 {% endif %}
     
                 <div class="modal-footer">
-                    <input type="submit" class="btn btn-primary" value="Ajouter" />
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+                    <input type="submit" class="btn btn-primary" value="Modifier" />
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
                 </div>
                 {{ form_end(form) }}
             </div>
@@ -151,5 +156,5 @@
 </div>
 
 {% javascripts '@SiteTrailBundle/Resources/js/event/*' %}
-<script type="text/javascript" src="{{ asset_url }}"></script>
+    <script type="text/javascript" src="{{ asset_url }}"></script>
 {% endjavascripts %}

@@ -3,6 +3,7 @@
 namespace Site\TrailBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 
 /**
  * Participation
@@ -10,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="participation")
  * @ORM\Entity
  */
-class Participation
+class Participation implements JsonSerializable
 {
     /**
      * @var integer
@@ -121,5 +122,14 @@ class Participation
     public function getDivers()
     {
         return $this->divers;
+    }
+    
+    public function jsonSerialize() {
+        return [
+            'id' => $this->getId(),
+            'etatinscription' => $this->getEtatInscription(),
+            'resultat' => $this->getResultat(),
+            'divers' => $this->getDivers()
+        ];
     }
 }

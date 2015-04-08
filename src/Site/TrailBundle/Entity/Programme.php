@@ -3,6 +3,7 @@
 namespace Site\TrailBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 
 /**
  * Programme
@@ -10,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="programme")
  * @ORM\Entity
  */
-class Programme
+class Programme implements JsonSerializable
 {
     /**
      * @var integer
@@ -91,5 +92,13 @@ class Programme
     public function getDuree()
     {
         return $this->duree;
+    }
+    
+    public function jsonSerialize() {
+        return [
+            'id' => $this->getId(),
+            'label' => $this->getLabel(),
+            'duree' => $this->getDuree()
+        ];
     }
 }

@@ -3,6 +3,7 @@
 namespace Site\TrailBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 
 /**
  * Lieurendezvous
@@ -10,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="lieurendezvous")
  * @ORM\Entity
  */
-class Lieurendezvous
+class Lieurendezvous implements JsonSerializable
 {
     /**
      * @var integer
@@ -121,5 +122,14 @@ class Lieurendezvous
     public function getCoordonnees()
     {
         return $this->coordonnees;
+    }
+    
+    public function jsonSerialize() {
+        return [
+            'id' => $this->getId(),
+            'titre' => $this->getTitre(),
+            'description' => $this->getDescription(),
+            'coordonnees' => $this->getCoordonnes() 
+        ];
     }
 }

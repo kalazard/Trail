@@ -7,7 +7,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Site\TrailBundle\Entity\Evenement;
-use Site\TrailBundle\Entity\Utilisateur;
+use Site\TrailBundle\Entity\Membre;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 
 class IcsController extends Controller
@@ -21,47 +22,42 @@ class IcsController extends Controller
             {
                 $idUser = $this->getUser()->getId();
             }
-            else
-            {
-                $idUser = 0;
-            }
             
             $dateD = new \DateTime($dateDebut);
             date_time_set($dateD, 0, 0);
             $dateF = new \DateTime($dateFin);
             date_time_set($dateF, 23, 59, 59);
-            
-            /*$dateDebut = new \DateTime('now');
-            date_time_set($dateDebut, 0, 0);
-            $dateFin = new \DateTime('now');
-            date_time_set($dateFin, 59, 59);
-            date_add($dateFin, date_interval_create_from_date_string('14 days'));*/
         }
         else //Cas où on veut récupérer le calendrier "à l'exterieur" du site
         {
             $manager = $this->getDoctrine()->getManager();
-            $repository=$manager->getRepository("SiteTrailBundle:Utilisateur");
+            $repository=$manager->getRepository("SiteTrailBundle:Membre");
             $tokenics = htmlspecialchars($id);
             $utilisateur = $repository->findOneByTokenics($tokenics);
             $idUser = $utilisateur->getId();
-            //$dateDebut = new \DateTime("now");
-            //date_time_set($dateDebut, 0, 0);
             $dateD = '';
             $dateF = '';
         }        
         
-        $mesEvenements = EvenementController::getAllEventFrom($idUser, $this->getDoctrine()->getManager(), $dateD, $dateF);
+        $mesEvenements = EvenementController::getEventFrom($idUser, $this->getDoctrine()->getManager(), $dateD, $dateF);
 
         $ics = new Ics($mesEvenements);        
         
         return new Response($ics->show());
-        //return new Response("e");
     }
     
-    public function icsFormAction()
-    {        
-        $content = $this->get("templating")->render("SiteTrailBundle:Event:icsForm.html.twig");
+    public function icsFormAction(Request $request)
+    { 
+        if($request->isXmlHttpRequest() && $this->getUser())
+        {
+            $content = $this->get("templating")->render("SiteTrailBundle:Event:icsForm.html.twig");
         
-        return new Response($content);
+            return new Response($content);
+        }
+        else
+        {
+            throw new NotFoundHttpException('Impossible de trouver la page demandée');
+        }
+        
     }
 }

@@ -10,7 +10,7 @@ use JsonSerializable;
  * @ORM\Table(name="membre", uniqueConstraints={@ORM\UniqueConstraint(name="email_UNIQUE", columns={"email"})}, indexes={@ORM\Index(name="fk_membre_role_idx", columns={"role"}), @ORM\Index(name="fk_membre_avatar_idx", columns={"avatar"})})
  * @ORM\Entity
  */
-class Membre implements \Symfony\Component\Security\Core\User\UserInterface, \Serializable
+class Membre implements \Symfony\Component\Security\Core\User\UserInterface, \Serializable, JsonSerializable
 {
     /**
      * @var integer
@@ -329,9 +329,6 @@ class Membre implements \Symfony\Component\Security\Core\User\UserInterface, \Se
         return $this->email;
     }
 
-    public function jsonSerialize() {
-        
-    }
     //Ajouter ce qui est necessaire ici
     public function serialize()
     {
@@ -359,5 +356,19 @@ class Membre implements \Symfony\Component\Security\Core\User\UserInterface, \Se
             // $this->salt
         ) = unserialize($serialized);
     }
-
+    
+    public function jsonSerialize() {
+        return [
+            'id' => $this->getId(),
+            'email' => $this->getEmail(),
+            'nom' => $this->getNom(),
+            'prenom' => $this->getPrenom(),
+            'datenaissance' => $this->getDateNaissance(),
+            'telephone' => $this->getTelephone(),
+            'licence' => $this->getLicence(),
+            'tokenics' => $this->getTokenics(),
+            'role' => $this->getRole(),
+            'avatar' => $this->getAvatar() 
+        ];
+    }
 }

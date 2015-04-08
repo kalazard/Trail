@@ -1,0 +1,121 @@
+<div id="modalAddEventForm" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h4 class="modal-title">Ajouter un événement</h4>
+            </div>
+            <div class="modal-body">
+                {{ form_start(form, {'attr': {'id': 'ajouterEvent', 'onSubmit': 'envoiFormAjout(); return false;'}}) }}
+                {{ form_errors(form) }}
+
+                <!-- Champ titre -->
+                <div class="form-group">
+                    <div class="row">
+                        {{ form_label(form.titre, "Titre : ", {'label_attr': {'class': 'col-sm-3 control-label'}}) }}
+                        {{ form_errors(form.titre) }}
+                        <div class="col-sm-9">
+                            {{ form_widget(form.titre, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Champ description -->
+                <div class="form-group">
+                    <div class="row">
+                        {{ form_label(form.description, "Description : ", {'label_attr': {'class': 'col-sm-3 control-label'}}) }}
+                        {{ form_errors(form.description) }}
+                        <div class="col-sm-9">
+                            {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Champ lien kidoikoiaki -->
+                <div class="form-group">
+                    <div class="row">
+                        {{ form_label(form.lienKid, "Lien KID : ", {'label_attr': {'class': 'col-sm-3 control-label'}}) }}
+                        {{ form_errors(form.lienKid) }}
+                        <div class="col-sm-9">
+                            {{ form_widget(form.lienKid, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Champ date début -->
+                <div class="form-group">
+                    <div class="row">
+                        {{ form_label(form.date_debut, "Date début : ", {'label_attr': {'class': 'col-sm-3 control-label'}}) }}
+                        {{ form_errors(form.date_debut) }}
+                        <div class="col-sm-9">
+                            {{ form_widget(form.date_debut) }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Champ date fin -->
+                <div class="form-group">
+                    <div class="row">
+                        {{ form_label(form.date_fin, "Date fin : ", {'label_attr': {'class': 'col-sm-3 control-label'}}) }}
+                        {{ form_errors(form.date_fin) }}
+                        <div class="col-sm-9">
+                            {{ form_widget(form.date_fin) }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Champ participants -->
+                <div class="form-group">
+                    <div class="row">
+                        <label class='col-sm-3 control-label'>Participants :</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" name="participants[]" multiple>
+                                {% for monUser in listeUser %}
+                                    <option value='{{monUser.id}}'>{{monUser.userName}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Champ type d'événement -->
+                <div class="form-group">
+                    <div class="row">
+                        <label class='col-sm-3 control-label'>Type d'événement :</label>
+                        <div class="col-sm-9">
+                            <select id="selectTypeEvent" class="form-control" name="type">
+                                <option value="1">Entrainement</option>
+                                <option value="2">Entrainement personnel</option>
+                                <option value="3">Evenement divers</option>
+                                <option value="4">Sortie découverte</option>
+                                <option value="5">Course officielle</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Champs spécifiques à la catégorie de l'événement (entrainement par défaut) -->
+                <div id="specificites">
+                    {{ selectProgramme|raw }}
+                    {{ selectLieuRendezVous|raw }}
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-primary" value="Ajouter" />
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script pour la modification dynamique du formulaire -->
+<script>
+    $("body").on("change", "#selectTypeEvent", function ()
+    {
+        updateFormAddEvent('{{selectProgramme|raw}}', '{{selectLieuRendezVous|raw}}', $('#selectTypeEvent').val());
+    });
+</script>
+
+{% javascripts '@SiteTrailBundle/Resources/js/event/*' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}

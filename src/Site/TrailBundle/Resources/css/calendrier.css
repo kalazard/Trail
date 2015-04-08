@@ -1,57 +1,49 @@
-#calendar
+#legende
 {
-    margin: auto;
-    width: 900px;
+    border-collapse: separate;
+    border-spacing: 5px 0px;
+    padding-top: 15px;
+    margin: 15px auto 15px auto;
+    border-top: #C0C0C0 1px solid;
 }
 
-#dlCal
+.couleur
 {
-	margin-top: 20px;
+    width: 30px;
+    border-radius: 25px;
 }
 
-#listeAction
+#legende tr td:nth-child(1)
 {
-    position: absolute;
-    z-index: 2;
+    background-color: #F79B23;
 }
 
-#listeAction
+#legende tr td:nth-child(2)
 {
-    display: none;
+    padding-right: 15px;
 }
 
-.petitTexte
+#legende tr td:nth-child(3)
 {
-    font-size: 0.8em;
+    background-color: #E4D623;
 }
 
-.icsTableTd
+#legende tr td:nth-child(4)
 {
-    padding: 3px;
+    padding-right: 15px;
 }
 
-.tdCenter
+#legende tr td:nth-child(5)
 {
-    vertical-align: middle;
+    background-color: #79D118;
 }
 
-.tableContainer
+#legende tr td:nth-child(6)
 {
-    border-bottom: dashed 1px #bfbfbf;
-    margin-bottom: 5px;
+    padding-right: 15px;
 }
 
-.tableContainer table
+#legende tr td:nth-child(7)
 {
-    margin: 0 auto 5px auto;
-}
-
-#lienAjoutEvent
-{
-    cursor: pointer;
-}
-
-.container
-{
-	margin-bottom: 30px;
+    background-color: #FF3737;
 }

@@ -3,6 +3,7 @@
 namespace Site\TrailBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 
 /**
  * Evenement
@@ -10,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="evenement", indexes={@ORM\Index(name="fk_evenement_createur_idx", columns={"createur"})})
  * @ORM\Entity
  */
-class Evenement
+class Evenement implements JsonSerializable
 {
     /**
      * @var integer
@@ -57,9 +58,12 @@ class Evenement
     private $description;
 
     /**
-     * @var string
+     * @var \Status
      *
-     * @ORM\Column(name="status", type="string", length=255, nullable=false)
+     * @ORM\ManyToOne(targetEntity="Status")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="status", referencedColumnName="id")
+     * })
      */
     private $status;
 
@@ -304,5 +308,36 @@ class Evenement
     public function getCreateur()
     {
         return $this->createur;
+    }
+    
+    /*public function to_json()
+    {
+        return json_encode(array(
+            'id' => $this->getId(),
+            'dateCreation' => $this->getDateCreation(),
+            'dateDebut' => $this->getDateDebut(),
+            'dateFin' => $this->getDateFin(),
+            'titre' => $this->getTitre(),
+            'description' => $this->getDescription(),
+            'status' => $this->getStatus(),
+            'alias' => $this->getAlias(),
+            'lienkid' => $this->getLienKid(),
+            'createur' => $this->getCreateur()                
+        ));
+    }*/
+    
+    public function jsonSerialize() {
+        return [
+            'id' => $this->getId(),
+            'dateCreation' => $this->getDateCreation(),
+            'dateDebut' => $this->getDateDebut(),
+            'dateFin' => $this->getDateFin(),
+            'titre' => $this->getTitre(),
+            'description' => $this->getDescription(),
+            'status' => $this->getStatus(),
+            'alias' => $this->getAlias(),
+            'lienkid' => $this->getLienKid(),
+            'createur' => $this->getCreateur() 
+        ];
     }
 }

@@ -35,21 +35,7 @@
         </div>
     </div>
 </div>
-    <script>        
-        $( "body" ).on( "change", ".date", function()
-        {
-            $('#lienDl').children().remove();
-            $("#lienDl").append("<a class='btn btn-default' role='button' href='{{ path('site_trail_evenement_ics') }}/default/" + $( "#dateDebut" ).val() + "/" +  $( "#dateFin" ).val() + "'>Télécharger</a>");   
-        }); 
-        
-        $(function()
-        {
-            $( ".date" ).datepicker($.datepicker.regional[ "fr" ]);
-        });
-        
-        $("#dateDebut").datepicker('setDate', new Date());
-        $( ".date" ).datepicker( "option", "dateFormat", "yy-mm-dd" );
-        $("#dateFin").datepicker('setDate', +7);
-        
-        $("#lienDl").append("<a class='btn btn-default' role='button' href='{{ path('site_trail_evenement_ics') }}/default/" + $( "#dateDebut" ).val() + "/" +  $( "#dateFin" ).val() + "'>Télécharger</a>");   
-    </script>
+
+{% javascripts '@SiteTrailBundle/Resources/js/event/*' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}

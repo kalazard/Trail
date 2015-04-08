@@ -25,26 +25,40 @@ logout:
     path:   /logout
     defaults: { _controller:SiteTrailBundle:User:logOut }
 site_trail_evenement:
-    path: /calendrier
-    defaults: { _controller: SiteTrailBundle:Evenement:index }
-site_trail_evenement_modif:
-    path: /modifEvenement
-    defaults: { _controller: SiteTrailBundle:Evenement:modifEvenement }
-site_trail_evenement_suppr:
-    path: /supprEvenement
-    defaults: { _controller: SiteTrailBundle:Evenement:supprEvenement }
-site_trail_evenement_calendrierForm:
-    path: /calendrierForm
-    defaults: { _controller: SiteTrailBundle:Evenement:afficherForm }
-site_trail_evenement_detailEvenement:
-    path: /detailEvenement
+    path:   /evenement
+    defaults: { _controller:SiteTrailBundle:Evenement:index }
+    options:
+        expose: true
+site_trail_evenement_ajout:
+    path:   /evenement/ajout
+    defaults: { _controller:SiteTrailBundle:Evenement:showFormAddEvent }
+    options:
+        expose: true
+site_trail_evenement_detail:
+    path: /evenement/detail
     defaults: { _controller: SiteTrailBundle:Evenement:afficherDetailEvenement }
+    options:
+        expose: true
+site_trail_evenement_suppression:
+    path: /evenement/suppression
+    defaults: { _controller: SiteTrailBundle:Evenement:supprEvenement }
+    options:
+        expose: true
+site_trail_evenement_modification:
+    path: /evenement/modification
+    defaults: { _controller: SiteTrailBundle:Evenement:modifEvenement }
+    options:
+        expose: true
 site_trail_evenement_ics:
     path: /ics/{id}/{dateDebut}/{dateFin}
-    defaults: { _controller: SiteTrailBundle:Ics:index, id: default, dateDebut: '', dateFin: '' }   
+    defaults: { _controller: SiteTrailBundle:Ics:index, id: default, dateDebut: '', dateFin: '' }
+    options:
+        expose: true
 site_trail_evenement_icsForm:
     path: /icsForm
     defaults: { _controller: SiteTrailBundle:Ics:icsForm }
+    options:
+        expose: true
 site_trail_memberdisplay:
     path:     /member_list
     defaults: { _controller: SiteTrailBundle:MemberDisplay:list }

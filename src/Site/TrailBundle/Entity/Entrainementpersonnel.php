@@ -3,6 +3,7 @@
 namespace Site\TrailBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 
 /**
  * Entrainementpersonnel
@@ -10,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="entrainementpersonnel", indexes={@ORM\Index(name="fk_entrainementpersonnel_evenement_idx", columns={"evenement"})})
  * @ORM\Entity
  */
-class Entrainementpersonnel
+class Entrainementpersonnel implements JsonSerializable
 {
     /**
      * @var integer
@@ -64,5 +65,12 @@ class Entrainementpersonnel
     public function getEvenement()
     {
         return $this->evenement;
+    }
+    
+    public function jsonSerialize() {
+        return [
+            'id' => $this->getId(),
+            'evenement' => $this->getEvenement(),
+        ];
     }
 }
