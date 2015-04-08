@@ -6,7 +6,7 @@
   {% if app.user %}
       <h1>Listage des itinéraires</h1>
 	  {% for itineraire in resultats.list%}
-		<p> Nom: {{itineraire.nom}}  ID: {{itineraire.id}}</p>
+		<a href="{{ path('site_trail_getByIditineraire', {'id': itineraire.id}) }}"> Itinéaire: {{itineraire.nom}}  Type de chemin: {{itineraire.typechemin}} Difficulte: {{itineraire.difficulte.label}} Date de création: {{itineraire.datecreation}} Longueur du parcours: {{itineraire.longueur}}</a>
 	  {% endfor %}
  {% else %}
      <p>Vous n'avez pas accès à cette page</p>

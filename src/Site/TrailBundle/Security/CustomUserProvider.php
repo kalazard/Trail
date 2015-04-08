@@ -24,7 +24,8 @@ class CustomUserProvider implements UserProviderInterface {
         //Permet de récupérer l'id de l'utilisateur dans le cookie !        
         if(isset($_COOKIE["TrailAuthCookie"]))
         {
-            return intval(CustomCrypto::decrypt($_COOKIE["TrailAuthCookie"]));
+            $cookie = CustomCrypto::decrypt($_COOKIE["TrailAuthCookie"]);
+            return intval(explode("/", $cookie)[0]);
         }
         else
         {

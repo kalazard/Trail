@@ -559,8 +559,8 @@ class UserController extends Controller {
                     return $response;
                 }
 
-                //L'utilisateur existe dans notre base de données et il est connecté, on créé le cookie d'authentufication
-                setcookie($this->container->getParameter("auth_cookie"), CustomCrypto::encrypt($membre->getId()), 0, '/');
+                //L'utilisateur existe dans notre base de données et il est connecté, on créé le cookie d'authentification
+                setcookie($this->container->getParameter("auth_cookie"), CustomCrypto::encrypt($membre->getId()."/".$membre->getEmail()."/".$membre->getRole()->getLabel()), 0, '/');
 
                 $return = array('success' => true, 'serverError' => false);
                 $response = new Response(json_encode($return));

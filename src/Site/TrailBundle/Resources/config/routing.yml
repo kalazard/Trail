@@ -12,9 +12,9 @@ site_trail_test:
 site_trail_map:
     path:     /map
     defaults: { _controller: SiteTrailBundle:Map:index }
-site_trail_map_createRoute:
-    path:     /map/createRoute
-    defaults: { _controller: SiteTrailBundle:Map:createRoute }
+site_trail_saveitineraire:
+    path:     /itineraire_save/
+    defaults: { _controller: SiteTrailBundle:Itineraire:saveRoute }
 site_trail_map_createPoi:
     path:     /map/createPoi
     defaults: { _controller: SiteTrailBundle:Map:createPoi }
