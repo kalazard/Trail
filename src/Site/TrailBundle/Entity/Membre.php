@@ -363,7 +363,7 @@ class Membre implements \Symfony\Component\Security\Core\User\UserInterface, \Se
             'email' => $this->getEmail(),
             'nom' => $this->getNom(),
             'prenom' => $this->getPrenom(),
-            'datenaissance' => $this->getDateNaissance(),
+            'datenaissance' => $this->getDateNaissance()->format("d/m/Y"),
             'telephone' => $this->getTelephone(),
             'licence' => $this->getLicence(),
             'tokenics' => $this->getTokenics(),
