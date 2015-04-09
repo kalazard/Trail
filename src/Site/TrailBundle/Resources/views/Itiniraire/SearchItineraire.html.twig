@@ -44,18 +44,45 @@
 						<input type="submit" name="submit" value=" Rechercher ">
 					</div>
 				</form>
-			  
-			  {% if resultats is not empty %}
-			  
-					<h3>Résultats</h3>
-					{% if resultats.searchResults is not empty %}
-						{% for itineraire in resultats.searchResults %}
-							<a href="{{ path('site_trail_getByIditineraire', {'id': itineraire.id}) }}"> Itinéaire: {{itineraire.nom}}  Type de chemin: {{itineraire.typechemin}} Difficulte: {{itineraire.difficulte.label}} Date de création: {{itineraire.datecreation}} Longueur du parcours: {{itineraire.longueur}}</a>
+				<h1>Liste des itinéraires</h1>
+			  <table class="table">
+				<thead>
+					<tr>
+						<th>Itinéraire</th>
+						<th>Type de chemin</th>
+						<th>Difficulté</th>
+						<th>Date de création</th>
+						<th>Longueur du parcours</th>
+					</tr>
+				</thead>
+				<tbody>
+				{% if resultats is empty %}
+					{% if list.elements is not empty %}
+						{% for itineraire in list.elements %}
+						<tr>
+							<td>{{itineraire.nom}}</td>
+							<td>{{itineraire.typechemin}}</td>
+							<td>{{itineraire.difficulte.label}}</td>
+							<td>{{itineraire.datecreation}}</td>
+							<td>{{itineraire.longueur}}</td>
+						</tr>
 						{% endfor %}
-					{% else %}
-						 <p>Aucun résultat</p>
 					{% endif %}
-			  {% endif %}
+				  {% else %}
+						{% if resultats.searchResults is not empty %}
+							{% for itineraire in resultats.searchResults %}
+								<tr>
+									<td>{{itineraire.nom}}</td>
+									<td>{{itineraire.typechemin}}</td>
+									<td>{{itineraire.difficulte.label}}</td>
+									<td>{{itineraire.datecreation}}</td>
+									<td>{{itineraire.longueur}}</td>
+								</tr>
+							{% endfor %}
+						{% endif %}
+				  {% endif %}
+				</tbody>
+			   </table>
 		</div>
 	 {% else %}
 	     <p>Vous n'avez pas accès à cette page</p>
