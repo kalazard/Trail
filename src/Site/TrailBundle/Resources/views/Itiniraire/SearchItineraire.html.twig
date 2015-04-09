@@ -8,44 +8,41 @@
 		      <h1>Recherche d'itinéraire</h1>
 			  
 			  <form class="form-inline" role="form" name="myform" action="{{ path('site_trail_searchitineraire') }}" method="POST">
-			  		<div class="form-group">
-			  			<label for="nom">Nom:</label>
-						<input name="nom" id="nom" type="text" size="25" placeholder="Nom">
-					</div>
-					<div class="form-group">
-						<label for="typechemin">Type de chemin:</label>
-						<input name="typechemin" id="typechemin" type="text" size="25" placeholder="Type de chemin">
-					</div>
-					<div class="form-group">
-						<label for="denivelep">Dénivelé positif:</label>
-						<input name="denivelep" id="denivelep" type="text" size="25" placeholder="Dénivelé positif">
-					</div>
-					<div class="form-group">
-						<label for="denivelen">Dénivelé négatif:</label>
-						<input name="denivelen" id="denivelen" type="text" size="25" placeholder="Dénivelé négatif">
-					</div>
-					<div class="form-group">
-						<label for="datecrea">Date de création:</label>
-						<input name="datecrea" id="datecrea" type="date" size="25" placeholder="Date de création">
-					</div>
-					<div class="form-group">
-						<label for="recipient-name" class="control-label">Difficulté:</label>
-		                <select name="difficulte">
+			  		<table class="table table-striped">
+				<thead>
+					<tr>
+						<th><label for="nom">Nom:</label></th>
+						<th><label for="typechemin">Type de chemin:</label></th>
+						<th><label for="denivelep">Dénivelé positif:</label></th>
+						<th><label for="denivelen">Dénivelé négatif:</label></th>
+						<th><label for="datecrea">Date de création:</label></th>
+						<th><label for="recipient-name" class="control-label">Difficulté:</label></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<th><input name="nom" id="nom" type="text" size="25" placeholder="Nom"></th>
+						<th><input name="typechemin" id="typechemin" type="text" size="25" placeholder="Type de chemin"></th>
+						<th><input name="denivelep" id="denivelep" type="text" size="25" placeholder="Dénivelé positif"></th>
+						<th><input name="denivelen" id="denivelen" type="text" size="25" placeholder="Dénivelé négatif"></th>
+						<th><input name="datecrea" id="datecrea" type="date" size="25" placeholder="Date de création"></th>
+						<th><select name="difficulte">
 		                  {% if diffs.difficultes is not empty %}
 		                  <option value=""/></option>
 									{% for diff in diffs.difficultes%}
 										<option value={{diff.niveau}}>{{diff.label}}</option>
 									{% endfor %}
 						  {% endif %}
-		                </select>
-		             </div>
+		                </select></th>
+					</tr>
+				</tbody>
+			   </table>
 		            <input name="valid" type="hidden" value="ok">
 		            <div class="form-group">
 						<input type="submit" name="submit" value=" Rechercher ">
 					</div>
 				</form>
-				<h1>Liste des itinéraires</h1>
-			  <table class="table">
+			  <table class="table table-striped">
 				<thead>
 					<tr>
 						<th>Itinéraire</th>
