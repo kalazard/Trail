@@ -251,8 +251,8 @@ class EvenementController extends Controller
                 if($kid == 1)
                 {
                     $clientSOAP = new \SoapClient(null, array(
-                        'uri' => "http://localhost/kidoikoiaki/web/app_dev.php/evenement",
-                        'location' => "http://localhost/kidoikoiaki/web/app_dev.php/evenement",
+                        'uri' => "http://130.79.214.167/kidoikoiaki/web/app_dev.php/evenement",
+                        'location' => "http://130.79.214.167/kidoikoiaki/web/app_dev.php/evenement",
                         'trace' => true,
                         'exceptions' => true
                     ));
@@ -260,7 +260,7 @@ class EvenementController extends Controller
                     //renvoie le token : mettre titre evenement
                     $token = json_decode($clientSOAP->__call('creerevenement', array('title' => $event->getTitre())));
                     
-                    $event->setLienKid("http://localhost/kidoikoiaki/web/app_dev.php/participants/".$token->token);
+                    $event->setLienKid("http://130.79.214.167/kidoikoiaki/web/app_dev.php/participants/".$token->token);
                 }
                 
                 $repository = $manager->getRepository("SiteTrailBundle:Membre");

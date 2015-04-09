@@ -57,6 +57,8 @@ site_trail_evenement_ics:
 site_trail_evenement_icsForm:
     path: /icsForm
     defaults: { _controller: SiteTrailBundle:Ics:icsForm }
+    options:
+        expose: true
 site_trail_profilmembre:
     path:     /profil_membre/
     defaults: { _controller: SiteTrailBundle:MemberDisplay:profil }
