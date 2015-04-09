@@ -4,30 +4,46 @@
 {% block title %}{{ parent() }} - Annuaire{% endblock %}
 
 {% block body %}
-	<div class="container">
-		<h1>Annuaire</h1>
-		<table class="table-striped table sieve">
-			<thead>
-				<tr>
-					<th>Id</th>
-					<th>Email</th>
-					<th>Role</th>
-						{% if app.user %}
-							{% if is_granted('ROLE_Administrateur') %}
-							<th>Editer</th>
-							<th>Supprimer</th>
-							{% endif %}
-						{% endif %}
-				</tr>
-			</thead> 
-			<tbody id="table_user">
+    <div class="container">
+        <h1>Annuaire</h1>
+        <table class="table-striped table sieve">
+            <thead>
+                <tr>
+                    {% if app.user %}
+                        {% if is_granted('ROLE_Administrateur') %}
+                            <th>Id</th>
+                            {% endif %}
+                        {% endif %}
 
-			</tbody>
-		</table>
-	</div>
-	
-	
-	
+                    <th>Email</th>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th>Date de naissance</th>
+                    <th>Téléphone</th>
+                    <th>Photo</th>
+                        {% if app.user %}
+                            {% if is_granted('ROLE_Administrateur') %}
+                            <th>Role</th>
+                            {% endif %}
+                        {% endif %}
+
+
+                    {% if app.user %}
+                        {% if is_granted('ROLE_Administrateur') %}
+                            <th>Editer</th>
+                            <th>Supprimer</th>
+                            {% endif %}
+                        {% endif %}
+                </tr>
+            </thead> 
+            <tbody id="table_user">
+
+            </tbody>
+        </table>
+    </div>
+
+
+
     <div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -41,12 +57,20 @@
                         <input id="emailUpdate" class="form-control" type="text" placeholder="Email">
                     </div>
                     <div class="form-group">
-                        <label>Mot de passe:</label>
-                        <input id="passwordUpdate" class="form-control " type="password" placeholder="Mot de passe">
+                        <label>Nom:</label>
+                        <input id="nomUpdate" class="form-control " type="text" placeholder="Nom">
                     </div>
                     <div class="form-group">
-                        <label>Ressaisir le mot de passe:</label>
-                        <input id="reenterPasswordUpdate" class="form-control " type="password" placeholder="Mot de passe">
+                        <label>Prénom:</label>
+                        <input id="prenomUpdate" class="form-control " type="text" placeholder="Prénom">
+                    </div>
+                    <div class="form-group">
+                        <label>Téléphone:</label>
+                        <input id="telephoneUpdate" class="form-control " type="text" placeholder="Téléphone">
+                    </div>
+                    <div class="form-group">
+                        <label>Date de naissance:</label>
+                        <input id="datenaissanceUpdate" class="form-control " type="text" placeholder="jj/mm/aaaa">
                     </div>
                     <div class="form-group">
                         <label>Role:</label>
@@ -66,8 +90,11 @@
         $(document).ready(function () {
             var table_user = $("#table_user");  //Tableau contenant les utilisateurs 
             var emailUpdate = $("#emailUpdate"); //Champ de mise à jour de l'email
-            var passwordUpdate = $("#passwordUpdate");   //Champ de mise à jour du mot de passe
-            var reenterPasswordUpdate = $("#reenterPasswordUpdate"); //Champ de mise a jour de la resaisis du mot de passe
+            var nomUpdate = $("#nomUpdate");
+            var prenomUpdate = $("#prenomUpdate");
+            var telephoneUpdate = $("#telephoneUpdate");
+            var datenaissanceUpdate = $("#datenaissanceUpdate");
+            var nomUpdate = $("#nomUpdate");
             var roleUpdate = $("#selectRoleEdit");   //Combobox de mise à jour du role d'un utilisateur
             var btn_update = $("#btn_update");   //bouton qui déclenche la mise à jour d'un utilisateur
             fill_table_user();
@@ -89,10 +116,23 @@
                             {
                                 table_user.empty();
                                 var rows = "";
-                                $.each(data.users, function (index, value) {
-                                    rows = rows + "<tr><td>" + value.id + "</td><td>" + value.email + "</td><td>" + value.role + "</td><td><p data-placement='top' data-toggle='tooltip' title='Edit'><button class='btn btn-primary btn-xs btn_edit' data-title='Editer' data-value='" + value.id + "' data-toggle='modal' data-target='#edit' ><span class='glyphicon glyphicon-pencil'></span></button></p></td><td><p data-placement='top' data-toggle='tooltip' title='Delete'><button class='btn btn-danger btn-xs delete' data-value='" + value.id + "'><span class='glyphicon glyphicon-trash'></span></button></p></td</tr>"
-                                });
-                                table_user.append(rows);
+                                if (data.visibilite)
+                                {
+                                    $.each(data.users, function (index, value) {
+                                        console.log(value.datenaissance);
+                                        rows = rows + "<tr><td>" + value.id + "</td><td>" + value.email + "</td><td>" + value.nom + "</td><td>" + value.prenom + "</td><td>" + value.datenaissance + "</td><td>" + value.telephone + "</td><td><div class='img-size' style='background-image: url(\"" + value.avatar.path + "\");'></div></td><td>" + value.role.name + "</td><td><p data-placement='top' data-toggle='tooltip' title='Edit'><button class='btn btn-primary btn-xs btn_edit' data-title='Editer' data-value='" + value.id + "' data-toggle='modal' data-target='#edit' ><span class='glyphicon glyphicon-pencil'></span></button></p></td><td><p data-placement='top' data-toggle='tooltip' title='Delete'><button class='btn btn-danger btn-xs delete' data-value='" + value.id + "'><span class='glyphicon glyphicon-trash'></span></button></p></td</tr>"
+                                    });
+                                    table_user.append(rows);
+                                }
+                                else
+                                {
+                                    $.each(data.users, function (index, value) {
+                                        console.log(value.datenaissance);
+                                        rows = rows + "<tr><td>" + value.email + "</td><td>" + value.nom + "</td><td>" + value.prenom + "</td><td>" + value.datenaissance + "</td><td>" + value.telephone + "</td><td><div class='img-size' style='background-image: url(\"" + value.avatar.path + "\");'></div></td></tr>"
+                                    });
+                                    table_user.append(rows);
+                                }
+
                             }
                             else
                             {
@@ -126,7 +166,10 @@
                             {
                                 user = data.user;
                                 emailUpdate.val(user.email);
-                                console.log(data.role);
+                                nomUpdate.val(user.nom);
+                                prenomUpdate.val(user.prenom);
+                                telephoneUpdate.val(user.telephone);
+                                datenaissanceUpdate.val(user.datenaissance)
                                 roleUpdate.val(data.role.id);
 
                             }
@@ -218,16 +261,8 @@
 
             //Quand on veut mettre à jour l'utilisateur
             btn_update.click(function () {
-                var data = {id_user: user.id, emailUpdate: emailUpdate.val(), roleUpdate: roleUpdate.val()};
-                if (passwordUpdate.val() != reenterPasswordUpdate.val())
-                {
-                    $.notify("Les mots de passe doivent être identiques", "error");
-                    return false;
-                }
-                if (passwordUpdate.val() != "")
-                {
-                    data = {id_user: user.id, emailUpdate: emailUpdate.val(), passwordUpdate: passwordUpdate.val(), roleUpdate: roleUpdate.val()};
-                }
+                var data = {id_user: user.id, emailUpdate: emailUpdate.val(), nomUpdate: nomUpdate.val(), prenomUpdate: prenomUpdate.val(), datenaissanceUpdate: datenaissanceUpdate.val(), telephoneUpdate: telephoneUpdate.val(),roleUpdate: roleUpdate.val()};
+                
                 $.ajax({
                     type: "POST",
                     url: "{{ path('site_trail_updateUser') }}",
