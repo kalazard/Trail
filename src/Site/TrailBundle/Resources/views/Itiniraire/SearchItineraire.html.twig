@@ -13,8 +13,7 @@
 					<tr>
 						<th><label for="nom">Nom:</label></th>
 						<th><label for="typechemin">Type de chemin:</label></th>
-						<th><label for="denivelep">Dénivelé positif:</label></th>
-						<th><label for="denivelen">Dénivelé négatif:</label></th>
+						<th><label for="denivelep">Longueur:</label></th>
 						<th><label for="datecrea">Date de création:</label></th>
 						<th><label for="recipient-name" class="control-label">Difficulté:</label></th>
 					</tr>
@@ -23,8 +22,7 @@
 					<tr>
 						<th><input name="nom" id="nom" type="text" size="25" placeholder="Nom"></th>
 						<th><input name="typechemin" id="typechemin" type="text" size="25" placeholder="Type de chemin"></th>
-						<th><input name="denivelep" id="denivelep" type="text" size="25" placeholder="Dénivelé positif"></th>
-						<th><input name="denivelen" id="denivelen" type="text" size="25" placeholder="Dénivelé négatif"></th>
+						<th><input name="longueur" id="longueur" type="text" size="25" placeholder="Longueur"></th>
 						<th><input name="datecrea" id="datecrea" type="date" size="25" placeholder="Date de création"></th>
 						<th><select name="difficulte">
 		                  {% if diffs.difficultes is not empty %}
@@ -39,9 +37,10 @@
 			   </table>
 		            <input name="valid" type="hidden" value="ok">
 		            <div class="form-group">
-						<input type="submit" name="submit" value=" Rechercher ">
+						<input type="submit" class="btn btn-primary" name="submit" value=" Rechercher ">
 					</div>
 				</form>
+				<hr>
 			  <table class="table table-striped">
 				<thead>
 					<tr>

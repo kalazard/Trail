@@ -46,8 +46,7 @@ class ItiniraireController extends Controller
         	$search = array();		
 			$search["nom"] = $request->request->get("nom");
 			$search["typechemin"] = $request->request->get("typechemin");
-			$search["denivelep"] = $request->request->get("denivelep");
-			$search["denivelen"] = $request->request->get("denivelen");
+			$search["longueur"] = $request->request->get("longueur");
 			$search["datecrea"] = $request->request->get("datecrea");
 			$search["difficulte"] = $request->request->get("difficulte");
 			
