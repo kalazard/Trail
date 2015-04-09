@@ -29,18 +29,7 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Champ lien kidoikoiaki -->
-                <div class="form-group">
-                    <div class="row">
-                        {{ form_label(form.lienKid, "Lien KID : ", {'label_attr': {'class': 'col-sm-3 control-label'}}) }}
-                        {{ form_errors(form.lienKid) }}
-                        <div class="col-sm-9">
-                            {{ form_widget(form.lienKid, {'attr': {'class': 'form-control'}}) }}
-                        </div>
-                    </div>
-                </div>
-
+                        
                 <!-- Champ date début -->
                 <div class="form-group">
                     <div class="row">
@@ -59,6 +48,16 @@
                         {{ form_errors(form.date_fin) }}
                         <div class="col-sm-9">
                             {{ form_widget(form.date_fin) }}
+                        </div>
+                    </div>
+                </div>
+                        
+                <!-- Champ kid -->
+                <div class="form-group">
+                    <div class="row">
+                        <label class="col-sm-3 control-label">Associer un Kid</label>
+                        <div class="col-sm-9">
+                            Oui<input type="radio" name="kid" value="1" /> Non<input type="radio" name="kid" value="0" checked />
                         </div>
                     </div>
                 </div>

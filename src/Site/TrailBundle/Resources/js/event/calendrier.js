@@ -92,6 +92,7 @@ function afficherCalendrier(listeEvenements)
                     }
                 });
             },
+            nextDayThreshold: "00:00:01",
             events: eventAffiches,
             eventRender: function(event, element) {
                 contenu = "<p>" + event.start.format('HH:mm') + " - " + event.end.format('HH:mm') + "<br/>";
@@ -216,7 +217,7 @@ function modifEvenement(idClasse, idObj)
                 "idObj" : idObj},
         cache: false,
         success: function(data){
-            $('body').append(data);
+            $("body").append(data);
             $("#modalModifEventForm").modal('show');
         }
     });
@@ -232,8 +233,8 @@ function envoiFormModif()
         url: Routing.generate('site_trail_evenement_modification'),
         cache: false,
         data: data,
-        success: function(data){
-            document.location.href=Routing.generate('site_trail_evenement')
+        success: function(){
+            //document.location.href=Routing.generate('site_trail_evenement')
         }
     });
 }

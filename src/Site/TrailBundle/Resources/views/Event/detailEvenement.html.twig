@@ -39,12 +39,12 @@
                     <p>Statut : {{evenement.getEvenement().getStatus().getLabel()}}</p> 
                     {% if idClasse == 1 %} <!-- Entrainement -->
                         <p>Programme : {{evenement.getProgramme().getLabel()}} ({{evenement.getProgramme().getDuree()|date('H:i')}})</p>
-                        <p>Lieu de rendez-vous : {{evenement.getLieuRendezVous().getTitre()}} ({{evenement.getLieuRendezVous().getCoordonnees().getLongitude()}}X{{evenement.getLieuRendezVous().getCoordonnees().getLatitude()}}X{{evenement.getLieuRendezVous().getCoordonnees().getAltitude()}})</p>
+                        <p>Lieu de rendez-vous : {{evenement.getLieuRendezVous().getTitre()}} ({{evenement.getLieuRendezVous().getCoordonnees()}})</p>
                     {% elseif idClasse == 2 %} <!-- Entrainement personnel -->
                     {% elseif idClasse == 3 %} <!-- Evenement divers -->
-                        <p>Label : {{evenement.getLabel()}} </p>
+                        <p>Description : {{evenement.getDescription()}} </p>
                     {% elseif idClasse == 4 %} <!-- Sortie découverte -->
-                        <p>Lieu de rendez-vous : {{evenement.getLieuRendezVous().getTitre()}} ({{evenement.getLieuRendezVous().getCoordonnees().getLongitude()}}X{{evenement.getLieuRendezVous().getCoordonnees().getLatitude()}}X{{evenement.getLieuRendezVous().getCoordonnees().getAltitude()}})</p>
+                        <p>Lieu de rendez-vous : {{evenement.getLieuRendezVous().getTitre()}} ({{evenement.getLieuRendezVous().getCoordonnees()}})</p>
                     {% elseif idClasse == 5 %} <!-- Course officielle -->
                         <p>URL du site : <a target="_blank" href="{{evenement.getSiteUrl()}}">{{evenement.getSiteUrl()}}</a></p>
                     {% else %}

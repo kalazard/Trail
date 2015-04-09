@@ -129,7 +129,7 @@ class Lieurendezvous implements JsonSerializable
             'id' => $this->getId(),
             'titre' => $this->getTitre(),
             'description' => $this->getDescription(),
-            'coordonnees' => $this->getCoordonnes() 
+            'coordonnees' => $this->getCoordonnees() 
         ];
     }
 }
