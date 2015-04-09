@@ -234,7 +234,7 @@ function envoiFormModif()
         cache: false,
         data: data,
         success: function(){
-            //document.location.href=Routing.generate('site_trail_evenement')
+            document.location.href=Routing.generate('site_trail_evenement')
         }
     });
 }
