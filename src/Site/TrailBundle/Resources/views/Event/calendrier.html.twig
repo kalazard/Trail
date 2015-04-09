@@ -1,151 +1,39 @@
 {% extends "SiteTrailBundle::layout.html.twig" %}
-
 {% block title %}{{ parent() }} - Calendrier{% endblock %}
-
 {% block body %}
     <div class="container">
-		<div class="col-sm-6">
-			<h1>Calendrier</h1>
-		</div>
-		<div class="col-sm-6">
-			<button id="dlCal" type="button" class='btn btn-warning pull-right'>Télécharger mon calendrier</button>
-		</div>
+	<div class="col-sm-6">
+            <h1>Calendrier</h1>
 	</div>
-	
-    <div id="listeAction">
-        <a id="lienAjoutEvent" class="btn btn-warning">Ajouter un événement</a>
+        <div class="col-sm-6">
+            <button id="dlCal" type="button" class='btn btn-warning pull-right'>Télécharger mon calendrier</button>
+        </div>
+        
+        <div id='calendar' class="col-sm-12"></div> <!-- Div qui contient le calendrier -->
+        
+        <!-- Affichage de la légende -->
+        <div class="col-sm-12">
+            <table id="legende">
+                <caption>Légende : </caption>
+                <tr>
+                    <td class="couleur"></td>
+                    <td>Pas de participation</td>
+                    <td class="couleur"></td>
+                    <td>En attente</td>
+                    <td class="couleur"></td>
+                    <td>Accepté</td>
+                    <td class="couleur"></td>
+                    <td>Refusé</td>
+                </tr>
+            </table>
+        </div>
     </div>
-    <div id='calendar'></div>
-	
-{% javascripts '@SiteTrailBundle/Resources/js/*' %}
-    <script type="text/javascript" src="{{ asset_url }}"></script>
-{% endjavascripts %}
-    
-<script>
-    var eventAffiches = [];
-    
-    {% for eventDeType in listeEvenement %}
-        {% for monEvenement in eventDeType %}
-            var tabEvent = new Object();
-            tabEvent['class'] = '{{ loop.parent.loop.index}}';
-            tabEvent['id'] = '{{monEvenement.getId()}}';
-            tabEvent['title'] = '{{monEvenement.getEvenement().getTitre()}}';
-            tabEvent['start'] = '{{monEvenement.getEvenement().getDateDebut()|date('Y-m-d H:i:s')}}';
-            tabEvent['end'] = '{{monEvenement.getEvenement().getDateFin()|date('Y-m-d H:i:s')}}';
-            tabEvent['description'] = '{{monEvenement.getEvenement.getDescription()}}';
-            eventAffiches.push(tabEvent);
-        {% endfor %}
-    {% endfor %}
-        
-        //console.dir(eventAffiches);
-        
-    function afficherDetail(idClasse, idObj)
-    {        
-        $.ajax({
-            type: "POST",
-            url: "{{ path('site_trail_evenement_detailEvenement') }}",
-            cache: false,
-            data: {"idClasse" : idClasse,
-                    "idObj" : idObj},
-            success: function(data){
-                $('body').append(data);
-                $("#modalEventDetail").modal('show');
-            }
-        });
-    }
-        
-    function afficherCalendrier(listeEvenement)
-    {    
-        estAffiche = false;
-        datePrecedente = '0000-00-00';
 
-        $(document).ready(function()
-        {
-            var date = new Date();
-            var d = date.getDate();
-            var m = date.getMonth();
-            var y = date.getFullYear();
-
-            var calendar = $('#calendar').fullCalendar(
-            {
-            header:
-            {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'month,agendaWeek,agendaDay'
-            },
-            defaultView: 'month',
-            dayClick: function(date, jsEvent, view) {
-                $("#listeAction").val(date.format());
-
-                if(estAffiche && datePrecedente === date.format())
-                {
-                   $("#listeAction").css({
-                        "display": "none"
-                    }); 
-
-                    estAffiche = false;
-                }
-                else
-                {
-                    $("#listeAction").css({
-                        "display": "inline",
-                        "margin-top": jsEvent.pageY-150,                    
-                        "margin-left": jsEvent.pageX
-                    });
-
-                    estAffiche = true;
-                }
-
-                datePrecedente = date.format();
-            },
-            lang: 'fr',
-            events: eventAffiches,
-            eventRender: function(event, element) {
-                contenu = "<p>" + event.start.format('HH:mm') + " - " + event.end.format('HH:mm') + "<br/>";
-                contenu += "&#8226; <a style='color:white;cursor:pointer;font-style:italic;' onclick='afficherDetail(" + event.class + ", " + event.id +")' id='detailEvenement'>" + event.title + "</a><br/>";
-                contenu += "<label class='petitTexte'>" + event.description + "</label></p>";
-                element.html(contenu);
-                element.css({
-                    'word-wrap': 'break-word',
-                });     
-            }
-            });
-        });
-    }
-
-    afficherCalendrier(eventAffiches);
-    
-        $( "body" ).on( "click", "#lienAjoutEvent", function()
-        {
-            $.ajax({
-                type: "POST",
-                url: "{{ path('site_trail_evenement_calendrierForm') }}",
-                data: {"dateCliquee" : $("#listeAction").val()},
-                cache: false,
-                success: function(data){
-                    $('body').append(data);
-                    $("#modalAjoutEventForm").modal('show');
-                }
-            });
-        });
-    
-    $( "body" ).on( "click", "#dlCal", function()
-    {
-        $.ajax({
-            type: "POST",
-            url: "{{ path('site_trail_evenement_icsForm') }}",
-            cache: false,
-            success: function(data){
-                $('body').append(data);
-                $('#lienDl').children().remove();
-                $("#lienDl").append("<a class='btn btn-default' id='lienDl' href='{{ path('site_trail_evenement_ics') }}/default/" + $( "#dateDebut" ).val() + "/" +  $( "#dateFin" ).val() + "'>Télécharger</a>");
-                $("#modalIcs").modal('show');
-            }
-        });
-    });
-</script>
-{% javascripts '@SiteTrailBundle/Resources/js/event/*' %}
+    {% javascripts '@SiteTrailBundle/Resources/js/*' '@SiteTrailBundle/Resources/js/event/*' %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
-{% endjavascripts %}
+    {% endjavascripts %}
+    
+    <script>
+        afficherCalendrier({{listeEvenement|raw}});
+    </script>
 {% endblock %}

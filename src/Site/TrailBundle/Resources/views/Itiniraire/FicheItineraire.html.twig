@@ -1,0 +1,20 @@
+{% extends "SiteTrailBundle::layout.html.twig" %}
+
+{% block title %}{{ parent() }} - Fiche d'itinéraire{% endblock %}
+
+{% block body %}
+  {% if app.user %}
+		<p> Nom: {{resultats.searchResults.nom}}  ID: {{resultats.searchResults.id}}</p>
+		<iframe class="map-iframe" frameborder="0" src="http://localhost/Carto/web/app_dev.php/" id="mapframe"></iframe>
+		<script>
+		var frame = document.getElementById('mapframe');
+		frame.contentWindow.onload = function()
+		{
+			document.getElementById('mapframe').contentWindow.loadMap("{{resultats.searchResults.trace.path}}");
+		}
+			
+		</script>
+ {% else %}
+     <p>Vous n'avez pas accès à cette page</p>
+ {% endif %}
+{% endblock %}

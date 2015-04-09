@@ -5,9 +5,29 @@
 {% block body %}
   {% if app.user %}
       <h1>Listage des itinéraires</h1>
-	  {% for itineraire in resultats.list%}
-		<p> Nom: {{itineraire.nom}}  ID: {{itineraire.id}}</p>
-	  {% endfor %}
+      <table class="table">
+      	<thead>
+      		<tr>
+      			<th>Itinéraire</th>
+      			<th>Type de chemin</th>
+      			<th>Difficulté</th>
+      			<th>Date de création</th>
+      			<th>Longueur du parcours</th>
+      		</tr>
+      	</thead>
+      	<tbody>
+      		{% for itineraire in resultats.list%}
+      		<tr>
+      			<td><a href="{{ path('site_trail_getByIditineraire', {'id': itineraire.id}) }}">{{itineraire.nom}}</a></td>
+      			<td>{{itineraire.typechemin}}</td>
+      			<td>{{itineraire.difficulte.label}}</td>
+      			<td>{{itineraire.datecreation}}</td>
+      			<td>{{itineraire.longueur}}</td>
+      		</tr>
+		  {% endfor %}
+      	</tbody>	
+	  
+	</table>
  {% else %}
      <p>Vous n'avez pas accès à cette page</p>
  {% endif %}

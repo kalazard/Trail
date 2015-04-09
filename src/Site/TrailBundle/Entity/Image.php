@@ -3,14 +3,14 @@
 namespace Site\TrailBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-
+use JsonSerializable;
 /**
  * Image
  *
  * @ORM\Table(name="image", indexes={@ORM\Index(name="fk_image_auteur_idx", columns={"auteur"}), @ORM\Index(name="fk_image_categorie_idx", columns={"categorie"})})
  * @ORM\Entity
  */
-class Image
+class Image implements \JsonSerializable
 {
     /**
      * @var integer
@@ -248,4 +248,12 @@ class Image
     {
         return $this->categorie;
     }
+
+    public function jsonSerialize() {
+        return array(
+            'path' => $this->path,
+            
+        );
+    }
+
 }

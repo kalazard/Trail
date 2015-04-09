@@ -158,7 +158,7 @@ class UserController extends Controller {
                     $response->headers->set('Content-Type', 'application/json');
                     return $response;
                 }
-                
+
                 // On crée l'utilisateur vide
                 $user = new Membre();
                 //On créé un nouveau role vide
@@ -272,14 +272,15 @@ class UserController extends Controller {
         if ($request->isXmlHttpRequest()) {
             try {
                 //On vérifie que l'utilisateur courant est bien administrateur ou membre
-                if ($this->get('security.context')->isGranted('ROLE_Administrateur') || $this->get('security.context')->isGranted('ROLE_Membre')) {
+                if ($this->get('security.context')->isGranted('ROLE_Administrateur') || $this->get('security.context')->isGranted('ROLE_Utilisateur')) {
                     //On récupère le manager de Doctrine
                     $manager = $this->getDoctrine()->getManager();
                     //On récupère le dépôt utilisateur
-                    $repository = $manager->getRepository("SiteTrailBundle:Utilisateur");
+                    $repository = $manager->getRepository("SiteTrailBundle:Membre");
                     //On récupère tous les utilisateurs
                     $users = $repository->findAll();
-                    $return = array('success' => true, 'serverError' => false, 'users' => $users);
+                    $visibilite = $this->get('security.context')->isGranted('ROLE_Administrateur');
+                    $return = array('success' => true, 'serverError' => false, 'users' => $users, 'visibilite' => $visibilite);
                     $response = new Response(json_encode($return));
                     $response->headers->set('Content-Type', 'application/json');
                     return $response;
@@ -311,7 +312,7 @@ class UserController extends Controller {
                 if ($this->get('security.context')->isGranted('ROLE_Administrateur')) {
                     $id = $request->request->get('id_user');
                     $manager = $this->getDoctrine()->getManager();    //On récupère le manager de doctrine
-                    $repository = $manager->getRepository("SiteTrailBundle:Utilisateur");
+                    $repository = $manager->getRepository("SiteTrailBundle:Membre");
                     $usertodelete = $repository->find($id);
                     if (is_null($usertodelete)) {
                         $return = array('success' => false, 'serverError' => false, 'message' => "L'utilisateur spécifié n'existe plus dans la base de données");
@@ -357,7 +358,7 @@ class UserController extends Controller {
                     $id = $request->request->get('id_user');
                     //On récupère le manager de doctrine
                     $manager = $this->getDoctrine()->getManager();
-                    $repository = $manager->getRepository("SiteTrailBundle:Utilisateur");
+                    $repository = $manager->getRepository("SiteTrailBundle:Membre");
                     //On récupère l'utilisateur à l'aide de l'id passé en paramètre à la requête
                     $user = $repository->find($id);
                     //Si l'utilisateur n'existe plus dans la base de données
@@ -369,14 +370,14 @@ class UserController extends Controller {
                     }
                     //On récupère l'id du role de l'utilisateur
                     $repository = $manager->getRepository("SiteTrailBundle:Role");
-                    $role = $repository->find($user->getRoleId());
+                    $role = $repository->find($user->getRole()->getId());
                     $return = array('success' => true, 'serverError' => false, 'user' => $user, 'role' => $role);
                     $response = new Response(json_encode($return));
                     $response->headers->set('Content-Type', 'application/json');
                     return $response;
                 } else {
                     //L'utilisateur n'est pas un administrateur
-                    $return = array('success' => false, 'serverError' => false, 'message' => "Vous n'avez pas le droit de supprimer un utilisateur");
+                    $return = array('success' => false, 'serverError' => false, 'message' => "Vous n'avez pas le droit de modifier un utilisateur");
                     $response = new Response(json_encode($return));
                     $response->headers->set('Content-Type', 'application/json');
                     return $response;
@@ -405,8 +406,14 @@ class UserController extends Controller {
                     $userToUpdate = intval($request->request->get('id_user'));
                     //On récupère son email
                     $email = $request->request->get('emailUpdate');
-                    //On récupère son mot de passe
-                    $password = $request->request->get('passwordUpdate');
+                    //On récupère son prenom
+                    $nom = $request->request->get('nomUpdate');
+                    //On récupère son prenom
+                    $prenom = $request->request->get('prenomUpdate');
+                    //On récupère sa date de naissance
+                    $datenaissance = $request->request->get('datenaissanceUpdate');
+                    //On récupère son telephone
+                    $telephone = $request->request->get('telephoneUpdate');
                     //On récupère son role
                     $roleupdate = intval($request->request->get('roleUpdate'));
 
@@ -417,7 +424,7 @@ class UserController extends Controller {
                     $repository = $manager->getRepository("SiteTrailBundle:Role");
 
                     // On récupère l'utilisateur a mettre a jour
-                    $user = $manager->getRepository("SiteTrailBundle:Utilisateur")->find($userToUpdate);
+                    $user = $manager->getRepository("SiteTrailBundle:Membre")->find($userToUpdate);
                     //Si l'utilisateur n'existe plus dans la base de données
                     if (is_null($user)) {
                         $return = array('success' => false, 'serverError' => false, 'message' => "L'utilisateur spécifié n'existe plus dans la base de données");
@@ -452,7 +459,7 @@ class UserController extends Controller {
                         return $response;
                     }
                     //Si l'email n'existe pas déjà dans la base de données (pour un utilisateur différent de celui que l'on met à jour
-                    $userWithEmail = $manager->getRepository('SiteTrailBundle:Utilisateur')->findOneBy(array('email' => $email));
+                    $userWithEmail = $manager->getRepository('SiteTrailBundle:Membre')->findOneBy(array('email' => $email));
 
                     if (!is_null($userWithEmail) && $userWithEmail->getId() != $user->getId()) {
                         //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
@@ -461,15 +468,8 @@ class UserController extends Controller {
                         $response->headers->set('Content-Type', 'application/json');
                         return $response;
                     }
-                    //Si le mot de passe est renseigné, on met à jour le mot de passe
-                    if ($password != "") {
-                        //On récupère l'encoder factory du fichier security.yml (ici sha512)
-                        $factory = $this->get('security.encoder_factory');
-                        $encoder = $factory->getEncoder($user);
-                        //On crypte le mot de passe avec la clé de salage
-                        $password = $encoder->encodePassword($password, $user->getSalt());
-                        $user->setPassword($password);    //On indique le mot de passe
-                    }
+
+
                     //Si le role est null
                     if (is_null($role)) {
                         //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
@@ -480,11 +480,59 @@ class UserController extends Controller {
                     }
 
 
-                    //On set l'email
+                    //Si le nom est vide
+                    if ($nom == "") {
+                        //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
+                        $return = array('success' => false, 'serverError' => false, 'message' => "Le nom ne doît pas être vide");
+                        $response = new Response(json_encode($return));
+                        $response->headers->set('Content-Type', 'application/json');
+                        return $response;
+                    }
+                    //Si la date de naissance est vide
+                    if ($datenaissance == "") {
+                        //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
+                        $return = array('success' => false, 'serverError' => false, 'message' => "La date de naissance ne doît pas être vide");
+                        $response = new Response(json_encode($return));
+                        $response->headers->set('Content-Type', 'application/json');
+                        return $response;
+                    }
+                    //Si le prenom est vide
+                    if ($prenom == "") {
+                        //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
+                        $return = array('success' => false, 'serverError' => false, 'message' => "Le prénom ne doît pas être vide");
+                        $response = new Response(json_encode($return));
+                        $response->headers->set('Content-Type', 'application/json');
+                        return $response;
+                    }
+                    //Si le telephone est vide
+                    if ($telephone == "") {
+                        //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
+                        $return = array('success' => false, 'serverError' => false, 'message' => "Le telephone ne doît pas être vide");
+                        $response = new Response(json_encode($return));
+                        $response->headers->set('Content-Type', 'application/json');
+                        return $response;
+                    }
+                    
+                    $datenaissance = DateTime::createFromFormat('d/m/Y', $datenaissance);
+                    $date_errors = DateTime::getLastErrors();
+                    if ($date_errors['warning_count'] + $date_errors['error_count'] > 0) {
+                        $return = array('success' => false, 'serverError' => false, 'message' => "Le format de la date est invalide");
+                        $response = new Response(json_encode($return));
+                        $response->headers->set('Content-Type', 'application/json');
+                        return $response;
+                    }
+
+                    
                     $user->setEmail($email);
+                    $user->setNom($nom);
+                    $user->setPrenom($prenom);
+                    $user->setDatenaissance($datenaissance);
+                    $user->setTelephone($telephone);
+                    
+                    
 
                     // On définit le rôle de l'utilisateur (récupéré dans la base de donnée)
-                    $user->setRoles($role);
+                    $user->setRole($role);
 
                     //On déclenche l'enregistrement dans la base de données
                     $manager->flush();
@@ -559,8 +607,8 @@ class UserController extends Controller {
                     return $response;
                 }
 
-                //L'utilisateur existe dans notre base de données et il est connecté, on créé le cookie d'authentufication
-                setcookie($this->container->getParameter("auth_cookie"), CustomCrypto::encrypt($membre->getId()), 0, '/');
+                //L'utilisateur existe dans notre base de données et il est connecté, on créé le cookie d'authentification
+                setcookie($this->container->getParameter("auth_cookie"), CustomCrypto::encrypt($membre->getId() . "/" . $membre->getEmail() . "/" . $membre->getRole()->getLabel()), 0, '/');
 
                 $return = array('success' => true, 'serverError' => false);
                 $response = new Response(json_encode($return));
