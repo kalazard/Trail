@@ -39,12 +39,12 @@ site_trail_evenement_ics:
 site_trail_evenement_icsForm:
     path: /icsForm
     defaults: { _controller: SiteTrailBundle:Ics:icsForm }
-site_trail_memberdisplay:
-    path:     /member_list
-    defaults: { _controller: SiteTrailBundle:MemberDisplay:list }
-site_trail_searchmember:
-    path:     /member_search/
-    defaults: { _controller: SiteTrailBundle:MemberDisplay:search }
+site_trail_profilmembre:
+    path:     /profil_membre/
+    defaults: { _controller: SiteTrailBundle:MemberDisplay:profil }
+site_trail_submitprofilmembre:
+    path:     /submit_profil_membre/
+    defaults: { _controller: SiteTrailBundle:MemberDisplay:profilSubmit }
 site_trail_createUser:
     path:    /user/create
     defaults: { _controller:SiteTrailBundle:User:create }
