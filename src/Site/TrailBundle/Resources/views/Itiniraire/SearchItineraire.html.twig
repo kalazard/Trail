@@ -20,9 +20,9 @@
 				</thead>
 				<tbody>
 					<tr>
-						<th><input name="nom" id="nom" type="text" class="col-xs-3" placeholder="Nom"></th>
-						<th><input name="typechemin" id="typechemin" type="text" class="col-xs-3" placeholder="Type de chemin"></th>
-						<th><select name="difficulte" class="col-xs-2">
+						<th class="col-xs-3"><input name="nom" id="nom" type="text" placeholder="Nom"></th>
+						<th class="col-xs-3"><input name="typechemin" id="typechemin" type="text" placeholder="Type de chemin"></th>
+						<th class="col-xs-2" ><select name="difficulte">
 		                  {% if diffs.difficultes is not empty %}
 		                  <option value=""/></option>
 									{% for diff in diffs.difficultes%}
@@ -30,8 +30,8 @@
 									{% endfor %}
 						  {% endif %}
 		                </select></th>
-						<th><input name="datecrea" id="datecrea" type="date" class="col-xs-2" placeholder="Date de création"></th>
-						<th><input name="longueur" id="longueur" type="text" class="col-xs-2" placeholder="Longueur"></th>
+						<th class="col-xs-2" ><input name="datecrea" id="datecrea" type="date" placeholder="Date de création"></th>
+						<th class="col-xs-2" ><input name="longueur" id="longueur" type="text" placeholder="Longueur"></th>
 					</tr>
 				</tbody>
 			   </table>
