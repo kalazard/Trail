@@ -57,8 +57,8 @@
 				</thead>
 				<tbody>
 				{% if resultats is empty %}
-					{% if list.elements is not empty %}
-						{% for itineraire in list.elements %}
+					{% if list.list is not empty %}
+						{% for itineraire in list.list %}
 						<tr>
 							<td>{{itineraire.nom}}</td>
 							<td>{{itineraire.typechemin}}</td>

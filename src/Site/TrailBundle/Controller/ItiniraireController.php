@@ -67,7 +67,7 @@ class ItiniraireController extends Controller
         }
 		else
 		{
-			// Recupère la liste complète des éléments
+			// Recupère la liste complète
 			$clientSOAP = new \SoapClient(null, array(
 						'uri' => "http://localhost/Carto/web/app_dev.php/itineraire",
 						'location' => "http://localhost/Carto/web/app_dev.php/itineraire",
