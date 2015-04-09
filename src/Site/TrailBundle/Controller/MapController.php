@@ -94,6 +94,12 @@ class MapController extends Controller
 /*
       return new Response('This is not ajax!', 400);
     }*/
+	
+	public function uploadAction()
+	{		
+		$content = $this->get("templating")->render("SiteTrailBundle:Map:upload.html.twig");
+		return new Response($content);
+	}
 }
 
 /* 

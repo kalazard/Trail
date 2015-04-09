@@ -128,3 +128,6 @@ site_trail_contact:
 site_trail_article:
     path :    /nouveautes/{slug}
     defaults: { _controller: SiteTrailBundle:Home:news }
+site_trail_upload:
+    path :    /upload/
+    defaults: { _controller: SiteTrailBundle:Map:upload}
