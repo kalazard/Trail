@@ -1,0 +1,7 @@
+{% extends "SiteTrailBundle::layout.html.twig" %}
+
+{% block title %}{{ parent() }} - Carte{% endblock %}
+
+{% block body %}
+	<iframe class="map-iframe" frameborder="0" src="http://localhost/Carto/web/app_dev.php/upload"></iframe> 
+{% endblock %}
