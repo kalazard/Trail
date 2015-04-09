@@ -11,20 +11,18 @@
 			  		<table class="table table-striped">
 				<thead>
 					<tr>
-						<th><label for="nom">Nom:</label></th>
-						<th><label for="typechemin">Type de chemin:</label></th>
-						<th><label for="denivelep">Longueur:</label></th>
-						<th><label for="datecrea">Date de création:</label></th>
-						<th><label for="recipient-name" class="control-label">Difficulté:</label></th>
+						<th><label for="nom">Nom</label></th>
+						<th><label for="typechemin">Type de chemin</label></th>
+						<th><label for="longueur">Longueur</label></th>
+						<th><label for="datecrea">Date de création</label></th>
+						<th><label for="recipient-name" class="control-label">Difficulté</label></th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr>
-						<th><input name="nom" id="nom" type="text" size="25" placeholder="Nom"></th>
-						<th><input name="typechemin" id="typechemin" type="text" size="25" placeholder="Type de chemin"></th>
-						<th><input name="longueur" id="longueur" type="text" size="25" placeholder="Longueur"></th>
-						<th><input name="datecrea" id="datecrea" type="date" size="25" placeholder="Date de création"></th>
-						<th><select name="difficulte">
+						<th><input name="nom" id="nom" type="text" class="col-xs-3" placeholder="Nom"></th>
+						<th><input name="typechemin" id="typechemin" type="text" class="col-xs-3" placeholder="Type de chemin"></th>
+						<th><select name="difficulte" class="col-xs-2">
 		                  {% if diffs.difficultes is not empty %}
 		                  <option value=""/></option>
 									{% for diff in diffs.difficultes%}
@@ -32,6 +30,8 @@
 									{% endfor %}
 						  {% endif %}
 		                </select></th>
+						<th><input name="datecrea" id="datecrea" type="date" class="col-xs-2" placeholder="Date de création"></th>
+						<th><input name="longueur" id="longueur" type="text" class="col-xs-2" placeholder="Longueur"></th>
 					</tr>
 				</tbody>
 			   </table>
