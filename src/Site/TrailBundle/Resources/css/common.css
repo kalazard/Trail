@@ -27,7 +27,7 @@
     background-position: center center;
     background-size: cover;
 }
-body
+/*body
 {
 	margin-top: 50px;
 }
@@ -38,6 +38,31 @@ footer
 	padding: 10px;
 	color: #FFF;
 	background-color: #222;
+}*/
+
+html, body {
+    height: 100%;
+    margin: 0; padding: 0;
+}
+body {
+    display : table;
+    width: 100%;
+    padding-top: 50px;
+}
+footer {
+    display : table-row;
+    //height: 82px; /* à titre d'exemple */
+    margin-top: 20px;
+    padding: 10px;
+    color: #FFF;
+    background-color: #222;
+    vertical-align: middle;
+}
+
+.footerContent
+{
+    display: table-cell;
+    vertical-align: middle;
 }
 
 
