@@ -47,3 +47,8 @@
 {
     background-color: #FF3737;
 }
+
+.modal-body
+{
+    word-wrap: break-word;
+}
