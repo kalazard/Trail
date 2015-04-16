@@ -49,6 +49,11 @@ site_trail_evenement_modification:
     defaults: { _controller: SiteTrailBundle:Evenement:modifEvenement }
     options:
         expose: true
+site_trail_evenement_checkdate:
+    path: /evenement/checkDate
+    defaults: { _controller: SiteTrailBundle:Evenement:checkDate }
+    options:
+        expose: true
 site_trail_evenement_ics:
     path: /ics/{id}/{dateDebut}/{dateFin}
     defaults: { _controller: SiteTrailBundle:Ics:index, id: default, dateDebut: '', dateFin: '' }

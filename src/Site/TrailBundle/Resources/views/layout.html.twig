@@ -41,6 +41,9 @@
                         <li>
                             <a href="{{path('site_trail_homepage_empty')}}">Accueil</a>
                         </li>
+                        <li>
+                            <a href="{{path('site_trail_evenement')}}">Calendrier</a>
+                        </li>
                         {% if not is_granted('IS_AUTHENTICATED_FULLY') %}
                             <li>
                                 <a href="{{path('site_trail_news')}}">Nouveautés</a>
@@ -56,9 +59,6 @@
                             </li>
                         {% endif %}
                         {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                            <li>
-                                <a href="{{path('site_trail_evenement')}}">Calendrier</a>
-                            </li>
                             <li>
                                 <a href="{{path('site_trail_map')}}">Carte</a>
                             </li>

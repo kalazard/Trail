@@ -85,20 +85,36 @@ class EvenementController extends Controller
         $queryE = $em->createQuery($reqE);
         $listeE = $queryE->getResult();
         
-        foreach($listeE as $ent)
+        //Si l'utilisateur est connecté on récupère sa participation également
+        if($idUser > 0)
         {
-            $reqP = "SELECT pion ";
-            $reqP .= "FROM SiteTrailBundle:Participants pant, SiteTrailBundle:Participation pion ";
-            $reqP.= "WHERE pant.membre = ".$idUser;
-            $reqP .= " AND pant.evenement = ".$ent->getEvenement()->getId();
-            $reqP .= " AND pant.participation = pion.id";
-            $queryP = $em->createQuery($reqP);
-            $listeP = $queryP->getOneOrNullResult();            
-            $listeRes = array($ent, $listeP);
-            $listeEntrainement[] = $listeRes;
+            foreach($listeE as $ent)
+            {
+                $reqP = "SELECT pion ";
+                $reqP .= "FROM SiteTrailBundle:Participants pant, SiteTrailBundle:Participation pion ";
+                $reqP.= "WHERE pant.membre = ".$idUser;
+                $reqP .= " AND pant.evenement = ".$ent->getEvenement()->getId();
+                $reqP .= " AND pant.participation = pion.id";
+                $queryP = $em->createQuery($reqP);
+                $listeP = $queryP->getOneOrNullResult();            
+                $listeRes = array($ent, $listeP);
+                $listeEntrainement[] = $listeRes;
+            }
+
+            $listeEvenement[] = $listeEntrainement;
+        }
+        else
+        {
+            $tabTmp = array();
+
+            foreach($listeE as $ent)
+            {
+                $tabTmp[] = array($ent);
+            }
+
+            $listeEvenement[] = $tabTmp; 
         }
         
-        $listeEvenement[] = $listeEntrainement;
         
         //Récupération des objets entrainementpersonnel avec le status de participation
         $reqE = "SELECT ep ";
@@ -108,20 +124,35 @@ class EvenementController extends Controller
         $queryE = $em->createQuery($reqE);
         $listeE = $queryE->getResult();
         
-        foreach($listeE as $entPerso)
+        //Si l'utilisateur est connecté on récupère sa participation également
+        if($idUser > 0)
         {
-            $reqP = "SELECT pion ";
-            $reqP .= "FROM SiteTrailBundle:Participants pant, SiteTrailBundle:Participation pion ";
-            $reqP.= "WHERE pant.membre = ".$idUser;
-            $reqP .= " AND pant.evenement = ".$entPerso->getEvenement()->getId();
-            $reqP .= " AND pant.participation = pion.id";
-            $queryP = $em->createQuery($reqP);
-            $listeP = $queryP->getOneOrNullResult();            
-            $listeRes = array($entPerso, $listeP);
-            $listeEntrainementPersonnel[] = $listeRes;
+            foreach($listeE as $entPerso)
+            {
+                $reqP = "SELECT pion ";
+                $reqP .= "FROM SiteTrailBundle:Participants pant, SiteTrailBundle:Participation pion ";
+                $reqP.= "WHERE pant.membre = ".$idUser;
+                $reqP .= " AND pant.evenement = ".$entPerso->getEvenement()->getId();
+                $reqP .= " AND pant.participation = pion.id";
+                $queryP = $em->createQuery($reqP);
+                $listeP = $queryP->getOneOrNullResult();            
+                $listeRes = array($entPerso, $listeP);
+                $listeEntrainementPersonnel[] = $listeRes;
+            }
+
+            $listeEvenement[] = $listeEntrainementPersonnel;
         }
-        
-        $listeEvenement[] = $listeEntrainementPersonnel;
+        else
+        {
+            $tabTmp = array();
+
+            foreach($listeE as $ent)
+            {
+                $tabTmp[] = array($ent);
+            }
+
+            $listeEvenement[] = $tabTmp;
+        }
         
         //Récupération des objets evenementDivers avec le status de participation
         $reqE = "SELECT ed ";
@@ -131,20 +162,35 @@ class EvenementController extends Controller
         $queryE = $em->createQuery($reqE);
         $listeE = $queryE->getResult();
         
-        foreach($listeE as $entPerso)
+        //Si l'utilisateur est connecté on récupère sa participation également
+        if($idUser > 0)
         {
-            $reqP = "SELECT pion ";
-            $reqP .= "FROM SiteTrailBundle:Participants pant, SiteTrailBundle:Participation pion ";
-            $reqP.= "WHERE pant.membre = ".$idUser;
-            $reqP .= " AND pant.evenement = ".$entPerso->getEvenement()->getId();
-            $reqP .= " AND pant.participation = pion.id";
-            $queryP = $em->createQuery($reqP);
-            $listeP = $queryP->getOneOrNullResult();            
-            $listeRes = array($entPerso, $listeP);
-            $listeEvenementDivers[] = $listeRes;
+            foreach($listeE as $entPerso)
+            {
+                $reqP = "SELECT pion ";
+                $reqP .= "FROM SiteTrailBundle:Participants pant, SiteTrailBundle:Participation pion ";
+                $reqP.= "WHERE pant.membre = ".$idUser;
+                $reqP .= " AND pant.evenement = ".$entPerso->getEvenement()->getId();
+                $reqP .= " AND pant.participation = pion.id";
+                $queryP = $em->createQuery($reqP);
+                $listeP = $queryP->getOneOrNullResult();            
+                $listeRes = array($entPerso, $listeP);
+                $listeEvenementDivers[] = $listeRes;
+            }
+
+            $listeEvenement[] = $listeEvenementDivers;
         }
-        
-        $listeEvenement[] = $listeEvenementDivers;
+        else
+        {
+            $tabTmp = array();
+
+            foreach($listeE as $ent)
+            {
+                $tabTmp[] = array($ent);
+            }
+
+            $listeEvenement[] = $tabTmp;
+        }
         
         //Récupération des objets sortieDecouverte avec le status de participation
         $reqE = "SELECT sd ";
@@ -154,20 +200,35 @@ class EvenementController extends Controller
         $queryE = $em->createQuery($reqE);
         $listeE = $queryE->getResult();
         
-        foreach($listeE as $entPerso)
+        //Si l'utilisateur est connecté on récupère sa participation également
+        if($idUser > 0)
         {
-            $reqP = "SELECT pion ";
-            $reqP .= "FROM SiteTrailBundle:Participants pant, SiteTrailBundle:Participation pion ";
-            $reqP.= "WHERE pant.membre = ".$idUser;
-            $reqP .= " AND pant.evenement = ".$entPerso->getEvenement()->getId();
-            $reqP .= " AND pant.participation = pion.id";
-            $queryP = $em->createQuery($reqP);
-            $listeP = $queryP->getOneOrNullResult();            
-            $listeRes = array($entPerso, $listeP);
-            $listeSortieDecouverte[] = $listeRes;
+            foreach($listeE as $entPerso)
+            {
+                $reqP = "SELECT pion ";
+                $reqP .= "FROM SiteTrailBundle:Participants pant, SiteTrailBundle:Participation pion ";
+                $reqP.= "WHERE pant.membre = ".$idUser;
+                $reqP .= " AND pant.evenement = ".$entPerso->getEvenement()->getId();
+                $reqP .= " AND pant.participation = pion.id";
+                $queryP = $em->createQuery($reqP);
+                $listeP = $queryP->getOneOrNullResult();            
+                $listeRes = array($entPerso, $listeP);
+                $listeSortieDecouverte[] = $listeRes;
+            }
+
+            $listeEvenement[] = $listeSortieDecouverte;
         }
-        
-        $listeEvenement[] = $listeSortieDecouverte;
+        else
+        {
+            $tabTmp = array();
+
+            foreach($listeE as $ent)
+            {
+                $tabTmp[] = array($ent);
+            }
+
+            $listeEvenement[] = $tabTmp;
+        }
         
         //Récupération des objets courseOfficielle avec le status de participation
         $reqE = "SELECT co ";
@@ -177,20 +238,35 @@ class EvenementController extends Controller
         $queryE = $em->createQuery($reqE);
         $listeE = $queryE->getResult();
         
-        foreach($listeE as $entPerso)
+        //Si l'utilisateur est connecté on récupère sa participation également
+        if($idUser > 0)
         {
-            $reqP = "SELECT pion ";
-            $reqP .= "FROM SiteTrailBundle:Participants pant, SiteTrailBundle:Participation pion ";
-            $reqP.= "WHERE pant.membre = ".$idUser;
-            $reqP .= " AND pant.evenement = ".$entPerso->getEvenement()->getId();
-            $reqP .= " AND pant.participation = pion.id";
-            $queryP = $em->createQuery($reqP);
-            $listeP = $queryP->getOneOrNullResult();            
-            $listeRes = array($entPerso, $listeP);
-            $listeCourseOfficielle[] = $listeRes;
+            foreach($listeE as $entPerso)
+            {
+                $reqP = "SELECT pion ";
+                $reqP .= "FROM SiteTrailBundle:Participants pant, SiteTrailBundle:Participation pion ";
+                $reqP.= "WHERE pant.membre = ".$idUser;
+                $reqP .= " AND pant.evenement = ".$entPerso->getEvenement()->getId();
+                $reqP .= " AND pant.participation = pion.id";
+                $queryP = $em->createQuery($reqP);
+                $listeP = $queryP->getOneOrNullResult();            
+                $listeRes = array($entPerso, $listeP);
+                $listeCourseOfficielle[] = $listeRes;
+            }
+
+            $listeEvenement[] = $listeCourseOfficielle;
         }
-        
-        $listeEvenement[] = $listeCourseOfficielle;
+        else
+        {
+            $tabTmp = array();
+
+            foreach($listeE as $ent)
+            {
+                $tabTmp[] = array($ent);
+            }
+
+            $listeEvenement[] = $tabTmp;
+        }
         
         return $listeEvenement;
     }
@@ -200,22 +276,27 @@ class EvenementController extends Controller
     {
         if($this->getUser())
         {
-            $idUser = $this->getUser()->getId();
+            $idUser = $this->getUser()->getId();            
             $listeEvenement = EvenementController::getEventFrom($idUser, $this->getDoctrine()->getManager());
-            $listeEvenementJson = "";
-            
-            //On transforme les résultats en json            
-            $listeEvenementJson = json_encode($listeEvenement);
-            
-            $view = $this->get("templating")->render("SiteTrailBundle:Event:calendrier.html.twig", array(
-                                                                'listeEvenement' => $listeEvenementJson));
-
-            return new Response($view);
         }
         else
         {
-            throw new NotFoundHttpException('Impossible de trouver la page demandée');
-        } 
+            $listeEvenement = EvenementController::getEventFrom(0, $this->getDoctrine()->getManager());
+            
+            //On retire les événements qui ne sont pas disponibles pour les non connectés
+            $listeEvenement[0] = array();
+            $listeEvenement[1] = array();
+            $listeEvenement[2] = array();
+            $listeEvenement[4] = array();
+        }
+
+        //On transforme les résultats en json            
+        $listeEvenementJson = json_encode($listeEvenement);
+
+        $view = $this->get("templating")->render("SiteTrailBundle:Event:calendrier.html.twig", array(
+                                                            'listeEvenement' => $listeEvenementJson));
+
+        return new Response($view);
     }
     
     public function showFormAddEventAction(Request $request)
@@ -403,11 +484,16 @@ class EvenementController extends Controller
     
     public function afficherDetailEvenementAction(Request $request)
     {
-        if($request->isXmlHttpRequest() && $this->getUser())
+        if($request->isXmlHttpRequest())
         {
             $idClasse = $request->request->get('idClasse', '2');
-            $idObj = $request->request->get('idObj', '11');
-            $idUser = $this->getUser()->getId();
+            $idObj = $request->request->get('idObj', '19');
+            
+            if($this->getUser())
+            {
+                $idUser = $this->getUser()->getId();
+            }
+
             $manager=$this->getDoctrine()->getManager();
             
             switch ($idClasse)
@@ -435,15 +521,21 @@ class EvenementController extends Controller
                 default:
                     break;
             }
+           
+            $participation = '';
             
-            //Participation lié à cet événement
-            $reqP = "SELECT pion ";
-            $reqP .= "FROM SiteTrailBundle:Participants pant, SiteTrailBundle:Participation pion";
-            $reqP.= " WHERE pant.membre = ".$idUser;
-            $reqP .= " AND pant.evenement = ".$evenement->getEvenement()->getId();
-            $reqP .= " AND pant.participation = pion.id";
-            $queryP = $manager->createQuery($reqP);
-            $participation = $queryP->getOneOrNullResult();          
+            if($this->getUser())
+            {
+                //Participation lié à cet événement
+                $reqP = "SELECT pion ";
+                $reqP .= "FROM SiteTrailBundle:Participants pant, SiteTrailBundle:Participation pion";
+                $reqP.= " WHERE pant.membre = ".$idUser;
+                $reqP .= " AND pant.evenement = ".$evenement->getEvenement()->getId();
+                $reqP .= " AND pant.participation = pion.id";
+                $queryP = $manager->createQuery($reqP);
+                $participation = $queryP->getOneOrNullResult(); 
+            }
+                     
 
             $resp = $this->get("templating")->render("SiteTrailBundle:Event:detailEvenement.html.twig", array(
                                                                 'evenement' => $evenement,
@@ -674,5 +766,35 @@ class EvenementController extends Controller
         {
             throw new NotFoundHttpException('Impossible de trouver la page demandée');
         }
+    }
+    
+    public function checkDateAction(Request $request)
+    {
+        $anneeD = $request->request->get('anneeD', '');
+        $moisD = $request->request->get('moisD', '');
+        $jourD = $request->request->get('jourD', '');
+        $heureD = $request->request->get('heureD', '');
+        $minuteD = $request->request->get('minuteD', '');
+        $anneeF = $request->request->get('anneeF', '');
+        $moisF = $request->request->get('moisF', '');
+        $jourF = $request->request->get('jourF', '');
+        $heureF = $request->request->get('heureF', '');
+        $minuteF = $request->request->get('minuteF', '');
+        
+        $dateD = new \DateTime($anneeD."-".$moisD."-".$jourD." ".$heureD.":".$minuteD);
+        $dateF = new \DateTime($anneeF."-".$moisF."-".$jourF." ".$heureF.":".$minuteF);
+        
+        //On vérifie la validité des deux dates 
+        if(checkdate($moisD, $jourD, $anneeD) == false || checkdate($moisF, $jourF, $anneeF) == false)
+        {
+            return new Response("Date invalide");
+        }
+        
+        if($dateD > $dateF)
+        {
+            return new Response("Debut sup fin");
+        }
+        
+        return new Response("OkiDoki");
     }
 }
