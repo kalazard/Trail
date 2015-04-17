@@ -787,14 +787,14 @@ class EvenementController extends Controller
         //On vérifie la validité des deux dates 
         if(checkdate($moisD, $jourD, $anneeD) == false || checkdate($moisF, $jourF, $anneeF) == false)
         {
-            return new Response("Date invalide");
+            return new Response("invalide");
         }
         
         if($dateD > $dateF)
         {
-            return new Response("Debut sup fin");
+            return new Response("debutsuperieurfin");
         }
         
-        return new Response("OkiDoki");
+        return new Response("ok");
     }
 }

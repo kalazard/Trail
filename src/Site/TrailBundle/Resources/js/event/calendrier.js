@@ -262,18 +262,7 @@ $( "body" ).on( "click", "#dlCal", function()
 
 //Vérification des dates
 function checkDate(anneeD, moisD, jourD, heureD, minuteD, anneeF, moisF, jourF, heureF, minuteF)
-{
-    /*console.log(anneeD);
-    console.log(moisD);
-    console.log(jourD);
-    console.log(heureD);
-    console.log(minuteD);
-    console.log(anneeF);
-    console.log(moisF);
-    console.log(jourF);
-    console.log(heureF);
-    console.log(minuteF);*/
-    
+{    
     $.ajax({
         type: "POST",
         url: Routing.generate('site_trail_evenement_checkdate'),
@@ -288,8 +277,28 @@ function checkDate(anneeD, moisD, jourD, heureD, minuteD, anneeF, moisF, jourF, 
                 "heureF" : heureF,
                 "minuteF" : minuteF},
         cache: false,
-        success: function(data){
-            console.log(data);
+        success: function(data){ 
+            //Si la date est invalide (exemple : 31 février)
+            if(data === "invalide")
+            {
+                $('#errorDate').text("Date invalide");
+                $('#errorDate').css({color:"red"});
+                $('input[type="submit"]').attr('disabled','disabled');
+            }
+            //Si la date de début est supérieure à la date de fin
+            else if(data === "debutsuperieurfin")
+            {
+                $('#errorDate').text("La date de début est après la date de fin");
+                $('#errorDate').css({color:"red"});
+                $('input[type="submit"]').attr('disabled','disabled');
+            }
+            //Si tout est ok
+            else
+            {
+                $('#errorDate').text("");
+                $('input[type="submit"]').removeAttr('disabled');
+            }
+            
         }
     });
 }
