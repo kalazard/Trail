@@ -69,6 +69,9 @@
                             <li>
                                 <a href="{{path('site_trail_annuaire')}}">Annuaire</a>
                             </li>
+                            <li>
+                                <a href="{{path('site_trail_searchitineraire')}}">Itinéraires</a>
+                            </li>
 
                         {% endif %}
                     </ul>
@@ -391,7 +394,7 @@
                 //load_combobox_roles($("#selectRole"));
             });
         </script>
-        {% javascripts '@SiteTrailBundle/Resources/js/*' '@SiteTrailBundle/Resources/js/user/*'
+        {% javascripts '@SiteTrailBundle/Resources/js/*' '@SiteTrailBundle/Resources/js/user/*' '@SiteTrailBundle/Resources/js/map/*'
                    
         %}
         <script type="text/javascript" src="{{ asset_url }}"></script>

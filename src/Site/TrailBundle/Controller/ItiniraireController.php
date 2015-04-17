@@ -39,6 +39,26 @@ class ItiniraireController extends Controller
                 ));
 
         $responseDiff = $clientSOAPDiff->__call('difficultelist',array());
+
+        //Chargement de la liste des status dans le select
+        $clientSOAPStat = new \SoapClient(null, array(
+                    'uri' => "http://localhost/Carto/web/app_dev.php/itineraire",
+                    'location' => "http://localhost/Carto/web/app_dev.php/itineraire",
+                    'trace' => true,
+                    'exceptions' => true
+                ));
+
+        $responseStat = $clientSOAPDiff->__call('statuslist',array());
+
+        //Chargement de la liste des types de chemin dans le select
+        $clientSOAPType = new \SoapClient(null, array(
+                    'uri' => "http://localhost/Carto/web/app_dev.php/itineraire",
+                    'location' => "http://localhost/Carto/web/app_dev.php/itineraire",
+                    'trace' => true,
+                    'exceptions' => true
+                ));
+
+        $responseType = $clientSOAPDiff->__call('typecheminlist',array());
 		
         if($request->request->get("valid") == "ok")
         {
@@ -49,6 +69,7 @@ class ItiniraireController extends Controller
 			$search["longueur"] = $request->request->get("longueur");
 			$search["datecrea"] = $request->request->get("datecrea");
 			$search["difficulte"] = $request->request->get("difficulte");
+			$search["status"] = $request->request->get("status");
 			
 
 			$clientSOAP = new \SoapClient(null, array(
@@ -62,7 +83,9 @@ class ItiniraireController extends Controller
 
 			$res_search = json_decode($response);
 			$resDiff = json_decode($responseDiff);
-			$content = $this->get("templating")->render("SiteTrailBundle:Itiniraire:SearchItineraire.html.twig",array("resultats" => $res_search,"diffs" => $resDiff, "list" => array()));
+			$resStat = json_decode($responseStat);
+			$resType = json_decode($responseType);
+			$content = $this->get("templating")->render("SiteTrailBundle:Itiniraire:SearchItineraire.html.twig",array("resultats" => $res_search,"diffs" => $resDiff,"stats" => $resStat,"typechemin" => $resType, "list" => array()));
         }
 		else
 		{
@@ -79,7 +102,9 @@ class ItiniraireController extends Controller
 		
 			$res_list = json_decode($response);
 			$resDiff = json_decode($responseDiff);
-			$content = $this->get("templating")->render("SiteTrailBundle:Itiniraire:SearchItineraire.html.twig",array("resultats" => array(),"diffs" => $resDiff,"list" => $res_list));
+			$resStat = json_decode($responseStat);
+			$resType = json_decode($responseType);
+			$content = $this->get("templating")->render("SiteTrailBundle:Itiniraire:SearchItineraire.html.twig",array("resultats" => array(),"diffs" => $resDiff,"stats" => $resStat,"typechemin" => $resType,"list" => $res_list));
 		}
 
 		return new Response($content);
@@ -144,7 +169,7 @@ class ItiniraireController extends Controller
 
 			$res = json_decode($response);
 			
-			$content = $this->get("templating")->render("SiteTrailBundle:Itiniraire:FicheItineraire.html.twig",array("resultats" => $res));
+			$content = $this->get("templating")->render("SiteTrailBundle:Itiniraire:FicheItineraire.html.twig",array("resultats" => $res,"jsonObject" => $response));
 			return new Response($content);
 	}
 
