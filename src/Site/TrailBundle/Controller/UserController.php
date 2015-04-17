@@ -185,20 +185,16 @@ class UserController extends Controller {
                 $user->setTokenics($tokenics);
                 $user->setRole($role);
                 // On persite l'utilisateur
-                $manager->persist($user);
-
-                //On déclenche l'enregistrement dans la base de données
-                $manager->flush();
                 //Ensuite on essaye de se connecter avec le webservice
                 $clientSOAP = new SoapClient(null, array(
                     'uri' => $this->container->getParameter("auth_server_host"),
                     'location' => $this->container->getParameter("auth_server_host"),
                     'trace' => 1,
-                    'exceptions' => 0
+                    'exceptions' => 1
                 ));
 
                 //On appel la méthode du webservice qui permet de se connecter
-                $response = $clientSOAP->__call('createUser', array('id' => CustomCrypto::encrypt($user->getId()), 'username' => CustomCrypto::encrypt($email), 'password' => CustomCrypto::encrypt($password), 'server' => CustomCrypto::encrypt($_SERVER['SERVER_ADDR'])));
+                $response = $clientSOAP->__call('createUser', array('username' => CustomCrypto::encrypt($email), 'password' => CustomCrypto::encrypt($password), 'server' => CustomCrypto::encrypt($_SERVER['SERVER_ADDR'])));
                 //L'utilisateur n'existe pas dans la base de données ou les identifiants sont incorrects
 
                 if ($response['error'] == true) {
@@ -207,6 +203,11 @@ class UserController extends Controller {
                     $response->headers->set('Content-Type', 'application/json');
                     return $response;
                 }
+                $user->setId(CustomCrypto::decrypt($response['id_user']));
+                $manager->persist($user);
+
+                //On déclenche l'enregistrement dans la base de données
+                $manager->flush();
                 //Tout s'est déroulé correctement
                 $return = array('success' => true, 'serverError' => false, 'message' => "L'utilisateur est inscrit");
                 $response = new Response(json_encode($return));
@@ -263,6 +264,57 @@ class UserController extends Controller {
         }
     }
 
+    public function getUserActivationAction() {
+        //Permet de récupérer dans le webservice si l'utilisateur passé en paramètre existe ou non
+        $request = $this->getRequest();
+        if ($request->isXmlHttpRequest()) {
+            try {
+                //Seul l'administrateur peut récupérer les informations  d'un utilisateur
+                if ($this->get('security.context')->isGranted('ROLE_Administrateur')) {
+                    //On récupère l'id de l'utilisateur que l'on souhaite rechercher
+                    $id = $request->request->get('id_user');
+                    //On récupère le manager de doctrine
+                    $clientSOAP = new SoapClient(null, array(
+                        'uri' => $this->container->getParameter("auth_server_host"),
+                        'location' => $this->container->getParameter("auth_server_host"),
+                        'trace' => 1,
+                        'exceptions' => 1
+                    ));
+
+                    //On appel la méthode du webservice qui permet de se connecter
+                    $response = $clientSOAP->__call('getUserActivation', array('id' => CustomCrypto::encrypt($id), 'server' => CustomCrypto::encrypt($_SERVER['SERVER_ADDR'])));
+                    //Si il y a une erreur
+
+                    if ($response['error'] == true) {
+                        $return = array('success' => false, 'serverError' => false, 'message' => $response['message']);
+                        $response = new Response(json_encode($return));
+                        $response->headers->set('Content-Type', 'application/json');
+                        return $response;
+                    }
+                    $return = array('success' => true, 'serverError' => false, 'actif' => $response['actif']);
+                    $response = new Response(json_encode($return));
+                    $response->headers->set('Content-Type', 'application/json');
+                    return $response;
+                } else {
+                    //L'utilisateur n'est pas un administrateur
+                    $return = array('success' => false, 'serverError' => false, 'message' => "Vous n'avez pas le droit de récupérer cette information");
+                    $response = new Response(json_encode($return));
+                    $response->headers->set('Content-Type', 'application/json');
+                    return $response;
+                }
+            } catch (Exception $e) {
+                //Il y a eu une erreur côté serveur
+                $return = array('success' => false, 'serverError' => true, 'message' => $e->getMessage());
+                $response = new Response(json_encode($return));
+                $response->headers->set('Content-Type', 'application/json');
+                return $response;
+            }
+        } else {
+            //La requête n'es pas une requête ajax, on envoie une erreur
+            throw new NotFoundHttpException('Impossible de trouver la page demandée');
+        }
+    }
+
     //Récupération de la liste des utilisateurs
     public function getAllUsersAction() {
 
@@ -279,8 +331,29 @@ class UserController extends Controller {
                     $repository = $manager->getRepository("SiteTrailBundle:Membre");
                     //On récupère tous les utilisateurs
                     $users = $repository->findAll();
+                    $actifs = array();
+                    foreach ($users as $value) {
+                        $clientSOAP = new SoapClient(null, array(
+                            'uri' => $this->container->getParameter("auth_server_host"),
+                            'location' => $this->container->getParameter("auth_server_host"),
+                            'trace' => 1,
+                            'exceptions' => 1
+                        ));
+
+                        //On appel la méthode du webservice qui permet de se connecter
+                        $response = $clientSOAP->__call('getUserActivation', array('id' => CustomCrypto::encrypt($value->getId()), 'server' => CustomCrypto::encrypt($_SERVER['SERVER_ADDR'])));
+                        //Si il y a une erreur
+
+                        if ($response['error'] == true) {
+                            $return = array('success' => false, 'serverError' => false, 'message' => $response['message']);
+                            $response = new Response(json_encode($return));
+                            $response->headers->set('Content-Type', 'application/json');
+                            return $response;
+                        }
+                        $actifs[] = $response['actif'];
+                    }
                     $visibilite = $this->get('security.context')->isGranted('ROLE_Administrateur');
-                    $return = array('success' => true, 'serverError' => false, 'users' => $users, 'visibilite' => $visibilite);
+                    $return = array('success' => true, 'serverError' => false, 'users' => $users, 'visibilite' => $visibilite, 'actif' => $actifs);
                     $response = new Response(json_encode($return));
                     $response->headers->set('Content-Type', 'application/json');
                     return $response;
@@ -311,6 +384,7 @@ class UserController extends Controller {
             try {
                 if ($this->get('security.context')->isGranted('ROLE_Administrateur')) {
                     $id = $request->request->get('id_user');
+                    $activation = $request->request->get('activation');
                     $manager = $this->getDoctrine()->getManager();    //On récupère le manager de doctrine
                     $repository = $manager->getRepository("SiteTrailBundle:Membre");
                     $usertodelete = $repository->find($id);
@@ -320,16 +394,34 @@ class UserController extends Controller {
                         $response->headers->set('Content-Type', 'application/json');
                         return $response;
                     }
-                    $manager->remove($usertodelete);
-                    $manager->flush();
+
+                    //On désactive l'utilisateur sur le service d'authentification
+                    //Ensuite on essaye de se connecter avec le webservice
+                    $clientSOAP = new SoapClient(null, array(
+                        'uri' => $this->container->getParameter("auth_server_host"),
+                        'location' => $this->container->getParameter("auth_server_host"),
+                        'trace' => 1,
+                        'exceptions' => 1
+                    ));
+
+                    //On appel la méthode du webservice qui permet de modifier l'état de l'utilisateur
+                    $response = $clientSOAP->__call('updateUserActivation', array('id' => CustomCrypto::encrypt($usertodelete->getId()), 'activation' => CustomCrypto::encrypt($activation), 'server' => CustomCrypto::encrypt($_SERVER['SERVER_ADDR'])));
+                    //L'utilisateur n'existe pas dans la base de données du serveur d'authentification
+
+                    if ($response['error'] == true) {
+                        $return = array('success' => false, 'serverError' => false, 'message' => $response['message']);
+                        $response = new Response(json_encode($return));
+                        $response->headers->set('Content-Type', 'application/json');
+                        return $response;
+                    }
                     //L'utilisateur a bien été supprimé
-                    $return = array('success' => true, 'serverError' => false, 'message' => "L'utilisateur a bien été supprimé");
+                    $return = array('success' => true, 'serverError' => false, 'message' => "L'utilisateur a bien été désactivé");
                     $response = new Response(json_encode($return));
                     $response->headers->set('Content-Type', 'application/json');
                     return $response;
                 } else {
                     //L'utilisateur n'es pas un administrateur
-                    $return = array('success' => false, 'serverError' => false, 'message' => "Vous n'avez pas le droit de supprimer un utilisateur");
+                    $return = array('success' => false, 'serverError' => false, 'message' => "Vous n'avez pas le droit de désactiver un utilisateur");
                     $response = new Response(json_encode($return));
                     $response->headers->set('Content-Type', 'application/json');
                     return $response;
@@ -512,7 +604,7 @@ class UserController extends Controller {
                         $response->headers->set('Content-Type', 'application/json');
                         return $response;
                     }
-                    
+
                     $datenaissance = DateTime::createFromFormat('d/m/Y', $datenaissance);
                     $date_errors = DateTime::getLastErrors();
                     if ($date_errors['warning_count'] + $date_errors['error_count'] > 0) {
@@ -522,14 +614,14 @@ class UserController extends Controller {
                         return $response;
                     }
 
-                    
+
                     $user->setEmail($email);
                     $user->setNom($nom);
                     $user->setPrenom($prenom);
                     $user->setDatenaissance($datenaissance);
                     $user->setTelephone($telephone);
-                    
-                    
+
+
 
                     // On définit le rôle de l'utilisateur (récupéré dans la base de donnée)
                     $user->setRole($role);
