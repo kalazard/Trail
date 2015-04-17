@@ -6,7 +6,9 @@
             <h1>Calendrier</h1>
 	</div>
         <div class="col-sm-6">
-            <button id="dlCal" type="button" class='btn btn-warning pull-right'>Télécharger mon calendrier</button>
+            {% if (app.user) %}
+                <button id="dlCal" type="button" class='btn btn-warning pull-right'>Télécharger mon calendrier</button>
+            {% endif %}
         </div>
         
         <div id='calendar' class="col-sm-12"></div> <!-- Div qui contient le calendrier -->
@@ -34,6 +36,12 @@
     {% endjavascripts %}
     
     <script>
-        afficherCalendrier({{listeEvenement|raw}});
+        var isCo = false;
+        
+        {% if (app.user) %}
+            isCo = true;
+        {% endif %}        
+        
+        afficherCalendrier({{listeEvenement|raw}}, isCo);
     </script>
 {% endblock %}

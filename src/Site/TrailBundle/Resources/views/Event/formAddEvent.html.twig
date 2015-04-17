@@ -32,18 +32,20 @@
                         
                 <!-- Champ date début -->
                 <div class="form-group">
-                    <div class="row">
+                    <div class="row addEventDate">
                         {{ form_label(form.date_debut, "Date début : ", {'label_attr': {'class': 'col-sm-3 control-label'}}) }}
-                        {{ form_errors(form.date_debut) }}
-                        <div class="col-sm-9">
+                        <div class="col-sm-5">
                             {{ form_widget(form.date_debut) }}
+                        </div>
+                        <div class="col-sm-4">
+                            <label class="error" id="errorDate"></label>
                         </div>
                     </div>
                 </div>
 
                 <!-- Champ date fin -->
                 <div class="form-group">
-                    <div class="row">
+                    <div class="row addEventDate">
                         {{ form_label(form.date_fin, "Date fin : ", {'label_attr': {'class': 'col-sm-3 control-label'}}) }}
                         {{ form_errors(form.date_fin) }}
                         <div class="col-sm-9">
@@ -107,11 +109,22 @@
     </div>
 </div>
 
-<!-- Script pour la modification dynamique du formulaire -->
 <script>
+    //Modification dynamique du formulaire
     $("body").on("change", "#selectTypeEvent", function ()
     {
         updateFormAddEvent('{{selectProgramme|raw}}', '{{selectLieuRendezVous|raw}}', $('#selectTypeEvent').val());
+    });
+    
+    //Vérification des dates
+    $("body").on("change", ".addEventDate", function ()
+    { 
+        checkDate($('#form_date_debut_date_year').val(), $('#form_date_debut_date_month').val(),
+                    $('#form_date_debut_date_day').val(), $('#form_date_debut_time_hour').val(),
+                    $('#form_date_debut_time_minute').val(), $('#form_date_fin_date_year').val(),
+                    $('#form_date_fin_date_month').val(), $('#form_date_fin_date_day').val(),
+                    $('#form_date_fin_time_hour').val(), $('#form_date_fin_time_minute').val()        
+        );
     });
 </script>
 

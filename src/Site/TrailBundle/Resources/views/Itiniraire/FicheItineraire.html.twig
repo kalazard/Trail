@@ -4,16 +4,47 @@
 
 {% block body %}
   {% if app.user %}
-		<p> Nom: {{resultats.searchResults.nom}}  ID: {{resultats.searchResults.id}}</p>
-		<iframe class="map-iframe" frameborder="0" src="http://localhost/Carto/web/app_dev.php/" id="mapframe"></iframe>
-		<script>
-		var frame = document.getElementById('mapframe');
-		frame.contentWindow.onload = function()
-		{
-			document.getElementById('mapframe').contentWindow.loadMap("{{resultats.searchResults.trace.path}}");
-		}
-			
-		</script>
+			<table class="table">
+				<thead>
+	        		<th>Nom</th>
+	        		<th>Longueur</th>
+	        		<th>Dénivelé positif</th>
+	        		<th>Dénivelé négatif</th>
+	        		<th>Difficulté</th>
+	        		<th>Type de chemin</th>
+	        		<th>Status</th>
+	        		<th>Auteur</th>
+	        		<th>Date de création</th>
+	        		<th>Description</th>
+	        	</thead>
+                    <tbody>
+                      <tr>
+                        <td>{{resultats.searchResults.nom}}</td>
+
+                        <td>{{resultats.searchResults.longueur}}km</td>
+
+                        <td>{{resultats.searchResults.deniveleplus}}m</td>
+ 
+	                    <td>{{resultats.searchResults.denivelemoins}}m</td>
+
+                        <td>{{resultats.searchResults.difficulte.label}}</td>
+
+                        <td>{{resultats.searchResults.typechemin.label}}</td>
+
+                        <td>{{resultats.searchResults.status.label}}</td>                           
+
+                        <td>{{resultats.searchResults.auteur.email}}</td>                           
+
+                        <td>{{resultats.searchResults.datecreation}}</td>                           
+
+                        <td>{{resultats.searchResults.description}}</td>                           
+                      </tr>
+                    </tbody>
+                  </table>
+		<iframe class="map-iframe" 
+		frameborder="0" 
+		src="http://localhost/Carto/web/app_dev.php/itineraire_load/{{resultats.searchResults.id}}" 
+		id="mapframe"></iframe>		
  {% else %}
      <p>Vous n'avez pas accès à cette page</p>
  {% endif %}

@@ -1,5 +1,5 @@
 //Affiche le calendrier dans la div qui a pour id 'calendar'
-function afficherCalendrier(listeEvenements)
+function afficherCalendrier(listeEvenements, isCo)
 {
     var eventAffiches = [];
     var idClasseEvenement = 0;
@@ -12,14 +12,16 @@ function afficherCalendrier(listeEvenements)
         {
             var tabEvent = new Object();
             tabEvent['class'] = idClasseEvenement;
+            tabEvent['color'] = '#F79B23';
                 
             for(entity in listeEvenements[categorie][evenement])
-            {            
+            {
                 if(entity === '0') //Les événements
                 {
                     tabEvent['id'] = listeEvenements[categorie][evenement][entity].id;
                     tabEvent['title'] = listeEvenements[categorie][evenement][entity].evenement.titre;
                     tabEvent['start'] = listeEvenements[categorie][evenement][entity].evenement.dateDebut.date;
+                    
                     tabEvent['end'] = listeEvenements[categorie][evenement][entity].evenement.dateFin.date;
                     tabEvent['description'] = listeEvenements[categorie][evenement][entity].evenement.description;
                 }
@@ -78,19 +80,22 @@ function afficherCalendrier(listeEvenements)
             lang: 'fr',
             dayClick: function(date)
             {
-                $("#modalAddEventForm").children().remove();
-                $("#modalAddEventForm").remove();
-                
-                $.ajax({
-                    type: "POST",
-                    url: Routing.generate('site_trail_evenement_ajout'),
-                    cache: false,
-                    data: {"dateCliquee" : date.format()},
-                    success: function(data){
-                        $('body').append(data);
-                        $("#modalAddEventForm").modal('show');
-                    }
-                });
+                if(isCo ===  true)
+                {
+                    $("#modalAddEventForm").children().remove();
+                    $("#modalAddEventForm").remove();
+
+                    $.ajax({
+                        type: "POST",
+                        url: Routing.generate('site_trail_evenement_ajout'),
+                        cache: false,
+                        data: {"dateCliquee" : date.format()},
+                        success: function(data){
+                            $('body').append(data);
+                            $("#modalAddEventForm").modal('show');
+                        }
+                    });
+                }                
             },
             nextDayThreshold: "00:00:01",
             events: eventAffiches,
@@ -234,7 +239,7 @@ function envoiFormModif()
         cache: false,
         data: data,
         success: function(){
-            //document.location.href=Routing.generate('site_trail_evenement')
+            document.location.href=Routing.generate('site_trail_evenement')
         }
     });
 }
@@ -254,3 +259,37 @@ $( "body" ).on( "click", "#dlCal", function()
         }
     });
 });
+
+//Vérification des dates
+function checkDate(anneeD, moisD, jourD, heureD, minuteD, anneeF, moisF, jourF, heureF, minuteF)
+{
+    /*console.log(anneeD);
+    console.log(moisD);
+    console.log(jourD);
+    console.log(heureD);
+    console.log(minuteD);
+    console.log(anneeF);
+    console.log(moisF);
+    console.log(jourF);
+    console.log(heureF);
+    console.log(minuteF);*/
+    
+    $.ajax({
+        type: "POST",
+        url: Routing.generate('site_trail_evenement_checkdate'),
+        data: {"anneeD" : anneeD,
+                "moisD" : moisD,
+                "jourD" : jourD,
+                "heureD" : heureD,
+                "minuteD" : minuteD,
+                "anneeF" : anneeF,
+                "moisF" : moisF,
+                "jourF" : jourF,
+                "heureF" : heureF,
+                "minuteF" : minuteF},
+        cache: false,
+        success: function(data){
+            console.log(data);
+        }
+    });
+}

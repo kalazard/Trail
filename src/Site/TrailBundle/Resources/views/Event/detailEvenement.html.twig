@@ -49,21 +49,24 @@
                         <p>URL du site : <a target="_blank" href="{{evenement.getSiteUrl()}}">{{evenement.getSiteUrl()}}</a></p>
                     {% else %}
                     {% endif %}
-                    <div class="modal-footer">
-                        <div class='wrapper text-center'>
-                            {% if (app.user.getRole().getId() == 1 or evenement.getEvenement().getCreateur().getId() == app.user.getId()) %}
-                                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="modifEvenement({{idClasse}}, {{evenement.getId()}})">Modifier</button>
-                                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="supprEvenementConfirm()">Supprimer</button>
-                            {% endif %}
-                            {% if (participation != null ) %}
-                                {% if (participation.getEtatInscription() == '') %}
+                    
+                    {% if (app.user) %}
+                        <div class="modal-footer">
+                            <div class='wrapper text-center'>
+                                {% if (app.user.getRole().getId() == 1 or evenement.getEvenement().getCreateur().getId() == app.user.getId()) %}
+                                    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="modifEvenement({{idClasse}}, {{evenement.getId()}})">Modifier</button>
+                                    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="supprEvenementConfirm()">Supprimer</button>
+                                {% endif %}
+                                {% if (participation != null ) %}
+                                    {% if (participation.getEtatInscription() == '') %}
+                                        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="">Participer</button>
+                                    {% endif %}
+                                {% else %}
                                     <button type="button" class="btn btn-default" data-dismiss="modal" onclick="">Participer</button>
                                 {% endif %}
-                            {% else %}
-                                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="">Participer</button>
-                            {% endif %}
+                            </div>
                         </div>
-                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

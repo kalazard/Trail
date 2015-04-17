@@ -27,17 +27,40 @@
     background-position: center center;
     background-size: cover;
 }
+
+html
+{
+    height: 100%;
+}
+
 body
 {
-	margin-top: 50px;
+    position: relative;
+    margin-top: 50px;
+    min-height: 100%;
+}
+
+#page-content-wrapper
+{
+    padding-bottom: 102px; //taille footer + 20px pour pas coller
 }
 
 footer
 {
-	margin-top: 20px;
-	padding: 10px;
-	color: #FFF;
-	background-color: #222;
+    position: absolute;
+    height: 82px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 10px;
+    color: #FFF;
+    background-color: #222;
+}
+
+*
+{
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 

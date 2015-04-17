@@ -41,6 +41,9 @@
                         <li>
                             <a href="{{path('site_trail_homepage_empty')}}">Accueil</a>
                         </li>
+                        <li>
+                            <a href="{{path('site_trail_evenement')}}">Calendrier</a>
+                        </li>
                         {% if not is_granted('IS_AUTHENTICATED_FULLY') %}
                             <li>
                                 <a href="{{path('site_trail_news')}}">Nouveautés</a>
@@ -57,9 +60,6 @@
                         {% endif %}
                         {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                             <li>
-                                <a href="{{path('site_trail_evenement')}}">Calendrier</a>
-                            </li>
-                            <li>
                                 <a href="{{path('site_trail_map')}}">Carte</a>
                             </li>
                             <li>
@@ -68,6 +68,9 @@
 
                             <li>
                                 <a href="{{path('site_trail_annuaire')}}">Annuaire</a>
+                            </li>
+                            <li>
+                                <a href="{{path('site_trail_searchitineraire')}}">Itinéraires</a>
                             </li>
 
                         {% endif %}
@@ -391,7 +394,7 @@
                 //load_combobox_roles($("#selectRole"));
             });
         </script>
-        {% javascripts '@SiteTrailBundle/Resources/js/*' '@SiteTrailBundle/Resources/js/user/*'
+        {% javascripts '@SiteTrailBundle/Resources/js/*' '@SiteTrailBundle/Resources/js/user/*' '@SiteTrailBundle/Resources/js/map/*'
                    
         %}
         <script type="text/javascript" src="{{ asset_url }}"></script>

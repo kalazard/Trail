@@ -22,7 +22,6 @@ class ItiniraireController extends Controller
 
                 //On appel la méthode du webservice qui permet de se connecter
                 $response = $clientSOAP->__call('itilist', array());
-        //return new Response($response);
     
 		$res = json_decode($response);
 		$content = $this->get("templating")->render("SiteTrailBundle:Itiniraire:ItineraireDisplay.html.twig",array("resultats" => $res));
@@ -41,16 +40,36 @@ class ItiniraireController extends Controller
 
         $responseDiff = $clientSOAPDiff->__call('difficultelist',array());
 
+        //Chargement de la liste des status dans le select
+        $clientSOAPStat = new \SoapClient(null, array(
+                    'uri' => "http://localhost/Carto/web/app_dev.php/itineraire",
+                    'location' => "http://localhost/Carto/web/app_dev.php/itineraire",
+                    'trace' => true,
+                    'exceptions' => true
+                ));
+
+        $responseStat = $clientSOAPDiff->__call('statuslist',array());
+
+        //Chargement de la liste des types de chemin dans le select
+        $clientSOAPType = new \SoapClient(null, array(
+                    'uri' => "http://localhost/Carto/web/app_dev.php/itineraire",
+                    'location' => "http://localhost/Carto/web/app_dev.php/itineraire",
+                    'trace' => true,
+                    'exceptions' => true
+                ));
+
+        $responseType = $clientSOAPDiff->__call('typecheminlist',array());
+		
         if($request->request->get("valid") == "ok")
         {
         	//Appel du service de recherche
         	$search = array();		
 			$search["nom"] = $request->request->get("nom");
 			$search["typechemin"] = $request->request->get("typechemin");
-			$search["denivelep"] = $request->request->get("denivelep");
-			$search["denivelen"] = $request->request->get("denivelen");
+			$search["longueur"] = $request->request->get("longueur");
 			$search["datecrea"] = $request->request->get("datecrea");
 			$search["difficulte"] = $request->request->get("difficulte");
+			$search["status"] = $request->request->get("status");
 			
 
 			$clientSOAP = new \SoapClient(null, array(
@@ -62,15 +81,32 @@ class ItiniraireController extends Controller
 
 	        $response = $clientSOAP->__call('search', $search);
 
-			$res = json_decode($response);
+			$res_search = json_decode($response);
 			$resDiff = json_decode($responseDiff);
-			
-			$content = $this->get("templating")->render("SiteTrailBundle:Itiniraire:SearchItineraire.html.twig",array("resultats" => $res,"diffs" => $resDiff));
-			return new Response($content);
+			$resStat = json_decode($responseStat);
+			$resType = json_decode($responseType);
+			$content = $this->get("templating")->render("SiteTrailBundle:Itiniraire:SearchItineraire.html.twig",array("resultats" => $res_search,"diffs" => $resDiff,"stats" => $resStat,"typechemin" => $resType, "list" => array()));
         }
+		else
+		{
+			// Recupère la liste complète
+			$clientSOAP = new \SoapClient(null, array(
+						'uri' => "http://localhost/Carto/web/app_dev.php/itineraire",
+						'location' => "http://localhost/Carto/web/app_dev.php/itineraire",
+						'trace' => true,
+						'exceptions' => true
+					));
 
-		$resDiff = json_decode($responseDiff);
-		$content = $this->get("templating")->render("SiteTrailBundle:Itiniraire:SearchItineraire.html.twig",array("resultats" => array(),"diffs" => $resDiff));
+			//On appel la méthode du webservice qui permet de se connecter
+			$response = $clientSOAP->__call('itilist', array());
+		
+			$res_list = json_decode($response);
+			$resDiff = json_decode($responseDiff);
+			$resStat = json_decode($responseStat);
+			$resType = json_decode($responseType);
+			$content = $this->get("templating")->render("SiteTrailBundle:Itiniraire:SearchItineraire.html.twig",array("resultats" => array(),"diffs" => $resDiff,"stats" => $resStat,"typechemin" => $resType,"list" => $res_list));
+		}
+
 		return new Response($content);
 	}
 
@@ -133,7 +169,7 @@ class ItiniraireController extends Controller
 
 			$res = json_decode($response);
 			
-			$content = $this->get("templating")->render("SiteTrailBundle:Itiniraire:FicheItineraire.html.twig",array("resultats" => $res));
+			$content = $this->get("templating")->render("SiteTrailBundle:Itiniraire:FicheItineraire.html.twig",array("resultats" => $res,"jsonObject" => $response));
 			return new Response($content);
 	}
 
