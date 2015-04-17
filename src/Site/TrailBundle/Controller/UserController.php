@@ -620,14 +620,33 @@ class UserController extends Controller {
                     $user->setPrenom($prenom);
                     $user->setDatenaissance($datenaissance);
                     $user->setTelephone($telephone);
-
-
-
+                    
+                    
                     // On définit le rôle de l'utilisateur (récupéré dans la base de donnée)
                     $user->setRole($role);
 
                     //On déclenche l'enregistrement dans la base de données
                     $manager->flush();
+                    
+                    //On ajoute les modifications dans le serveur d'authentification (juste l'email)
+                    $clientSOAP = new SoapClient(null, array(
+                        'uri' => $this->container->getParameter("auth_server_host"),
+                        'location' => $this->container->getParameter("auth_server_host"),
+                        'trace' => 1,
+                        'exceptions' => 1
+                    ));
+
+                    //On appel la méthode du webservice qui permet de modifier l'état de l'utilisateur
+                    $response = $clientSOAP->__call('updateUser', array('id' => CustomCrypto::encrypt($user->getId()), 'email' => CustomCrypto::encrypt($user->getEmail()), 'server' => CustomCrypto::encrypt($_SERVER['SERVER_ADDR'])));
+                    //L'utilisateur n'existe pas dans la base de données du serveur d'authentification
+
+                    if ($response['error'] == true) {
+                        $return = array('success' => false, 'serverError' => false, 'message' => $response['message']);
+                        $response = new Response(json_encode($return));
+                        $response->headers->set('Content-Type', 'application/json');
+                        return $response;
+                    }
+                    
                     //Tout s'est déroulé correctement
                     $return = array('success' => true, 'serverError' => false, 'message' => "L'utilisateur a été mis à jour");
                     $response = new Response(json_encode($return));
