@@ -3,84 +3,58 @@
 {% block title %}{{ parent() }} - Galerie{% endblock %}
 
 {% block body %}
-	<div class="container">
-		<h1>Galerie</h1>
-			<div class="category">
-				<a class="h3" href="{{path('site_trail_category')}}">Villes</a>
-				<div class="row move-bottom-xs">
-				  <div class="col-md-3 col-sm-6">
-					<div class="thumbnail">
-					  <a href="{{path('site_trail_picture')}}"><img src="http://strategic-property.com.au/wp-content/uploads/2013/11/city_view_1920x500.jpg" alt="Smiley face"></a>
-					  <div class="caption">
-						<a class="h4" href="{{path('site_trail_picture')}}">Titre</a>
-						<p>Description</p>
-					  </div>
-					</div>
-				  </div>
-				  <div class="col-md-3 col-sm-6">
-					<div class="thumbnail">
-					  <a href="{{path('site_trail_picture')}}"><img src="http://phuketprivateparty.com/wp-content/uploads/2012/09/new-york-1920x500.jpg" alt="Smiley face"></a>
-					  <div class="caption">
-						<a class="h4" href="{{path('site_trail_picture')}}">Titre</a>
-						<p>Description</p>
-					  </div>
-					</div>
-				  </div>
-				  <div class="col-md-3 col-sm-6">
-					<div class="thumbnail">
-					  <a href="{{path('site_trail_picture')}}"><img src="http://d37r16m4w51ne4.cloudfront.net/wp-content/uploads/2012/12/1920x500-city.jpg" alt="Smiley face"></a>
-					  <div class="caption">
-						<a class="h4" href="{{path('site_trail_picture')}}">Titre</a>
-						<p>Description</p>
-					  </div>
-					</div>
-				  </div>
-				  <div class="col-md-3 col-sm-6">
-					<div class="thumbnail">
-					  <a href="{{path('site_trail_picture')}}"><img src="http://lesparisiennes-scpo.fr/2012/wp-content/uploads/2012/12/tour-eiffel-partenariats-1920x500.png" alt="Smiley face"></a>
-					  <div class="caption">
-						<a class="h4" href="{{path('site_trail_picture')}}">Titre</a>
-						<p>Description</p>
-					  </div>
-					</div>
-				  </div>
-				</div>
-				<a class="colored pull-right" href="{{path('site_trail_category')}}">Voir Villes</a>
-			</div>
-			<div class="category">
-				<a class="h3" href="{{path('site_trail_category')}}">Paysages</a>
-				<div class="row move-bottom-xs">
-				  <div class="col-md-3 col-sm-6">
-					<div class="thumbnail">
-					  <a href="{{path('site_trail_picture')}}"><img src="http://www.altavaltellinabike.it/media/menu/00/262/cd/en/images/percorsi-1920x500-0.jpg" alt="Smiley face"></a>
-					  <div class="caption">
-						<a class="h4" href="{{path('site_trail_picture')}}">Titre</a>
-						<p>Description</p>
-					  </div>
-					</div>
-				  </div>				  
-				</div>
-				<a class="colored pull-right" href="{{path('site_trail_category')}}">Voir Paysages</a>
-			</div>
-			
-		<div class="text-center">
-		  <ul class="pagination">
-			<li>
-			  <a href="#" aria-label="Previous">
-				<span aria-hidden="true">&laquo;</span>
-			  </a>
-			</li>
-			<li><a href="#">1</a></li>
-			<li><a href="#">2</a></li>
-			<li><a href="#">3</a></li>
-			<li><a href="#">4</a></li>
-			<li><a href="#">5</a></li>
-			<li>
-			  <a href="#" aria-label="Next">
-				<span aria-hidden="true">&raquo;</span>
-			  </a>
-			</li>
-		  </ul>
-		</div>
+    <div class="container">
+        <div class="col-sm-12">
+            <h1>Galerie
+                {% if (app.user.getRole().getId() == 1) %}
+                    <button id="addCategorie" type="button" class='btn btn-warning pull-right'>Ajouter une catégorie</button>
+                {% endif %}
+            </h1>
 	</div>
+            
+        {% for indice,categorie in listeCategorie %}
+            <div class="category col-sm-12">
+                <a class="h3" href="{{ path('site_trail_category', {'idCategorie': categorie.getId()}) }}">{{categorie.getLabel()}}</a>
+                <div class="row move-bottom-xs">
+                    {% for image in listeImage[indice] %}
+                        <div class="col-md-3 col-sm-6">
+                            <div class="thumbnail">
+                                <a href="{{path('site_trail_picture')}}"><img class="apercu" src="{{image.getPath()}}" alt="Smiley face"></a>
+                                <div class="caption">
+                                    <a class="h4" href="{{path('site_trail_picture')}}">{{image.getTitre()}}</a>
+                                    <p>{{image.getDescription()}}</p>
+                                </div>
+                            </div>
+                        </div> 
+                    {% endfor %}
+                </div>
+                <a class="colored pull-right" href="{{ path('site_trail_category', {'idCategorie': categorie.getId()}) }}">Voir {{categorie.getLabel()}}</a>
+            </div>
+        {% endfor %}
+
+        <div class="text-center">
+          <ul class="pagination">
+                <li>
+                  <a href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                  </a>
+                </li>
+                <li><a href="#">1</a></li>
+                <li><a href="#">2</a></li>
+                <li><a href="#">3</a></li>
+                <li><a href="#">4</a></li>
+                <li><a href="#">5</a></li>
+                <li>
+                  <a href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                  </a>
+                </li>
+          </ul>
+        </div>
+    </div>
+        
+    {% javascripts '@SiteTrailBundle/Resources/js/*' '@SiteTrailBundle/Resources/js/gallery/*' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+
 {% endblock %}
