@@ -17,7 +17,7 @@ class Membre implements \Symfony\Component\Security\Core\User\UserInterface, \Se
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * 
      */
     private $id;
 
@@ -100,6 +100,13 @@ class Membre implements \Symfony\Component\Security\Core\User\UserInterface, \Se
     public function getId()
     {
         return $this->id;
+    }
+    
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     /**
