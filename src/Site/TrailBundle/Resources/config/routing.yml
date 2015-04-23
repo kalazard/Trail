@@ -120,9 +120,21 @@ site_trail_getByIditineraire:
 site_trail_gallery:
     path :    /galerie
     defaults: { _controller: SiteTrailBundle:Gallery:index }
+    options:
+        expose: true
 site_trail_category:
-    path :    /galerie/categorie
-    defaults: { _controller: SiteTrailBundle:Gallery:category }
+    path :    /galerie/categorie/{idCategorie}
+    defaults: { _controller: SiteTrailBundle:Gallery:category, idCategorie: "" }
+site_trail_category_ajout:
+    path:    /galerie/categorie/ajout
+    defaults: { _controller: SiteTrailBundle:Gallery:categorieAjout }
+    options:
+        expose: true
+site_trail_category_suppression:
+    path:    /galerie/categorie/suppression/{idCategorie}
+    defaults: { _controller: SiteTrailBundle:Gallery:categorieSuppression, idCategorie: "" }
+    options:
+        expose: true
 site_trail_picture:
     path :    /galerie/image
     defaults: { _controller: SiteTrailBundle:Gallery:picture }
@@ -144,3 +156,4 @@ site_trail_article:
 site_trail_upload:
     path :    /upload/
     defaults: { _controller: SiteTrailBundle:Map:upload}
+
