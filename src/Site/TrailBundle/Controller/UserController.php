@@ -96,53 +96,58 @@ class UserController extends Controller {
                 }
                 //Si le nom est vide
                 if ($nom == "") {
-                    //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
-                    $return = array('success' => false, 'serverError' => false, 'message' => "Le nom ne doît pas être vide");
-                    $response = new Response(json_encode($return));
-                    $response->headers->set('Content-Type', 'application/json');
-                    return $response;
+                    //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur
+                    //$return = array('success' => false, 'serverError' => false, 'message' => "Le nom ne doît pas être vide");
+                    //$response = new Response(json_encode($return));
+                    //$response->headers->set('Content-Type', 'application/json');
+                    //return $response;
+                    $nom = null;
                 }
                 //Si la date de naissance est vide
                 if ($datenaissance == "") {
-                    //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
-                    $return = array('success' => false, 'serverError' => false, 'message' => "La date de naissance ne doît pas être vide");
-                    $response = new Response(json_encode($return));
-                    $response->headers->set('Content-Type', 'application/json');
-                    return $response;
+                    //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur
+                    //$return = array('success' => false, 'serverError' => false, 'message' => "La date de naissance ne doît pas être vide");
+                    //$response = new Response(json_encode($return));
+                    //$response->headers->set('Content-Type', 'application/json');
+                    //return $response;
+                    $datenaissance = null;
                 }
                 //Si le prenom est vide
                 if ($prenom == "") {
-                    //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
-                    $return = array('success' => false, 'serverError' => false, 'message' => "Le prénom ne doît pas être vide");
-                    $response = new Response(json_encode($return));
-                    $response->headers->set('Content-Type', 'application/json');
-                    return $response;
+                    //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur
+                    //$return = array('success' => false, 'serverError' => false, 'message' => "Le prénom ne doît pas être vide");
+                    //$response = new Response(json_encode($return));
+                    //$response->headers->set('Content-Type', 'application/json');
+                    //return $response;
+                    $prenom = null;
                 }
                 //Si le telephone est vide
                 if ($telephone == "") {
-                    //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
-                    $return = array('success' => false, 'serverError' => false, 'message' => "Le telephone ne doît pas être vide");
-                    $response = new Response(json_encode($return));
-                    $response->headers->set('Content-Type', 'application/json');
-                    return $response;
+                    //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur
+                    //$return = array('success' => false, 'serverError' => false, 'message' => "Le telephone ne doît pas être vide");
+                    //$response = new Response(json_encode($return));
+                    //$response->headers->set('Content-Type', 'application/json');
+                    //return $response;
+                    $telephone = null;
                 }
                 //Si la licence est vide
                 if ($licence == "") {
-                    //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
-                    $return = array('success' => false, 'serverError' => false, 'message' => "La licence ne doît pas être vide");
-                    $response = new Response(json_encode($return));
-                    $response->headers->set('Content-Type', 'application/json');
-                    return $response;
+                    //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur
+                    //$return = array('success' => false, 'serverError' => false, 'message' => "La licence ne doît pas être vide");
+                    //$response = new Response(json_encode($return));
+                    //$response->headers->set('Content-Type', 'application/json');
+                    //return $response;
+                    $licence = null;
                 }
                 //Si le mot de passe est vide
-                if ($password == "") {
-                    //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
-                    $return = array('success' => false, 'serverError' => false, 'message' => "Le mot de passe ne doît pas être vide");
-                    $response = new Response(json_encode($return));
-                    $response->headers->set('Content-Type', 'application/json');
-                    return $response;
-                }
-                if (!filter_var($licence, FILTER_VALIDATE_URL)) {
+                /* if ($password == "") {
+                  //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur
+                  $return = array('success' => false, 'serverError' => false, 'message' => "Le mot de passe ne doît pas être vide");
+                  $response = new Response(json_encode($return));
+                  $response->headers->set('Content-Type', 'application/json');
+                  return $response;
+                  } */
+                if ($licence != "" && !filter_var($licence, FILTER_VALIDATE_URL)) {
                     $return = array('success' => false, 'serverError' => false, 'message' => "La licence doit être un lien valide");
                     $response = new Response(json_encode($return));
                     $response->headers->set('Content-Type', 'application/json');
@@ -150,13 +155,15 @@ class UserController extends Controller {
                 }
 
 
-                $datenaissance = DateTime::createFromFormat('d/m/Y', $datenaissance);
-                $date_errors = DateTime::getLastErrors();
-                if ($date_errors['warning_count'] + $date_errors['error_count'] > 0) {
-                    $return = array('success' => false, 'serverError' => false, 'message' => "Le format de la date est invalide");
-                    $response = new Response(json_encode($return));
-                    $response->headers->set('Content-Type', 'application/json');
-                    return $response;
+                if ($datenaissance != "") {
+                    $datenaissance = DateTime::createFromFormat('d/m/Y', $datenaissance);
+                    $date_errors = DateTime::getLastErrors();
+                    if ($date_errors['warning_count'] + $date_errors['error_count'] > 0) {
+                        $return = array('success' => false, 'serverError' => false, 'message' => "Le format de la date est invalide");
+                        $response = new Response(json_encode($return));
+                        $response->headers->set('Content-Type', 'application/json');
+                        return $response;
+                    }
                 }
 
                 // On crée l'utilisateur vide
@@ -185,6 +192,11 @@ class UserController extends Controller {
                 $user->setTokenics($tokenics);
                 $user->setRole($role);
                 // On persite l'utilisateur
+                //On génère un nouveau mot de passe
+                $password = md5(uniqid('', true));
+
+
+
                 //Ensuite on essaye de se connecter avec le webservice
                 $clientSOAP = new SoapClient(null, array(
                     'uri' => $this->container->getParameter("auth_server_host"),
@@ -208,6 +220,16 @@ class UserController extends Controller {
 
                 //On déclenche l'enregistrement dans la base de données
                 $manager->flush();
+
+                //On envoie le mot de passe généré à l'utilisateur
+                $message = \Swift_Message::newInstance()
+                        ->setSubject('Création de compte ')
+                        ->setFrom('noreply.trail@gmail.com')
+                        ->setTo($user->getEmail())
+                        ->setBody("Vos identifiants pour vous connecter : \n login = " . $user->getEmail() . "\n mot de passe = " . $password);
+                $this->get('mailer')->send($message);
+
+
                 //Tout s'est déroulé correctement
                 $return = array('success' => true, 'serverError' => false, 'message' => "L'utilisateur est inscrit");
                 $response = new Response(json_encode($return));
@@ -575,43 +597,49 @@ class UserController extends Controller {
                     //Si le nom est vide
                     if ($nom == "") {
                         //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
-                        $return = array('success' => false, 'serverError' => false, 'message' => "Le nom ne doît pas être vide");
-                        $response = new Response(json_encode($return));
-                        $response->headers->set('Content-Type', 'application/json');
-                        return $response;
+                        /* $return = array('success' => false, 'serverError' => false, 'message' => "Le nom ne doît pas être vide");
+                          $response = new Response(json_encode($return));
+                          $response->headers->set('Content-Type', 'application/json');
+                          return $response; */
+                        $nom = null;
                     }
                     //Si la date de naissance est vide
                     if ($datenaissance == "") {
                         //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
-                        $return = array('success' => false, 'serverError' => false, 'message' => "La date de naissance ne doît pas être vide");
-                        $response = new Response(json_encode($return));
-                        $response->headers->set('Content-Type', 'application/json');
-                        return $response;
+                        /* $return = array('success' => false, 'serverError' => false, 'message' => "La date de naissance ne doît pas être vide");
+                          $response = new Response(json_encode($return));
+                          $response->headers->set('Content-Type', 'application/json');
+                          return $response; */
+                        $datenaissance = null;
                     }
                     //Si le prenom est vide
                     if ($prenom == "") {
                         //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
-                        $return = array('success' => false, 'serverError' => false, 'message' => "Le prénom ne doît pas être vide");
-                        $response = new Response(json_encode($return));
-                        $response->headers->set('Content-Type', 'application/json');
-                        return $response;
+                        /* $return = array('success' => false, 'serverError' => false, 'message' => "Le prénom ne doît pas être vide");
+                          $response = new Response(json_encode($return));
+                          $response->headers->set('Content-Type', 'application/json');
+                          return $response; */
+                        $prenom = null;
                     }
                     //Si le telephone est vide
                     if ($telephone == "") {
                         //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
-                        $return = array('success' => false, 'serverError' => false, 'message' => "Le telephone ne doît pas être vide");
-                        $response = new Response(json_encode($return));
-                        $response->headers->set('Content-Type', 'application/json');
-                        return $response;
+                        /* $return = array('success' => false, 'serverError' => false, 'message' => "Le telephone ne doît pas être vide");
+                          $response = new Response(json_encode($return));
+                          $response->headers->set('Content-Type', 'application/json');
+                          return $response; */
+                        $telephone = null;
                     }
 
-                    $datenaissance = DateTime::createFromFormat('d/m/Y', $datenaissance);
-                    $date_errors = DateTime::getLastErrors();
-                    if ($date_errors['warning_count'] + $date_errors['error_count'] > 0) {
-                        $return = array('success' => false, 'serverError' => false, 'message' => "Le format de la date est invalide");
-                        $response = new Response(json_encode($return));
-                        $response->headers->set('Content-Type', 'application/json');
-                        return $response;
+                    if ($datenaissance != null) {
+                        $datenaissance = DateTime::createFromFormat('d/m/Y', $datenaissance);
+                        $date_errors = DateTime::getLastErrors();
+                        if ($date_errors['warning_count'] + $date_errors['error_count'] > 0) {
+                            $return = array('success' => false, 'serverError' => false, 'message' => "Le format de la date est invalide");
+                            $response = new Response(json_encode($return));
+                            $response->headers->set('Content-Type', 'application/json');
+                            return $response;
+                        }
                     }
 
 
@@ -620,14 +648,14 @@ class UserController extends Controller {
                     $user->setPrenom($prenom);
                     $user->setDatenaissance($datenaissance);
                     $user->setTelephone($telephone);
-                    
-                    
+
+
                     // On définit le rôle de l'utilisateur (récupéré dans la base de donnée)
                     $user->setRole($role);
 
                     //On déclenche l'enregistrement dans la base de données
                     $manager->flush();
-                    
+
                     //On ajoute les modifications dans le serveur d'authentification (juste l'email)
                     $clientSOAP = new SoapClient(null, array(
                         'uri' => $this->container->getParameter("auth_server_host"),
@@ -646,7 +674,7 @@ class UserController extends Controller {
                         $response->headers->set('Content-Type', 'application/json');
                         return $response;
                     }
-                    
+
                     //Tout s'est déroulé correctement
                     $return = array('success' => true, 'serverError' => false, 'message' => "L'utilisateur a été mis à jour");
                     $response = new Response(json_encode($return));
@@ -745,6 +773,85 @@ class UserController extends Controller {
         $response->headers->clearCookie($this->container->getParameter("auth_cookie"));
 
         return $response;
+    }
+
+    //Permet de changer le mot de passe d'un utilisateur
+    public function changePasswordAction() {
+        $request = $this->getRequest();
+        //On regarde qu'il s'agit bien d'une requête ajax
+        if ($request->isXmlHttpRequest()) {
+            try {
+                if ($this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')) {
+                    //On récupère l'ancien mot de passe
+                    $oldpassword = $request->request->get('oldpassword');
+                    //On récupère le nouveau mot de passe
+                    $newpassword = $request->request->get('newpassword');
+                    //On récupère l'email de l'utilisateur actuel
+                    $email = $this->getUser()->getEmail();
+                    //On récupère son id
+                    $id = $this->getUser()->getId();
+                    
+                    if ($oldpassword == "" || $newpassword == "") {
+                        $return = array('success' => false, 'serverError' => false, 'message' => "Veuillez remplir le formulaire");
+                        $response = new Response(json_encode($return));
+                        $response->headers->set('Content-Type', 'application/json');
+                        return $response;
+                    }
+                    //Ensuite on essaye de se connecter avec le webservice
+                    $clientSOAP = new SoapClient(null, array(
+                        'uri' => $this->container->getParameter("auth_server_host"),
+                        'location' => $this->container->getParameter("auth_server_host"),
+                        'trace' => true,
+                        'exceptions' => true
+                    ));
+
+                    //On appel la méthode du webservice qui permet de se connecter
+                    $response = $clientSOAP->__call('logUserIn', array('username' => CustomCrypto::encrypt($email), 'password' => CustomCrypto::encrypt($oldpassword), 'server' => CustomCrypto::encrypt($_SERVER['SERVER_ADDR'])));
+                    //L'utilisateur n'existe pas dans la base de données ou les identifiants sont incorrects
+
+                    if ($response['connected'] == false) {
+                        $return = array('success' => false, 'serverError' => false, 'message' => "Le mot de passe renseigné est invalide");
+                        $response = new Response(json_encode($return));
+                        $response->headers->set('Content-Type', 'application/json');
+                        return $response;
+                    }
+                    //Le webservice possède bien un compte d'utilisateur pour les informations saisies.
+                    //Maintenant il faut changer le mot de passe
+                    
+                    $clientSOAP = new SoapClient(null, array(
+                        'uri' => $this->container->getParameter("auth_server_host"),
+                        'location' => $this->container->getParameter("auth_server_host"),
+                        'trace' => 1,
+                        'exceptions' => 1
+                    ));
+
+                    //On appel la méthode du webservice qui permet de modifier l'état de l'utilisateur
+                    $response = $clientSOAP->__call('changePassword', array('id' => CustomCrypto::encrypt($id), 'newpassword' => CustomCrypto::encrypt($newpassword), 'server' => CustomCrypto::encrypt($_SERVER['SERVER_ADDR'])));
+                    //L'utilisateur n'existe pas dans la base de données du serveur d'authentification
+
+                    if ($response['error'] == true) {
+                        $return = array('success' => false, 'serverError' => false, 'message' => $response['message']);
+                        $response = new Response(json_encode($return));
+                        $response->headers->set('Content-Type', 'application/json');
+                        return $response;
+                    }
+                    
+                    $return = array('success' => true, 'serverError' => false);
+                    $response = new Response(json_encode($return));
+                    $response->headers->set('Content-Type', 'application/json');
+                    return $response;
+                }
+            } catch (Exception $e) {
+                //Il y a une erreur côté serveur
+                $return = array('success' => false, 'serverError' => true, 'message' => $e->getMessage());
+                $response = new Response(json_encode($return));
+                $response->headers->set('Content-Type', 'application/json');
+                return $response;
+            }
+        } else {
+            //La requête n'es pas une requête ajax, on envoie une erreur
+            throw new NotFoundHttpException('Impossible de trouver la page demandée');
+        }
     }
 
     //Affichage du formulaire d'ajout d'un utilisateur

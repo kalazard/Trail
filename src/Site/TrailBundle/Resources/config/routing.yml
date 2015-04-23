@@ -96,6 +96,9 @@ site_trail_updateUser:
 site_trail_getUserActivation:
     path:    /user/getActivation
     defaults:  { _controller:SiteTrailBundle:User:getUserActivation }
+site_trail_changePassword:
+    path:    /user/changePassword
+    defaults:  { _controller:SiteTrailBundle:User:changePassword }
 site_trail_getDifficulteParcours:
     path:    /difficulte/getDifficultes
     defaults: { _controller:SiteTrailBundle:DifficulteParcours:getDifficultes }
