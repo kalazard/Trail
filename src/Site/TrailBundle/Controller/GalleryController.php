@@ -293,22 +293,30 @@ class GalleryController extends Controller
                 
                 $manager = $this->getDoctrine()->getManager();
                 $repository = $manager->getRepository("SiteTrailBundle:Categorie");
-                $categorie = $repository->findOneById($idCategorie);
+                $listeCategorie = $repository->findAll();
 
-                $qb = $manager->createQueryBuilder();
-                $qb->select('img')
-                    ->from('SiteTrailBundle:Image', 'img')
-                    ->where('img.categorie = :idCategorie')
-                    ->orderBy('img.id', 'DESC')
-                    ->setParameter('idCategorie', $idCategorie);
+                $listeImage = array();
 
-                $query = $qb->getQuery();
+                //récupération des 4 premières images de la catégorie
+                foreach($listeCategorie as $categorie)
+                {
+                    $qb = $manager->createQueryBuilder();
+                    $qb->select('img')
+                        ->from('SiteTrailBundle:Image', 'img')
+                        ->where('img.categorie = :idCategorie')
+                        ->orderBy('img.id', 'DESC')
+                        ->setParameter('idCategorie', $categorie->getId())
+                        ->setMaxResults(4);
 
-                $listeImage = $query->getResult();
-                $content = $this->get("templating")->render("SiteTrailBundle:Gallery:category.html.twig", array(
-                                                            'categorie' => $categorie,
-                                                            'listeImage' => $listeImage
-                                                    ));
+                    $query = $qb->getQuery();
+
+                    $listeImage[] = $query->getResult();
+                }
+
+                $content = $this->get("templating")->render("SiteTrailBundle:Gallery:index.html.twig", array(
+                                                                'listeCategorie' => $listeCategorie,
+                                                                'listeImage' => $listeImage
+                                                            ));
                 return new Response($content);
                 
             } else {
