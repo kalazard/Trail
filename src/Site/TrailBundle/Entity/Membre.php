@@ -198,7 +198,15 @@ class Membre implements \Symfony\Component\Security\Core\User\UserInterface, \Se
      */
     public function getDatenaissance()
     {
-        return $this->datenaissance;
+        if($this->datenaissance == null)
+        {
+            return null;
+        }
+        else
+        {
+            return $this->datenaissance->format("d/m/Y");
+        }
+        
     }
 
     /**
@@ -370,7 +378,7 @@ class Membre implements \Symfony\Component\Security\Core\User\UserInterface, \Se
             'email' => $this->getEmail(),
             'nom' => $this->getNom(),
             'prenom' => $this->getPrenom(),
-            'datenaissance' => $this->getDateNaissance()->format("d/m/Y"),
+            'datenaissance' => $this->getDateNaissance(),
             'telephone' => $this->getTelephone(),
             'licence' => $this->getLicence(),
             'tokenics' => $this->getTokenics(),
