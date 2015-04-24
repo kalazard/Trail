@@ -258,7 +258,8 @@ class GalleryController extends Controller
         else
         {
             $date = new \DateTime;
-            $newFile = "/uploads/image".date_format($date, 'U').".".$imageFileType;
+            $fileName = "image".date_format($date, 'U').".".$imageFileType;
+            $newFile = $target_dir.$fileName;
                 
             if (move_uploaded_file($_FILES["fichier"]["tmp_name"], $newFile)) {
                 echo "Le fichier a bien été envoyé.";
@@ -277,8 +278,6 @@ class GalleryController extends Controller
                 var_dump($request->request->get('categorie', ''));
                 
                 $categorie = $repository->findOneById($request->request->get('categorie', ''));
-                $path = $newFile; 
-                
                 $repository = $manager->getRepository("SiteTrailBundle:Image");
                 $newImage = new Image();
                 $newImage->setTitre($titre);
@@ -287,7 +286,7 @@ class GalleryController extends Controller
                 $newImage->setTaille($taille);
                 $newImage->setAuteur($auteur);
                 $newImage->setCategorie($categorie);
-                $newImage->setPath($path);
+                $newImage->setPath($fileName);
 
                 $manager->persist($newImage);
                 $manager->flush();
