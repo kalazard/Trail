@@ -290,6 +290,21 @@ class GalleryController extends Controller
 
                 $manager->persist($newImage);
                 $manager->flush();
+                
+                $manager = $this->getDoctrine()->getManager();
+                $repository = $manager->getRepository("SiteTrailBundle:Categorie");
+                $categorie = $repository->findOneById($idCategorie);
+
+                $qb = $manager->createQueryBuilder();
+                $qb->select('img')
+                    ->from('SiteTrailBundle:Image', 'img')
+                    ->where('img.categorie = :idCategorie')
+                    ->orderBy('img.id', 'DESC')
+                    ->setParameter('idCategorie', $idCategorie);
+
+                $query = $qb->getQuery();
+
+                $listeImage = $query->getResult();
                 $content = $this->get("templating")->render("SiteTrailBundle:Gallery:category.html.twig", array(
                                                             'categorie' => $categorie,
                                                             'listeImage' => $listeImage
