@@ -290,12 +290,15 @@ class GalleryController extends Controller
 
                 $manager->persist($newImage);
                 $manager->flush();
+                $content = $this->get("templating")->render("SiteTrailBundle:Gallery:category.html.twig", array(
+                                                            'categorie' => $categorie,
+                                                            'listeImage' => $listeImage
+                                                    ));
+                return new Response($content);
                 
             } else {
-                echo "Il y a eu un problème lors de l'envoi du fichier.";
+                return new Response("Il y a eu un problème lors de l'envoi du fichier.");
             }
         }
-        
-        return new Response('OK');
     }
 }    
