@@ -220,7 +220,7 @@ class GalleryController extends Controller
         
         //Sauvegarde du fichier   
         //$target_dir = "C:/testUp/";
-        $target_dir = "/var/www/uploads/";
+        $target_dir = "/var/www/uploads";
         $target_file = $target_dir . basename($_FILES["fichier"]["name"]);
         $uploadOk = 1;
         $imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
@@ -258,7 +258,7 @@ class GalleryController extends Controller
         else
         {
             $date = new \DateTime;
-            $newFile = "uploads/image".date_format($date, 'U').".".$imageFileType;
+            $newFile = $target_dir."image".date_format($date, 'U').".".$imageFileType;
                 
             if (move_uploaded_file($_FILES["fichier"]["tmp_name"], $newFile)) {
                 echo "Le fichier a bien été envoyé.";
