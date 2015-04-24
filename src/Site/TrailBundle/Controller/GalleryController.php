@@ -258,7 +258,7 @@ class GalleryController extends Controller
         else
         {
             $date = new \DateTime;
-            $newFile = $target_dir."image".date_format($date, 'U').".".$imageFileType;
+            $newFile = "/uploads/image".date_format($date, 'U').".".$imageFileType;
                 
             if (move_uploaded_file($_FILES["fichier"]["tmp_name"], $newFile)) {
                 echo "Le fichier a bien été envoyé.";
