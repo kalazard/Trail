@@ -1,14 +1,15 @@
-<div id="modalAddCategorieForm" class="modal fade">
+<div id="modalModifCategoryForm" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header text-center">
-                <h4 class="modal-title">Ajouter une catégorie</h4>
+                <h4 class="modal-title">Edition de catégorie</h4>
             </div>
             <div class="modal-body">
-                {{ form_start(form, {'attr': {'id': 'ajouterCategorie', 'onSubmit': 'envoiFormAjout(); return false;'}}) }}
+                {{ form_start(form, {'attr': {'id': 'modifierCategory', 'onSubmit': 'envoiFormModif(); return false;'}}) }}
                 {{ form_errors(form) }}
+                 <input type="hidden" name="idCategorie" value="{{ categorie.getId() }}"/>
 
-                <!-- Champ label -->
+                <!-- Champ titre -->
                 <div class="form-group">
                     <div class="row">
                         {{ form_label(form.label, "Label : ", {'label_attr': {'class': 'col-sm-3 control-label'}}) }}
@@ -18,12 +19,17 @@
                         </div>
                     </div>
                 </div>
+    
                 <div class="modal-footer">
-                    <input type="submit" class="btn btn-primary" value="Ajouter" />
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+                    <input type="submit" class="btn btn-primary" value="Modifier" />
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
                 </div>
                 {{ form_end(form) }}
             </div>
         </div>
     </div>
 </div>
+
+{% javascripts '@SiteTrailBundle/Resources/js/gallery/*' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}

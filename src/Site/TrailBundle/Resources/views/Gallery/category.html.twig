@@ -8,8 +8,8 @@
                 {% if (categorie is defined) %}
                     <h1>{{categorie.getLabel()}}
                         {% if (app.user.getRole().getId() == 1) %}
-                            <!--<button id="supprCategorie" type="button" class='btn btn-warning pull-right' onclick="supprCategorieConfirm()">Supprimer la catégorie</button>
-                            --><button id="modifCategorie" type="button" class='btn btn-warning pull-right'>Modifier la catégorie</button>
+                            <button id="supprCategorie" type="button" class='btn btn-warning pull-right' onclick="supprCategorieConfirm()">Supprimer la catégorie</button>
+                            <button id="modifCategorie" type="button" class='btn btn-warning pull-right' onclick="modifCategorie({{categorie.getId()}})">Modifier la catégorie</button>
                         {% endif %}
                     </h1>
                 {% endif %}
@@ -46,7 +46,7 @@
                     </li>
               </ul>
             </div>
-            <!--<div id="modalAvertissement" class="modal fade">
+            <div id="modalAvertissement" class="modal fade">
                 <div class="modal-dialog">
                     <div class="modal-content">      
                         <div class="modal-body text-center">
@@ -59,7 +59,7 @@
                         </div>
                     </div>
                 </div>       
-            </div>-->
+            </div>
 	</div>
                 
     {% javascripts '@SiteTrailBundle/Resources/js/*' '@SiteTrailBundle/Resources/js/gallery/*' %}
