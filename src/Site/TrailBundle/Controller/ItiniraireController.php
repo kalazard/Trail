@@ -7,6 +7,7 @@ use Site\TrailBundle\Entity\DifficulteParcours;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class ItiniraireController extends Controller 
@@ -30,35 +31,22 @@ class ItiniraireController extends Controller
 	
 	public function searchAction(Request $request)
 	{
-		//Chargement de la liste des difficultés dans le select
-		$clientSOAPDiff = new \SoapClient(null, array(
+		
+		$clientSOAP = new \SoapClient(null, array(
                     'uri' => "http://localhost/Carto/web/app_dev.php/itineraire",
                     'location' => "http://localhost/Carto/web/app_dev.php/itineraire",
                     'trace' => true,
                     'exceptions' => true
                 ));
 
-        $responseDiff = $clientSOAPDiff->__call('difficultelist',array());
+		//Chargement de la liste des difficultés dans le select
+        $responseDiff = $clientSOAP->__call('difficultelist',array());
 
         //Chargement de la liste des status dans le select
-        $clientSOAPStat = new \SoapClient(null, array(
-                    'uri' => "http://localhost/Carto/web/app_dev.php/itineraire",
-                    'location' => "http://localhost/Carto/web/app_dev.php/itineraire",
-                    'trace' => true,
-                    'exceptions' => true
-                ));
-
-        $responseStat = $clientSOAPDiff->__call('statuslist',array());
+        $responseStat = $clientSOAP->__call('statuslist',array());
 
         //Chargement de la liste des types de chemin dans le select
-        $clientSOAPType = new \SoapClient(null, array(
-                    'uri' => "http://localhost/Carto/web/app_dev.php/itineraire",
-                    'location' => "http://localhost/Carto/web/app_dev.php/itineraire",
-                    'trace' => true,
-                    'exceptions' => true
-                ));
-
-        $responseType = $clientSOAPDiff->__call('typecheminlist',array());
+        $responseType = $clientSOAP->__call('typecheminlist',array());
 		
         if($request->request->get("valid") == "ok")
         {
@@ -70,14 +58,6 @@ class ItiniraireController extends Controller
 			$search["datecrea"] = $request->request->get("datecrea");
 			$search["difficulte"] = $request->request->get("difficulte");
 			$search["status"] = $request->request->get("status");
-			
-
-			$clientSOAP = new \SoapClient(null, array(
-	                    'uri' => "http://localhost/Carto/web/app_dev.php/itineraire",
-	                    'location' => "http://localhost/Carto/web/app_dev.php/itineraire",
-	                    'trace' => true,
-	                    'exceptions' => true
-	                ));
 
 	        $response = $clientSOAP->__call('search', $search);
 
@@ -90,14 +70,6 @@ class ItiniraireController extends Controller
 		else
 		{
 			// Recupère la liste complète
-			$clientSOAP = new \SoapClient(null, array(
-						'uri' => "http://localhost/Carto/web/app_dev.php/itineraire",
-						'location' => "http://localhost/Carto/web/app_dev.php/itineraire",
-						'trace' => true,
-						'exceptions' => true
-					));
-
-			//On appel la méthode du webservice qui permet de se connecter
 			$response = $clientSOAP->__call('itilist', array());
 		
 			$res_list = json_decode($response);
@@ -135,6 +107,7 @@ class ItiniraireController extends Controller
 			$params["auteur"] = $request->request->get("auteur");
 			$params["status"] = $request->request->get("status");
 			$params["points"] = $request->request->get("points");
+			$params["public"] = $request->request->get("public");
 			
 
 			$clientSOAP = new \SoapClient(null, array(
@@ -172,6 +145,92 @@ class ItiniraireController extends Controller
 			$content = $this->get("templating")->render("SiteTrailBundle:Itiniraire:FicheItineraire.html.twig",array("resultats" => $res,"jsonObject" => $response));
 			return new Response($content);
 	}
+
+	public function getByUserAction($user)
+	{
+		$clientSOAP = new \SoapClient(null, array(
+                    'uri' => "http://localhost/Carto/web/app_dev.php/itineraire",
+                    'location' => "http://localhost/Carto/web/app_dev.php/itineraire",
+                    'trace' => true,
+                    'exceptions' => true
+                ));
+
+                //On appel la méthode du webservice qui permet de se connecter
+                $response = $clientSOAP->__call('getByUser', array("user" => $user));
+    
+		$res = json_decode($response);
+		return new Response($response);
+	}
+
+	public function updateAction(Request $request)
+    {
+      if ($request->isXMLHttpRequest()) 
+      {
+      	//Appel du service de sauvegarde
+        	$params = array();		
+			$params["nom"] = $request->request->get("nom");
+			$params["typechemin"] = $request->request->get("typechemin");
+			$params["difficulte"] = $request->request->get("difficulte");
+			$params["description"] = $request->request->get("description");
+			$params["numero"] = $request->request->get("numero");
+			$params["auteur"] = $request->request->get("auteur");
+			$params["status"] = $request->request->get("status");
+			$params["public"] = $request->request->get("public");
+			$params["id"] = $request->request->get("id");
+			var_dump($params);
+			
+
+			$clientSOAP = new \SoapClient(null, array(
+	                    'uri' => "http://localhost/Carto/web/app_dev.php/itineraire",
+	                    'location' => "http://localhost/Carto/web/app_dev.php/itineraire",
+	                    'trace' => true,
+	                    'exceptions' => true
+	                ));
+
+	        $response = $clientSOAP->__call('update', $params);
+	        $res = json_decode($response);
+	        return new Response(json_encode(array("result" => "success","code" => 200)));      
+      }
+      return new Response('This is not ajax!', 400);
+    }
+
+    public function getFormDataAction(Request $request)
+    {
+    	//Chargement de la liste des difficultés dans le select
+		$clientSOAPDiff = new \SoapClient(null, array(
+                    'uri' => "http://localhost/Carto/web/app_dev.php/itineraire",
+                    'location' => "http://localhost/Carto/web/app_dev.php/itineraire",
+                    'trace' => true,
+                    'exceptions' => true
+                ));
+
+        $responseDiff = $clientSOAPDiff->__call('difficultelist',array());
+
+        //Chargement de la liste des status dans le select
+        $clientSOAPStat = new \SoapClient(null, array(
+                    'uri' => "http://localhost/Carto/web/app_dev.php/itineraire",
+                    'location' => "http://localhost/Carto/web/app_dev.php/itineraire",
+                    'trace' => true,
+                    'exceptions' => true
+                ));
+
+        $responseStat = $clientSOAPDiff->__call('statuslist',array());
+
+        //Chargement de la liste des types de chemin dans le select
+        $clientSOAPType = new \SoapClient(null, array(
+                    'uri' => "http://localhost/Carto/web/app_dev.php/itineraire",
+                    'location' => "http://localhost/Carto/web/app_dev.php/itineraire",
+                    'trace' => true,
+                    'exceptions' => true
+                ));
+
+        $responseType = $clientSOAPDiff->__call('typecheminlist',array());
+
+        $resDiff = json_decode($responseDiff);
+		$resStat = json_decode($responseStat);
+		$resType = json_decode($responseType);
+		return new JsonResponse(array("diffs" => $resDiff,"stats" => $resStat,"typechemin" => $resType));
+    }
 
 }
 

@@ -5,6 +5,8 @@ services:
     custom_user_provider:
         class: Site\TrailBundle\Security\CustomUserProvider
         arguments: ["@doctrine.orm.entity_manager"]
+    itineraire_service:
+        class: Site\TrailBundle\Controller\ItiniraireController
     sso_authenticator:
         class: Site\TrailBundle\Security\SSOAuthenticator
         arguments: ["@custom_user_provider"]

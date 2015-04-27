@@ -153,3 +153,13 @@ site_trail_article:
 site_trail_upload:
     path :    /upload/
     defaults: { _controller: SiteTrailBundle:Map:upload}
+site_trail_itineraireformdata:
+    path:     /itineraire_form_data/
+    defaults: { _controller: SiteTrailBundle:Itiniraire:getFormData }
+    options:
+        expose: true
+site_trail_itineraireupdate:
+    path:     /itineraire_update/
+    defaults: { _controller: SiteTrailBundle:Itiniraire:update }
+    options:
+        expose: true
