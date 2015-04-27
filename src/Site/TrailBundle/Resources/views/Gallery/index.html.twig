@@ -9,6 +9,7 @@
                 {% if (app.user.getRole().getId() == 1) %}
                     <button id="addCategorie" type="button" class='btn btn-warning pull-right'>Ajouter une catégorie</button>
                 {% endif %}
+                <button id="addPicture" type="button" class='btn btn-warning pull-right'>Ajouter une image</button>
             </h1>
 	</div>
             
@@ -19,7 +20,7 @@
                     {% for image in listeImage[indice] %}
                         <div class="col-md-3 col-sm-6">
                             <div class="thumbnail">
-                                <a href="{{path('site_trail_picture')}}"><img class="apercu" src="{{image.getPath()}}" alt="Smiley face"></a>
+                                <a href="{{path('site_trail_picture')}}"><img class="apercu" src="{{image.getPath()}}" alt="-_-"></a>
                                 <div class="caption">
                                     <a class="h4" href="{{path('site_trail_picture')}}">{{image.getTitre()}}</a>
                                     <p>{{image.getDescription()}}</p>

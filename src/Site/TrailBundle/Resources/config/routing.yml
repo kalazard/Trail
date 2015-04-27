@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 site_trail_homepage_empty:
     path:     /
     defaults: { _controller: SiteTrailBundle:Home:index }
@@ -163,3 +164,6 @@ site_trail_itineraireupdate:
     defaults: { _controller: SiteTrailBundle:Itiniraire:update }
     options:
         expose: true
+site_trail_uploadIcone:
+    path :    /uploadIcone
+    defaults: { _controller: SiteTrailBundle:Map:uploadIcone}

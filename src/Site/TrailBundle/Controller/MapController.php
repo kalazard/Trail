@@ -100,6 +100,12 @@ class MapController extends Controller
 		$content = $this->get("templating")->render("SiteTrailBundle:Map:upload.html.twig");
 		return new Response($content);
 	}
+
+    public function uploadIconeAction()
+    {       
+        $content = $this->get("templating")->render("SiteTrailBundle:Map:uploadIcone.html.twig");
+        return new Response($content);
+    }
 }
 
 /* 

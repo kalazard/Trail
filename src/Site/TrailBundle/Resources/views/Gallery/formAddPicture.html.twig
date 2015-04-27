@@ -1,0 +1,50 @@
+<div id="modalAddPictureForm" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h4 class="modal-title">Ajouter une image</h4>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{{ path('site_trail_picture_add') }}" enctype="multipart/form-data">
+                    
+                    <!-- Champ fichier -->
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-3 control-label">Fichier :</label>
+                            <div class="col-sm-9">
+                                <input type="file" name='fichier' />
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Champ titre -->
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-3 control-label">Titre :</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="col-sm-9 form-control" name='titre' />
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Champ description -->
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-3 control-label">Description :</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="col-sm-9 form-control" name='description' />
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {{ selectCategorie|raw }}
+
+                    <div class="modal-footer">
+                        <input type="submit" class="btn btn-primary" value="Ajouter" />
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

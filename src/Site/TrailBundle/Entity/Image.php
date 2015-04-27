@@ -36,9 +36,9 @@ class Image implements \JsonSerializable
     private $description;
 
     /**
-     * @var float
+     * @var string
      *
-     * @ORM\Column(name="taille", type="float", precision=10, scale=0, nullable=false)
+     * @ORM\Column(name="taille", type="string", length=255, nullable=false)
      */
     private $taille;
 

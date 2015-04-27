@@ -120,6 +120,22 @@
                                 {
                                     var actifs = data.actif;
                                     $.each(data.users, function (index, value) {
+                                        if (value.nom == null)
+                                        {
+                                            value.nom = "Non renseigné";
+                                        }
+                                        if (value.prenom == null)
+                                        {
+                                            value.prenom = "Non renseigné";
+                                        }
+                                        if (value.datenaissance == null)
+                                        {
+                                            value.datenaissance = "Non rensigné";
+                                        }
+                                        if (value.telephone == null)
+                                        {
+                                            value.telephone = "Non renseigné";
+                                        }
                                         if (actifs[index] == "0")
                                         {
                                             rows = rows + "<tr><td>" + value.id + "</td><td>" + value.email + "</td><td>" + value.nom + "</td><td>" + value.prenom + "</td><td>" + value.datenaissance + "</td><td>" + value.telephone + "</td><td><div class='img-size' style='background-image: url(\"" + value.avatar.path + "\");'></div></td><td>" + value.role.name + "</td><td><p data-placement='top' data-toggle='tooltip' title='Edit'><button class='btn btn-primary btn-xs btn_edit' data-title='Editer' data-value='" + value.id + "' data-toggle='modal' data-target='#edit' ><span class='glyphicon glyphicon-pencil'></span></button></p></td><td><p data-placement='top' data-toggle='tooltip' title='Cliquez pour activer'><button class='btn btn-danger btn-xs delete' data-state='0' data-value='" + value.id + "'>Inactif</button></p></td</tr>";
@@ -135,8 +151,25 @@
                                 }
                                 else
                                 {
+
                                     var actifs = data.actif;
                                     $.each(data.users, function (index, value) {
+                                        if (value.nom == null)
+                                        {
+                                            value.nom = "Non renseigné";
+                                        }
+                                        if (value.prenom == null)
+                                        {
+                                            value.prenom = "Non renseigné";
+                                        }
+                                        if (value.datenaissance == null)
+                                        {
+                                            value.datenaissance = "Non rensigné";
+                                        }
+                                        if (value.telephone == null)
+                                        {
+                                            value.telephone = "Non renseigné";
+                                        }
                                         if (actifs[index] == "1")
                                         {
                                             rows = rows + "<tr><td>" + value.email + "</td><td>" + value.nom + "</td><td>" + value.prenom + "</td><td>" + value.datenaissance + "</td><td>" + value.telephone + "</td><td><div class='img-size' style='background-image: url(\"" + value.avatar.path + "\");'></div></td></tr>"
@@ -207,27 +240,27 @@
             $(document).on('click', '.delete', function () {
                 var msg;
                 var actual_state = $(this).data('state');
-                if(actual_state == "0")
+                if (actual_state == "0")
                 {
                     msg = "Voulez vous vraiment activer cet utilisateur ?"
                 }
                 else
                 {
-                     msg = "Voulez vous vraiment désactiver cet utilisateur ?"
+                    msg = "Voulez vous vraiment désactiver cet utilisateur ?"
                 }
                 if (confirm(msg))
                 {
                     var user_to_delete = $(this).data('value');
-                    
+
                     var activation = "0";
                     if (actual_state == "0")
                     {
-                        activation="1";
+                        activation = "1";
                     }
                     $.ajax({
                         type: "POST",
                         url: "{{ path('site_trail_deleteUser') }}",
-                        data: {id_user: user_to_delete, activation:activation},
+                        data: {id_user: user_to_delete, activation: activation},
                         cache: false,
                         success: function (data) {
                             if (!data.serverError)
