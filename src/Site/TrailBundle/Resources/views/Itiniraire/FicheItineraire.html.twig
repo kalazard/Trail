@@ -129,7 +129,6 @@
          type : 'GET',
          dataType : 'json',
          success : function(json, statut){
-             console.log(json);
              for(var i = 0; i < json.diffs.difficultes.length; i++)
              {
               var opt = $("<option>").attr("value",json.diffs.difficultes[i].niveau).text(json.diffs.difficultes[i].label);
@@ -183,7 +182,10 @@
           $("#status").text($("#editstatus option:selected").text()).attr("value",$("#editstatus option:selected").val());
           $("#typechemin").text($("#edittypechemin option:selected").text()).attr("value",$("#edittypechemin option:selected").val());
           $("#public").text($("#editpublic option:selected").text()).attr("value",$("#editpublic option:selected").val());
-       });
+       })
+        .fail(function(data,status){
+          $.notify("Erreur lors de la mise à jour", "error");
+        });
       $("#update").modal('hide');
     });
 	</script>

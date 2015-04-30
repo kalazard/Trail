@@ -169,3 +169,8 @@ site_trail_itineraireupdate:
 site_trail_uploadIcone:
     path :    /uploadIcone
     defaults: { _controller: SiteTrailBundle:Map:uploadIcone}
+site_trail_itinerairedelete:
+    path:     /itineraire_delete/
+    defaults: { _controller: SiteTrailBundle:Itiniraire:delete }
+    options:
+        expose: true

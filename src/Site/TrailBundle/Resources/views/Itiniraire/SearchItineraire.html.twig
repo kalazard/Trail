@@ -84,6 +84,7 @@
 				{% if resultats is empty %}
 					{% if list.list is not empty %}
 						{% for itineraire in list.list %}
+							{% if itineraire.public == 1 or itineraire.auteur.id == app.user.id %}
 						<tr>
 							<td><a href="{{ path('site_trail_getByIditineraire', {'id': itineraire.id}) }}">{{itineraire.nom}}</a></td>
 							<td>{{itineraire.typechemin.label}}</td>
@@ -92,6 +93,7 @@
 							<td>{{itineraire.longueur}}km</td>
 							<td>{{itineraire.status.label}}</td>
 						</tr>
+							{% endif %}
 						{% endfor %}
 					{% endif %}
 				  {% else %}

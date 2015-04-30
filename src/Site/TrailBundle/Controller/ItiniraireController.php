@@ -194,6 +194,28 @@ class ItiniraireController extends Controller
       return new Response('This is not ajax!', 400);
     }
 
+    public function deleteAction(Request $request)
+    {
+      if ($request->isXMLHttpRequest()) 
+      {
+      	//Appel du service de sauvegarde
+        	$params = array();		
+			$params["id"] = $request->request->get("id");
+
+			$clientSOAP = new \SoapClient(null, array(
+	                    'uri' => "http://localhost/Carto/web/app_dev.php/itineraire",
+	                    'location' => "http://localhost/Carto/web/app_dev.php/itineraire",
+	                    'trace' => true,
+	                    'exceptions' => true
+	                ));
+
+	        $response = $clientSOAP->__call('delete', $params);
+	        $res = json_decode($response);
+	        return new Response(json_encode(array("result" => "success","code" => 200)));      
+      }
+      return new Response('This is not ajax!', 400);
+    }
+
     public function getFormDataAction(Request $request)
     {
     	//Chargement de la liste des difficultés dans le select
