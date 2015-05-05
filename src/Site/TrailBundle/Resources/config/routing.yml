@@ -141,8 +141,8 @@ site_trail_category_modification:
     options:
         expose: true        
 site_trail_picture:
-    path :    /galerie/image
-    defaults: { _controller: SiteTrailBundle:Gallery:picture }
+    path :    /galerie/image/detail/{idPicture}
+    defaults: { _controller: SiteTrailBundle:Gallery:picture, idPicture: "" }
 site_trail_picture_showAdd:
     path :    /galerie/image/ajoutForm
     defaults: { _controller: SiteTrailBundle:Gallery:showAddPicture }
@@ -152,7 +152,20 @@ site_trail_picture_add:
     path :    /galerie/image/ajout
     defaults: { _controller: SiteTrailBundle:Gallery:addPicture }
     options:
-        expose: true 
+        expose: true
+site_trail_picture_showUpdateForm:
+    path :    /galerie/image/showUpdateForm
+    defaults: { _controller: SiteTrailBundle:Gallery:showUpdatePictureForm }
+    options:
+        expose: true
+site_trail_picture_updatePicture:
+    path :    /galerie/image/updatePicture
+    defaults: { _controller: SiteTrailBundle:Gallery:updatePicture }
+site_trail_picture_delete:
+    path :    /galerie/image/delete
+    defaults: { _controller: SiteTrailBundle:Gallery:deletePicture }
+    options:
+        expose: true
 site_trail_news:
     path :    /nouveautes
     defaults: { _controller: SiteTrailBundle:Home:news }

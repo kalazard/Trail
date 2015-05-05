@@ -20,9 +20,9 @@
                     {% for image in listeImage[indice] %}
                         <div class="col-md-3 col-sm-6">
                             <div class="thumbnail">
-                                <a href="{{path('site_trail_picture')}}"><img class="apercu" src="{{image.getPath()}}" alt="-_-"></a>
+                                <a href="{{path('site_trail_picture')}}/{{image.getId()}}"><img class="apercu" src="{{image.getPath()}}" alt="-_-"></a>
                                 <div class="caption">
-                                    <a class="h4" href="{{path('site_trail_picture')}}">{{image.getTitre()}}</a>
+                                    <a class="h4" href="{{path('site_trail_picture')}}/{{image.getId()}}">{{image.getTitre()}}</a>
                                     <p>{{image.getDescription()}}</p>
                                 </div>
                             </div>

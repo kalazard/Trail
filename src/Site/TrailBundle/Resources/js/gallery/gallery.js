@@ -99,3 +99,39 @@ $( "body" ).on( "click", "#addPicture", function()
         }
     });
 });
+
+function showUpdateForm(idPicture)
+{
+    $("#modalUpdatePictureForm").children().remove();
+    $("#modalUpdatePictureForm").remove();
+
+    $.ajax({
+        type: "POST",
+        url: Routing.generate('site_trail_picture_showUpdateForm'),
+        cache: false,
+        data: {"idPicture" : idPicture},
+        success: function(data){
+            $('body').append(data);
+            $("#modalUpdatePictureForm").modal('show');
+        }
+    });
+}
+
+//Afficher le modal de confirmation de suppression
+function deletePictureConfirm()
+{
+    $("#modalAvertissement").modal('show');
+}
+
+function deletePicture(idPicture)
+{
+    $.ajax({
+        type: "POST",
+        url: Routing.generate('site_trail_picture_delete'),
+        cache: false,
+        data: {"idPicture" : idPicture},
+        success: function(){
+            document.location.href=Routing.generate('site_trail_gallery')
+        }
+    });;
+}

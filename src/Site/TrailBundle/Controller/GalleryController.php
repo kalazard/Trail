@@ -64,9 +64,17 @@ class GalleryController extends Controller
         return new Response($content);
     }
 	
-	public function pictureAction()
+    public function pictureAction(Request $request)
     {
-        $content = $this->get("templating")->render("SiteTrailBundle:Gallery:picture.html.twig");
+        $idPicture = $request->get('idPicture');        
+        $manager = $this->getDoctrine()->getManager();
+        $repository = $manager->getRepository("SiteTrailBundle:Image");
+        $picture = $repository->findOneById($idPicture);
+        
+        $content = $this->get("templating")->render("SiteTrailBundle:Gallery:picture.html.twig", array(
+                                                        'picture' => $picture
+        ));
+        
         return new Response($content);
     }
     
@@ -214,10 +222,7 @@ class GalleryController extends Controller
     }
     
     public function addPictureAction(Request $request)
-    {
-        var_dump($_POST);
-        var_dump($_FILES);
-        
+    {        
         //Sauvegarde du fichier   
         //$target_dir = "C:/testUp/";
         $target_dir = "/var/www/uploads/";
@@ -275,8 +280,6 @@ class GalleryController extends Controller
                 $auteur = $this->getUser();
                 $repository = $manager->getRepository("SiteTrailBundle:Categorie");
                 
-                var_dump($request->request->get('categorie', ''));
-                
                 $categorie = $repository->findOneById($request->request->get('categorie', ''));
                 $repository = $manager->getRepository("SiteTrailBundle:Image");
                 $newImage = new Image();
@@ -323,5 +326,104 @@ class GalleryController extends Controller
                 return new Response("Il y a eu un problème lors de l'envoi du fichier.");
             }
         }
+    }
+    
+    public function showUpdatePictureFormAction(Request $request)
+    {
+        if($request->isXmlHttpRequest() && $this->getUser())
+        {
+            $idPicture = $request->request->get('idPicture', '');
+            $manager=$this->getDoctrine()->getManager();
+            $repository=$manager->getRepository("SiteTrailBundle:Image");        
+            $picture = $repository->findOneById($idPicture);
+            
+            $repository = $manager->getRepository("SiteTrailBundle:Categorie"); 
+            $listeCategorie = $repository->findAll();
+            $selectCategorie = '<div class="form-group">';
+            $selectCategorie .= '<div class="row">';
+            $selectCategorie .= '<label class="col-sm-3 control-label">Catégorie :</label>';
+            $selectCategorie .= '<div class="col-sm-9">';
+            $selectCategorie .= '<select name="categorie" class="form-control">';
+            
+            foreach($listeCategorie as $uneCategorie)
+            {
+                if($uneCategorie->getId() == $picture->getCategorie()->getId())
+                {
+                    $bonusSelected = " selected='selected'";
+                }
+                else
+                {
+                    $bonusSelected = "";
+                }
+                
+                $selectCategorie .= '<option value="'.$uneCategorie->getId().'"'.$bonusSelected.'>'.$uneCategorie->getLabel().'</option>';
+            }
+            $selectCategorie .= '</select>';
+            $selectCategorie .= '</div>';
+            $selectCategorie .= '</div>';
+            $selectCategorie .= '</div>';
+            
+            $content = $this->get("templating")->render("SiteTrailBundle:Gallery:updatePictureForm.html.twig", array(
+                                                                'picture' => $picture,
+                                                                'selectCategorie' => $selectCategorie
+                                                            ));
+            return new Response($content);
+        }
+        else
+        {
+            throw new NotFoundHttpException('Impossible de trouver la page demandée');
+        }
+    }
+    
+    public function updatePictureAction(Request $request)
+    {
+        $idPicture = $request->request->get('idPicture', '');
+        $titre = $request->request->get('titre', '');
+        $description = $request->request->get('description', '');
+        $idCategorie = $request->request->get('categorie', '');
+        
+        $manager=$this->getDoctrine()->getManager();
+        $repository=$manager->getRepository("SiteTrailBundle:Image");        
+        $picture = $repository->findOneById($idPicture);
+        $repository=$manager->getRepository("SiteTrailBundle:Categorie");        
+        $categorie = $repository->findOneById($idCategorie);
+        
+        $picture->setTitre($titre);
+        $picture->setDescription($description);
+        $picture->setCategorie($categorie);
+        $manager->flush();
+        
+        $content = $this->get("templating")->render("SiteTrailBundle:Gallery:picture.html.twig", array(
+                                                        'picture' => $picture
+        ));
+        
+        return new Response($content);
+    }
+    
+    public function deletePictureAction(Request $request)
+    {
+        $idPicture = $request->request->get('idPicture', '');
+        
+        $manager=$this->getDoctrine()->getManager();
+        $repository=$manager->getRepository("SiteTrailBundle:Image");        
+        $picture = $repository->findOneById($idPicture);
+        
+        //On cherche si le chemin de l'image contient /uploads/image*.* pour savoir si elle est sur le serveur
+        $isOnServ = ereg("/uploads/image.*\..*", $picture->getPath());
+        
+        //Suppression du fichier sur le serveur
+        if($isOnServ)
+        {
+            $findMe   = '/uploads/image';
+            $startInd = strpos($picture->getPath(), $findMe);
+            $absolutePath = "/var/www".substr($picture->getPath(), $startInd);
+            delete($absolutePath);
+        }
+        
+        //Suppression dans la base de données
+        $manager->remove($picture);
+        $manager->flush();
+        
+        return new Response();
     }
 }    
