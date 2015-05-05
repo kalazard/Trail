@@ -267,7 +267,6 @@ class GalleryController extends Controller
             $newFile = $target_dir.$fileName;
                 
             if (move_uploaded_file($_FILES["fichier"]["tmp_name"], $newFile)) {
-                echo "Le fichier a bien été envoyé.";
                 list($width, $height, $type, $attr) = getimagesize($newFile); 
                 
                 $manager = $this->getDoctrine()->getManager();
@@ -417,7 +416,11 @@ class GalleryController extends Controller
             $findMe   = '/uploads/image';
             $startInd = strpos($picture->getPath(), $findMe);
             $absolutePath = "/var/www".substr($picture->getPath(), $startInd);
-            delete($absolutePath);
+            
+            if(file_exists($absolutePath))
+            {
+                unlink($absolutePath);
+            }
         }
         
         //Suppression dans la base de données
