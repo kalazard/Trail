@@ -225,7 +225,7 @@ class GalleryController extends Controller
     {        
         //Sauvegarde du fichier   
         //$target_dir = "C:/testUp/";
-        $target_dir = "/var/www/uploads/";
+        $target_dir = "~/Documents/Acrobatt/uploads/";
         $target_file = $target_dir . basename($_FILES["fichier"]["name"]);
         $uploadOk = 1;
         $imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
@@ -288,8 +288,8 @@ class GalleryController extends Controller
                 $newImage->setTaille($taille);
                 $newImage->setAuteur($auteur);
                 $newImage->setCategorie($categorie);
-                $newImage->setPath("http://130.79.214.167/uploads/".$fileName);
-
+                //$newImage->setPath("http://130.79.214.167/uploads/".$fileName);
+                $newImage->setPath("localhost/uploads/".$fileName);
                 $manager->persist($newImage);
                 $manager->flush();
                 

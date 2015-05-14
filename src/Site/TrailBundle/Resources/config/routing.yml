@@ -202,3 +202,8 @@ site_trail_itinerairedelete:
     defaults: { _controller: SiteTrailBundle:Itiniraire:delete }
     options:
         expose: true
+site_trail_upload_avatar:
+    path:     /user/avatarupload
+    defaults: { _controller: SiteTrailBundle:User:uploadAvatar }
+    options:
+        expose: true
