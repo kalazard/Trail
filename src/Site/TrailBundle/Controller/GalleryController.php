@@ -225,7 +225,7 @@ class GalleryController extends Controller
     {        
         //Sauvegarde du fichier   
         //$target_dir = "C:/testUp/";
-        $target_dir = "~/Documents/Acrobatt/uploads/";
+        $target_dir = "/var/www/uploads/";
         $target_file = $target_dir . basename($_FILES["fichier"]["name"]);
         $uploadOk = 1;
         $imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);

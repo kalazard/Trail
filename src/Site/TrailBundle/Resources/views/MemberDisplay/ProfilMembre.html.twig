@@ -8,7 +8,8 @@
 
         {% if app.user %}
             <h1>Fiche Membre</h1>
-            <form method="POST" action="{{ path("site_trail_upload_avatar") }}" enctype="multipart/form-data">
+            <!-- On appel directement le controlleur qui est sur le serveur !-->
+            <form method="POST" action="http://130.79.214.167/Trail/web/app_dev.php/user/avatarupload" enctype="multipart/form-data">
                 <input type="file" name='fichier' />
                 <button id="btn_avatar" class="btn btn-warning">Modifier l'image</button> 
             </form>
