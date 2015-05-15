@@ -5,12 +5,14 @@
 {% block body %}
     <div class="container">
             <h1>{{picture.getTitre()}}</h1>
-            {% if (app.user.getRole().getId() == 1) %}
-                <div class="col-lg-12">
-                    <button type="button" class='btn btn-warning pull-right' onclick="deletePictureConfirm()">Supprimer l'image</button>
-                    <button type="button" class='btn btn-warning pull-right' onclick="showUpdateForm({{picture.getId()}})">Modifier l'image</button>                        
-                </div> 
-            {% endif %}
+            <div class="col-lg-12">
+                <a href="{{ path('site_trail_gallery') }}" class='btn btn-warning pull-left' title="Retour vers la galerie" ><<</a>
+                <a href="{{ path('site_trail_category', {'idCategorie': picture.getCategorie().getId()}) }}" class='btn btn-warning pull-left' title="Retour vers la catégorie" ><</a>
+                {% if (app.user.getRole().getId() == 1) %}
+                        <button class='btn btn-warning pull-right' onclick="deletePictureConfirm()">Supprimer l'image</button>
+                        <button class='btn btn-warning pull-right' onclick="showUpdateForm({{picture.getId()}})">Modifier l'image</button>                        
+                {% endif %}
+            </div> 
             <div class="col-lg-12">
                 <div class="thumbnail">
                     <img src="{{picture.getPath()}}" alt="-_-">

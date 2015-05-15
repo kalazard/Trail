@@ -59,6 +59,14 @@ site_trail_evenement_ics:
     defaults: { _controller: SiteTrailBundle:Ics:index, id: default, dateDebut: '', dateFin: '' }
     options:
         expose: true
+site_trail_evenement_searchForm:
+    path: /evenement/recherche
+    defaults: { _controller: SiteTrailBundle:Evenement:eventSearchForm }
+site_trail_evenement_search:
+    path: /evenement/rechercheEvenement
+    defaults: { _controller: SiteTrailBundle:Evenement:eventSearch }
+    options:
+        expose: true
 site_trail_evenement_icsForm:
     path: /icsForm
     defaults: { _controller: SiteTrailBundle:Ics:icsForm }
@@ -118,25 +126,25 @@ site_trail_getByIditineraire:
     path:     /itineraire_getById/{id}
     defaults: { _controller: SiteTrailBundle:Itiniraire:getById }
 site_trail_gallery:
-    path :    /galerie
-    defaults: { _controller: SiteTrailBundle:Gallery:index }
+    path :    /galerie/{indStart}
+    defaults: { _controller: SiteTrailBundle:Gallery:index, indStart: "0" }
     options:
         expose: true
 site_trail_category:
-    path :    /galerie/categorie/{idCategorie}
-    defaults: { _controller: SiteTrailBundle:Gallery:category, idCategorie: "" }
+    path :    /galerie/categorie/pagination/{idCategorie}/{indStart}
+    defaults: { _controller: SiteTrailBundle:Gallery:category, idCategorie: "", indStart: "0" }
 site_trail_category_ajout:
-    path:    /galerie/ajoutCategorie
+    path:    /galerie/categorie/ajoutCategorie
     defaults: { _controller: SiteTrailBundle:Gallery:categorieAjout }
     options:
         expose: true
 site_trail_category_suppression:
-    path:    /galerie/suppressionCategorie
+    path:    /galerie/categorie/suppressionCategorie
     defaults: { _controller: SiteTrailBundle:Gallery:categorieSuppression, idCategorie: "" }
     options:
         expose: true
 site_trail_category_modification:
-    path:    /galerie/modifCategorie
+    path:    /galerie/categorie/modifCategorie
     defaults: { _controller: SiteTrailBundle:Gallery:categorieModif, idCategorie: "" }
     options:
         expose: true        

@@ -797,4 +797,93 @@ class EvenementController extends Controller
         
         return new Response("ok");
     }
+    
+    public function eventSearchFormAction()
+    {
+        $typeEvent = "";
+        
+        if($this->getUser())
+        {
+            $typeEvent = "<ul>";
+            $typeEvent .= "<li><input type='checkbox' name='type[]' value='0' checked /> Tous les types</li>";
+            $typeEvent .= "<li><input type='checkbox' name='type[]' value='1' /> Entrainement</li>";
+            $typeEvent .= "<li><input type='checkbox' name='type[]' value='2' /> Entrainement personnel</li>";
+            $typeEvent .= "<li><input type='checkbox' name='type[]' value='3' /> Evénements divers</li>";
+            $typeEvent .= "<li><input type='checkbox' name='type[]' value='4' /> Sortie découverte</li>";
+            $typeEvent .= "<li><input type='checkbox' name='type[]' value='5' /> Course officielle</li>";
+            $typeEvent .= "</ul>";
+        }
+        else
+        {
+            $typeEvent = "<input type='checkbox' name='type[]' value='4' checked disabled />Sortie découverte";
+        }
+
+        $content = $this->get("templating")->render("SiteTrailBundle:Event:search.html.twig", array(
+                                                        'typeEvent' => $typeEvent
+                                                    ));
+
+        return new Response($content);
+    }
+    
+    public function eventSearchAction(Request $request)
+    {
+        $textDebug = "";
+        
+        if($request->isXmlHttpRequest())
+        {
+            $onCherchePar = $request->request->get('searchType', '');
+            $resultats = array();
+            
+            switch($onCherchePar)
+            {
+                case 'type':
+                    $typesEvenement = $request->request->get('type', '');                    
+                    $resultats = EvenementController::getEventFrom(0, $this->getDoctrine()->getManager());
+                    
+                    if(!(in_array("0", $typesEvenement)))
+                    {
+                        foreach($resultats as $type => $evenement)
+                        {
+                            if(!(in_array($type+1, $typesEvenement)))
+                            {
+                                $resultats[$type] = array();
+                            }
+                        }
+                    }       
+                    
+                    break;
+                case 'date':
+                    $interDebut = $request->request->get('dateDebut', '');
+                    $interFin = $request->request->get('dateFin', '');
+                    $resultats = EvenementController::getEventFrom(0, $this->getDoctrine()->getManager(), $interDebut, $interFin);
+                    break;
+                case 'typeEtDate':
+                    $typesEvenement = $request->request->get('type', '');
+                    $interDebut = new \DateTime($request->request->get('dateDebut', ''));
+                    $interFin = new \DateTime($request->request->get('dateFin', ''));
+                    $resultats = EvenementController::getEventFrom(0, $this->getDoctrine()->getManager(), $interDebut, $interFin);
+                    
+                    if(!(in_array("0", $typesEvenement)))
+                    {
+                        foreach($resultats as $type => $evenement)
+                        {
+                            if(!(in_array($type+1, $typesEvenement)))
+                            {
+                                $resultats[$type] = array();
+                            }
+                        }
+                    }  
+                    
+                    break;
+            }
+            
+            $resultatsJson = json_encode($resultats);            
+            
+            return new Response($resultatsJson);
+        }
+        else
+        {
+            throw new NotFoundHttpException('Impossible de trouver la page demandée');
+        }
+    }
 }
