@@ -315,7 +315,9 @@ class EvenementController extends Controller
                     ->add('date_debut', 'datetime', array(
                                         'data' => new \DateTime($dateCliquee)))
                     ->add('date_fin', 'datetime', array(
-                                        'data' => new \DateTime($dateCliquee)));
+                                        'data' => new \DateTime($dateCliquee)))
+                    ->add('programme_label', 'text', array('max_length' => 255, 'mapped' => false))
+                    ->add('programme_duree', 'time', array('mapped' => false));
             
             $form = $formBuilder->getForm();
             $form->handleRequest($request);
@@ -355,10 +357,14 @@ class EvenementController extends Controller
 
                 switch ($type)
                 {
-                    case '1': //Entrainement
-                        $repository = $manager->getRepository("SiteTrailBundle:Programme");
-                        $idProgramme = $request->request->get('programme', '');
-                        $programme = $repository->findOneById($idProgramme);
+                    case '1': //Entrainement                        
+                        $programme = new Programme();  
+                        $programme->setLabel($request->get('form')['programme_label']);
+                        $dureeProgramme = new \DateTime("0001-01-01");
+                        $dureeProgramme->setTime($request->get('form')['programme_duree']['hour'], $request->get('form')['programme_duree']['minute'], "0");
+                        $programme->setDuree($dureeProgramme);
+                        $manager->persist($programme);
+                        $manager->flush();
                         $repository=$manager->getRepository("SiteTrailBundle:Lieurendezvous");
                         $idLieu = $request->request->get('lieu', '');
                         $lieu = $repository->findOneById($idLieu);
@@ -405,7 +411,7 @@ class EvenementController extends Controller
                 $manager->flush();
 
                 //Ajout des participants (et participations) s'il y en a
-                if($request->request->get('participants', '') != '')
+                /*if($request->request->get('participants', '') != '')
                 {
                     foreach($request->request->get('participants', '') as $monParticipant)
                     {
@@ -424,7 +430,7 @@ class EvenementController extends Controller
                         $manager->persist($participant);
                         $manager->flush();
                     }
-                }
+                }*/
 
                 return $this->redirect($this->generateUrl('site_trail_evenement'));
             }
@@ -438,7 +444,7 @@ class EvenementController extends Controller
             $listeMembre = $repository->findAll(); 
             
             //Création du select contenant les programmes
-            $selectProgramme = '<div class="form-group">';
+            /*$selectProgramme = '<div class="form-group">';
             $selectProgramme .= '<div class="row">';
             $selectProgramme .= '<label class="col-sm-3 control-label">Programme :</label>';
             $selectProgramme .= '<div class="col-sm-9">';
@@ -450,7 +456,7 @@ class EvenementController extends Controller
             $selectProgramme .= '</select>';
             $selectProgramme .= '</div>';
             $selectProgramme .= '</div>';
-            $selectProgramme .= '</div>';       
+            $selectProgramme .= '</div>';    */   
             
             //Création du select contenant les lieuRendezVous
             $selectLieuRendezVous = '<div class="form-group">';
@@ -468,7 +474,7 @@ class EvenementController extends Controller
             $selectLieuRendezVous .= '</div>';
             
             $formulaire = $this->get("templating")->render("SiteTrailBundle:Event:formAddEvent.html.twig", array(
-                                                                'selectProgramme' => $selectProgramme,
+                                                                //'selectProgramme' => $selectProgramme,
                                                                 'selectLieuRendezVous' => $selectLieuRendezVous,
                                                                 'listeUser' => $listeMembre,
                                                                 'form' => $form->createView()
@@ -535,12 +541,15 @@ class EvenementController extends Controller
                 $queryP = $manager->createQuery($reqP);
                 $participation = $queryP->getOneOrNullResult(); 
             }
+            
+            $evenementItineraire = $manager->getRepository("SiteTrailBundle:Evenementitineraire")->findBy(array('evenement' => $evenement->getEvenement()->getId())); 
                      
 
             $resp = $this->get("templating")->render("SiteTrailBundle:Event:detailEvenement.html.twig", array(
                                                                 'evenement' => $evenement,
                                                                 'idClasse' => $idClasse,
-                                                                'participation' => $participation
+                                                                'participation' => $participation,
+                                                                'evenementItineraire' => $evenementItineraire
                                                             ));
 
             return new Response($resp);

@@ -10,6 +10,9 @@ services:
     sso_authenticator:
         class: Site\TrailBundle\Security\SSOAuthenticator
         arguments: ["@custom_user_provider"]
+    evenement_service:
+        class: Site\TrailBundle\Services\EvenementService
+        arguments: ["@doctrine.orm.entity_manager"]
     csrf_twig_extension:
         class: Site\TrailBundle\Twig\CsrfTwigExtension
         arguments: ["@form.csrf_provider"]

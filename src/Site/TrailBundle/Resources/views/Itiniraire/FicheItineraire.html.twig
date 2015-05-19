@@ -104,7 +104,22 @@
                   <option value="0">Privé</option>
                   <option value="1">Publique</option>
                 </select>
-              </div>
+              </div>        
+                <div class="form-group">
+                    <label class="control-label">Evenement :</label>
+                    <select id="editevenement" name="editevenement[]" multiple>
+                        {% for eventCategorie in listEvent %}
+                            {% for event in eventCategorie %}
+                                {{dump(event)}}
+                                {% if event in usedEvent %}
+                                    <option value='{{event.getEvenement().getId()}}' selected="selected">{{event.getEvenement().getTitre()}} ({{event.getEvenement().getDateDebut()|date('d/m/Y', false)}})</option>
+                                {% else %}
+                                    <option value='{{event.getEvenement().getId()}}'>{{event.getEvenement().getTitre()}} ({{event.getEvenement().getDateDebut()|date('d/m/Y', false)}})</option>
+                                {% endif %}    
+                            {% endfor %}
+                        {% endfor %}
+                    </select>
+                </div>                
               {% if app.user %}
               <input type="hidden" class="form-control" id="iditi" value={{resultats.searchResults.id}}>
               {% endif %}
@@ -161,6 +176,9 @@
 		});
     $("#updateiti").on("click",function()
     {
+        var items = [];
+        $('#editevenement option:selected').each(function(){ items.push($(this).val()); });
+        
         $.post(Routing.generate('site_trail_itineraireupdate'),
         {
                nom : $("#editnom").val(),
@@ -171,7 +189,8 @@
                auteur : $("#editauteur").val(),
                status : $("#editstatus option:selected").val(),
                public : $("#editpublic option:selected").val(),
-               id : $("#iditi").val()
+               id : $("#iditi").val(),
+               evenement : items
         })
         .done(function(data, status){
           $.notify("Itinéraire mis à jour", "success");

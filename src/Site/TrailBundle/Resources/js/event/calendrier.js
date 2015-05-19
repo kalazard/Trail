@@ -113,14 +113,21 @@ function afficherCalendrier(listeEvenements, isCo)
 }
 
 //Formulaire d'ajout d'événement dynamique
-function updateFormAddEvent(selectProgramme, selectLieuRendezVous, categorieEvenement)
+function updateFormAddEvent(divProgrammeLabel, divProgrammeDuree, selectLieuRendezVous, categorieEvenement)
 {
     $('#specificites').children().remove();
+    
+    console.log(divProgrammeDuree);
     
     switch (categorieEvenement)
     {
         case '1': //Entrainement
-            $('#specificites').append(selectProgramme);
+            $('#specificites').append('<div class="form-group" id="programmeLabelDiv">');
+            $('#programmeLabelDiv').append(divProgrammeLabel);
+            $('#specificites').append('</div>');
+            $('#specificites').append('<div class="form-group" id="programmeDureeDiv">');
+            $('#programmeDureeDiv').append(divProgrammeDuree);
+            $('#specificites').append('</div>');         
             $('#specificites').append(selectLieuRendezVous);                
             break;
         case '2': //Entrainement personnel
