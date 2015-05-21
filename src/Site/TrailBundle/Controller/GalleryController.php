@@ -50,7 +50,7 @@ class GalleryController extends Controller
         $listeCategorie = GalleryController::getTheCategories($indStart);
         
         $listeImage = array();
-		$result_categ = array();
+	$result_categ = array();
         
         //récupération des 4 premières images de la catégorie
         foreach($listeCategorie as $categorie)
@@ -72,7 +72,7 @@ class GalleryController extends Controller
         $queryNb = $manager->createQuery($reqNb);
         $nbCategorie = $queryNb->getSingleScalarResult(); */
 		
-		$nbCategorie = sizeof($listeCategorie);
+	$nbCategorie = sizeof($listeCategorie);
         
         $content = $this->get("templating")->render("SiteTrailBundle:Gallery:index.html.twig", array(
                                                         'listeCategorie' => $listeCategorie,
@@ -370,11 +370,12 @@ class GalleryController extends Controller
                     $listeImage[] = $query->getResult();
                 }
 
-                $content = $this->get("templating")->render("SiteTrailBundle:Gallery:index.html.twig", array(
+                /*$content = $this->get("templating")->render("SiteTrailBundle:Gallery:index.html.twig", array(
                                                                 'listeCategorie' => $listeCategorie,
                                                                 'listeImage' => $listeImage
                                                             ));
-                return new Response($content);
+                return new Response($content);*/
+                return $this->redirect($this->generateUrl('site_trail_gallery'));
                 
             } else {
                 return new Response("Il y a eu un problème lors de l'envoi du fichier.");
