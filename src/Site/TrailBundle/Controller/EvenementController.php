@@ -901,8 +901,8 @@ class EvenementController extends Controller
                     
                     break;
                 case 'date':
-                    $interDebut = $request->request->get('dateDebut', '');
-                    $interFin = $request->request->get('dateFin', '');
+                    $interDebut = new \DateTime($request->request->get('dateDebut', ''));
+                    $interFin = new \DateTime($request->request->get('dateFin', ''));
                     $resultats = EvenementController::getEventFrom(0, $this->getDoctrine()->getManager(), $interDebut, $interFin);
                     break;
                 case 'typeEtDate':

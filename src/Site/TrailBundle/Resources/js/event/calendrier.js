@@ -117,8 +117,6 @@ function updateFormAddEvent(divProgrammeLabel, divProgrammeDuree, selectLieuRend
 {
     $('#specificites').children().remove();
     
-    console.log(divProgrammeDuree);
-    
     switch (categorieEvenement)
     {
         case '1': //Entrainement
