@@ -101,9 +101,9 @@ class MapController extends Controller
 		return new Response($content);
 	}
 
-    public function uploadIconeAction()
+    public function saveTypelieuAction()
     {       
-        $content = $this->get("templating")->render("SiteTrailBundle:Map:uploadIcone.html.twig");
+        $content = $this->get("templating")->render("SiteTrailBundle:Map:saveTypelieu.html.twig");
         return new Response($content);
     }
 }
