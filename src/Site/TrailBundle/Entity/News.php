@@ -50,9 +50,12 @@ class News
     private $texte;
 
     /**
-     * @var integer
+     * @var \Membre
      *
-     * @ORM\Column(name="auteur", type="integer", nullable=false)
+     * @ORM\ManyToOne(targetEntity="Membre")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="auteur", referencedColumnName="id")
+     * })
      */
     private $auteur;
 
@@ -192,10 +195,10 @@ class News
     /**
      * Set auteur
      *
-     * @param integer $auteur
+     * @param \Site\TrailBundle\Entity\Membre $auteur
      * @return News
      */
-    public function setAuteur($auteur)
+    public function setAuteur(\Site\TrailBundle\Entity\Membre $auteur = null)
     {
         $this->auteur = $auteur;
 
@@ -205,7 +208,7 @@ class News
     /**
      * Get auteur
      *
-     * @return integer 
+     * @return \Site\TrailBundle\Entity\Membre 
      */
     public function getAuteur()
     {

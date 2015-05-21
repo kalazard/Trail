@@ -67,40 +67,67 @@
                 </div>
 
                 <!-- Champ participants -->
-                <div class="form-group">
+                <!--<div class="form-group">
                     <div class="row">
                         <label class='col-sm-3 control-label'>Participants :</label>
                         <div class="col-sm-9">
                             <select class="form-control" name="participants[]" multiple>
-                                {% for monUser in listeUser %}
+                                {#{% for monUser in listeUser %}
                                     <option value='{{monUser.id}}'>{{monUser.userName}}</option>
-                                {% endfor %}
+                                {% endfor %}#}
                             </select>
                         </div>
                     </div>
-                </div>
+                </div> -->
                             
                 <!-- Affichage des trucs supplémentaires -->
                 {% if idClasse == 1 %} <!-- Entrainement -->
-                    <div class="form-group">
+                    <!--<div class="form-group">
                         <div class="row">
                             <label class='col-sm-3 control-label'>Programme :</label>
                             <div class="col-sm-9">
                                 <select name='programme' class="form-control">
-                                    {% for monProgramme in listeProgramme %}
+                                    {#{% for monProgramme in listeProgramme %}
                                         <option value='{{monProgramme.id}}'>{{monProgramme.label}} ({{monProgramme.duree|date('H-i-s')}})</option>
-                                    {% endfor %}
+                                    {% endfor %}#}
                                 </select>
                             </div>
                         </div>
+                    </div>-->
+                                    
+                    <!-- Champ programme label -->
+                    <div class="form-group" id="programmeLabelDiv">
+                        <div class="row addEventDate">
+                            {{ form_label(form.programme_label, "Intitulé du programme : ", {'label_attr': {'class': 'col-sm-3 control-label'}}) }}
+                            {{ form_errors(form.programme_label) }}
+                            <div class="col-sm-9">
+                                {{ form_widget(form.programme_label, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+                        </div>
                     </div>
+                    
+                    <!-- Champ programme duree -->
+                    <div class="form-group" id="programmeDureeDiv">
+                        <div class="row addEventDate">
+                            {{ form_label(form.programme_duree, "Durée du programme : ", {'label_attr': {'class': 'col-sm-3 control-label'}}) }}
+                            {{ form_errors(form.programme_duree) }}
+                            <div class="col-sm-9">
+                                {{ form_widget(form.programme_duree) }}
+                            </div>
+                        </div>
+                    </div>
+                                    
                     <div class="form-group">
                         <div class="row">
                             <label class='col-sm-3 control-label'>Lieu de rendez-vous :</label>
                             <div class="col-sm-9">
                                 <select name='lieu' class="form-control">
                                     {% for monLieu in listeLieuRendezVous %}
-                                        <option value='{{monLieu.id}}'>{{monLieu.titre}}</option>
+                                        {% if monLieu.getId() == selectedLieuRendezVous %}
+                                            <option selected='selected' value='{{monLieu.id}}'>{{monLieu.titre}}</option>
+                                        {% else %}
+                                            <option value='{{monLieu.id}}'>{{monLieu.titre}}</option>
+                                        {% endif %}
                                     {% endfor %}
                                 </select>
                             </div>
@@ -108,11 +135,21 @@
                     </div>
                 {% elseif idClasse == 2 %} <!-- Entrainement personnel -->
                 {% elseif idClasse == 3 %} <!-- Evenement divers -->
-                    <div class="form-group">
+                    <!--<div class="form-group">
                         <div class="row">
                             <label class='col-sm-3 control-label'>Description :</label>
                             <div class="col-sm-9">
                                 <input type="textbox" name="description" />
+                            </div>
+                        </div>
+                    </div>-->
+                    
+                    <div class="form-group">
+                        <div class="row">
+                            {{ form_label(form.descEventDiv, "Description : ", {'label_attr': {'class': 'col-sm-3 control-label'}}) }}
+                            {{ form_errors(form.descEventDiv) }}
+                            <div class="col-sm-9">
+                                {{ form_widget(form.descEventDiv) }}
                             </div>
                         </div>
                     </div>
@@ -123,7 +160,11 @@
                             <div class="col-sm-9">
                                 <select name='lieu' class="form-control">
                                     {% for monLieu in listeLieuRendezVous %}
-                                        <option value='{{monLieu.id}}'>{{monLieu.titre}}</option>
+                                        {% if monLieu.getId() == selectedLieuRendezVous %}
+                                            <option selected='selected' value='{{monLieu.id}}'>{{monLieu.titre}}</option>
+                                        {% else %}
+                                            <option value='{{monLieu.id}}'>{{monLieu.titre}}</option>
+                                        {% endif %}
                                     {% endfor %}
                                 </select>
                             </div>
@@ -135,7 +176,7 @@
                             {{ form_label(form.siteUrl, "Site URL : ", {'label_attr': {'class': 'col-sm-3 control-label'}}) }}
                             {{ form_errors(form.siteUrl) }}
                             <div class="col-sm-9">
-                                {{ form_widget(form.siteUrl, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_widget(form.siteUrl) }}
                             </div>
                         </div>
                     </div>

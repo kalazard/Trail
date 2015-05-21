@@ -1,26 +1,18 @@
-Entrainement:
+Participants:
     type: entity
-    table: entrainement
+    table: participants
     indexes:
-        fk_entrainement_programme_idx:
+        fk_participants_membre_idx:
             columns:
-                - programme
-        fk_entrainement_evenement_idx:
+                - membre
+        fk_participants_evenement_idx:
             columns:
                 - evenement
-        fk_entrainement_rdv_idx:
+        fk_participants_participation_idx:
             columns:
-                - lieurendezvous
-    id:
-        id:
-            type: integer
-            nullable: false
-            unsigned: false
-            comment: ''
-            id: true
-            generator:
-                strategy: IDENTITY
-    manyToOne:
+                - participation
+    id: {  }
+    oneToOne:
         evenement:
             targetEntity: Evenement
             cascade: {  }
@@ -30,22 +22,23 @@ Entrainement:
                 evenement:
                     referencedColumnName: id
             orphanRemoval: false
-        programme:
-            targetEntity: Programme
+        membre:
+            targetEntity: Membre
             cascade: {  }
             mappedBy: null
             inversedBy: null
             joinColumns:
-                programme:
+                membre:
                     referencedColumnName: id
             orphanRemoval: false
-        lieurendezvous:
-            targetEntity: Lieurendezvous
+    manyToOne:
+        participation:
+            targetEntity: Participation
             cascade: {  }
             mappedBy: null
             inversedBy: null
             joinColumns:
-                lieurendezvous:
+                participation:
                     referencedColumnName: id
             orphanRemoval: false
     lifecycleCallbacks: {  }

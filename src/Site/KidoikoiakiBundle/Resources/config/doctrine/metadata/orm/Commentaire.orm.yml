@@ -1,13 +1,10 @@
-Sortiedecouverte:
+Commentaire:
     type: entity
-    table: sortiedecouverte
+    table: commentaire
     indexes:
-        fk_sortiedecouverte_rdv_idx:
+        fk_commentaire_auteur_idx:
             columns:
-                - lieurendezvous
-        fk_sortiedecouverte_evenement_idx:
-            columns:
-                - evenement
+                - auteur
     id:
         id:
             type: integer
@@ -17,23 +14,29 @@ Sortiedecouverte:
             id: true
             generator:
                 strategy: IDENTITY
+    fields:
+        texte:
+            type: text
+            nullable: false
+            length: null
+            fixed: false
+            comment: ''
     manyToOne:
-        evenement:
-            targetEntity: Evenement
+        auteur:
+            targetEntity: Membre
             cascade: {  }
             mappedBy: null
             inversedBy: null
             joinColumns:
-                evenement:
+                auteur:
                     referencedColumnName: id
             orphanRemoval: false
-        lieurendezvous:
-            targetEntity: Lieurendezvous
+    manyToMany:
+        new:
+            targetEntity: News
             cascade: {  }
-            mappedBy: null
+            mappedBy: commentaire
             inversedBy: null
-            joinColumns:
-                lieurendezvous:
-                    referencedColumnName: id
-            orphanRemoval: false
+            joinTable: null
+            orderBy: null
     lifecycleCallbacks: {  }
