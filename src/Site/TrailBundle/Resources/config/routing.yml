@@ -202,9 +202,6 @@ site_trail_itineraireupdate:
     defaults: { _controller: SiteTrailBundle:Itiniraire:update }
     options:
         expose: true
-site_trail_uploadIcone:
-    path :    /uploadIcone
-    defaults: { _controller: SiteTrailBundle:Map:uploadIcone}
 site_trail_itinerairedelete:
     path:     /itineraire_delete/
     defaults: { _controller: SiteTrailBundle:Itiniraire:delete }
@@ -215,3 +212,174 @@ site_trail_upload_avatar:
     defaults: { _controller: SiteTrailBundle:User:uploadAvatar }
     options:
         expose: true
+site_trail_homepage:
+    path:     /home
+    defaults: { _controller: SiteTrailBundle:Home:index }
+site_trail_test:
+    path:     /test
+    defaults: { _controller: SiteTrailBundle:Home:test }
+site_trail_map:
+    path:     /map
+    defaults: { _controller: SiteTrailBundle:Map:index }
+site_trail_saveitineraire:
+    path:     /itineraire_save/
+    defaults: { _controller: SiteTrailBundle:Itineraire:saveRoute }
+site_trail_map_createPoi:
+    path:     /map/createPoi
+    defaults: { _controller: SiteTrailBundle:Map:createPoi }
+login_check:
+    path:   /login_check
+    defaults: { _controller:SiteTrailBundle:User:logIn }
+logout:
+    path:   /logout
+    defaults: { _controller:SiteTrailBundle:User:logOut }
+site_trail_evenement:
+    path:   /evenement
+    defaults: { _controller:SiteTrailBundle:Evenement:index }
+    options:
+        expose: true
+site_trail_evenement_ajout:
+    path:   /evenement/ajout
+    defaults: { _controller:SiteTrailBundle:Evenement:showFormAddEvent }
+    options:
+        expose: true
+site_trail_evenement_detail:
+    path: /evenement/detail
+    defaults: { _controller: SiteTrailBundle:Evenement:afficherDetailEvenement }
+    options:
+        expose: true
+site_trail_evenement_suppression:
+    path: /evenement/suppression
+    defaults: { _controller: SiteTrailBundle:Evenement:supprEvenement }
+    options:
+        expose: true
+site_trail_evenement_modification:
+    path: /evenement/modification
+    defaults: { _controller: SiteTrailBundle:Evenement:modifEvenement }
+    options:
+        expose: true
+site_trail_evenement_checkdate:
+    path: /evenement/checkDate
+    defaults: { _controller: SiteTrailBundle:Evenement:checkDate }
+    options:
+        expose: true
+site_trail_evenement_ics:
+    path: /ics/{id}/{dateDebut}/{dateFin}
+    defaults: { _controller: SiteTrailBundle:Ics:index, id: default, dateDebut: '', dateFin: '' }
+    options:
+        expose: true
+site_trail_evenement_icsForm:
+    path: /icsForm
+    defaults: { _controller: SiteTrailBundle:Ics:icsForm }
+    options:
+        expose: true
+site_trail_profilmembre:
+    path:     /profil_membre/
+    defaults: { _controller: SiteTrailBundle:MemberDisplay:profil }
+site_trail_submitprofilmembre:
+    path:     /submit_profil_membre/
+    defaults: { _controller: SiteTrailBundle:MemberDisplay:profilSubmit }
+    options:
+        expose: true
+site_trail_createUser:
+    path:    /user/create
+    defaults: { _controller:SiteTrailBundle:User:create }
+site_trail_loadRoles:
+    path:    /user/loadRoles
+    defaults: { _controller:SiteTrailBundle:User:loadRoles }
+site_trail_getAllUsers:
+    path:    /user/all
+    defaults: { _controller:SiteTrailBundle:User:getAllUsers }
+site_trail_annuaire:
+    path:    /user/annuaire
+    defaults: { _controller:SiteTrailBundle:User:annuaire }
+site_trail_deleteUser:
+    path:    /user/delete
+    defaults: { _controller:SiteTrailBundle:User:delete }
+site_trail_getUser:
+    path:    /user/get
+    defaults: { _controller:SiteTrailBundle:User:getUser }
+site_trail_updateUser:
+    path:    /user/update
+    defaults: { _controller:SiteTrailBundle:User:updateUser }
+site_trail_getUserActivation:
+    path:    /user/getActivation
+    defaults:  { _controller:SiteTrailBundle:User:getUserActivation }
+site_trail_changePassword:
+    path:    /user/changePassword
+    defaults:  { _controller:SiteTrailBundle:User:changePassword }
+site_trail_getDifficulteParcours:
+    path:    /difficulte/getDifficultes
+    defaults: { _controller:SiteTrailBundle:DifficulteParcours:getDifficultes }
+site_trail_searchitineraire:
+    path:     /itineraire_search/
+    defaults: { _controller: SiteTrailBundle:Itiniraire:search }
+site_trail_listitineraire:
+    path:     /itineraire_list/
+    defaults: { _controller: SiteTrailBundle:Itiniraire:list }
+site_trail_getPoi:
+    path:     /map/getPoi/
+    defaults: { _controller: SiteTrailBundle:Poi:getPoi }
+site_trail_getAllLieux:
+    path:     /map/getAllLieux/
+    defaults: { _controller: SiteTrailBundle:TypeLieu:getAllLieux }
+site_trail_getByIditineraire:
+    path:     /itineraire_getById/{id}
+    defaults: { _controller: SiteTrailBundle:Itiniraire:getById }
+site_trail_gallery:
+    path :    /galerie
+    defaults: { _controller: SiteTrailBundle:Gallery:index }
+    options:
+        expose: true
+site_trail_category:
+    path :    /galerie/categorie/{idCategorie}
+    defaults: { _controller: SiteTrailBundle:Gallery:category, idCategorie: "" }
+site_trail_category_ajout:
+    path:    /galerie/ajoutCategorie
+    defaults: { _controller: SiteTrailBundle:Gallery:categorieAjout }
+    options:
+        expose: true
+site_trail_category_suppression:
+    path:    /galerie/suppressionCategorie
+    defaults: { _controller: SiteTrailBundle:Gallery:categorieSuppression, idCategorie: "" }
+    options:
+        expose: true
+site_trail_category_modification:
+    path:    /galerie/modifCategorie
+    defaults: { _controller: SiteTrailBundle:Gallery:categorieModif, idCategorie: "" }
+    options:
+        expose: true        
+site_trail_picture:
+    path :    /galerie/image
+    defaults: { _controller: SiteTrailBundle:Gallery:picture }
+site_trail_picture_showAdd:
+    path :    /galerie/image/ajoutForm
+    defaults: { _controller: SiteTrailBundle:Gallery:showAddPicture }
+    options:
+        expose: true
+site_trail_picture_add:
+    path :    /galerie/image/ajout
+    defaults: { _controller: SiteTrailBundle:Gallery:addPicture }
+    options:
+        expose: true 
+site_trail_news:
+    path :    /nouveautes
+    defaults: { _controller: SiteTrailBundle:Home:news }
+site_trail_club:
+    path :    /club
+    defaults: { _controller: SiteTrailBundle:Home:club }
+site_trail_trail:
+    path :    /trail
+    defaults: { _controller: SiteTrailBundle:Home:trail }
+site_trail_contact:
+    path :    /contact
+    defaults: { _controller: SiteTrailBundle:Home:contact }
+site_trail_article:
+    path :    /nouveautes/{slug}
+    defaults: { _controller: SiteTrailBundle:Home:news }
+site_trail_upload:
+    path :    /upload/
+    defaults: { _controller: SiteTrailBundle:Map:upload}
+site_trail_saveTypelieu:
+    path :    /saveTypelieu
+    defaults: { _controller: SiteTrailBundle:Map:saveTypelieu}

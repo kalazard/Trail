@@ -645,8 +645,10 @@ class EvenementController extends Controller
         if($request->isXmlHttpRequest() && $this->getUser())
         {      
             $idUser = $this->getUser()->getId();
-            $idClasse = $request->request->get('idClasse', '');
-            $idEvenementDeClasse = $request->request->get('idObj', '');
+            $idClasse = $request->request->get('idClasse', '1');
+            $idEvenementDeClasse = $request->request->get('idObj', '21');
+            $manager = $this->getDoctrine()->getManager();
+            $selectedLieuRendezVous = 0;
 
             $tabEvenements = EvenementController::getEvenementEtEvenementDeCategorie($this->getDoctrine()->getManager(), $idClasse, $idEvenementDeClasse);
 
@@ -667,13 +669,39 @@ class EvenementController extends Controller
                                         'data' => $evenementAssocie->getDateDebut()))
                     ->add('date_fin', 'datetime', array(
                                         'data' => $evenementAssocie->getDateFin()));
+            
+            if($idClasse == 1)
+            {
+                $selectedLieuRendezVous = $evenementDeCategorie->getLieuRendezVous()->getId();
+                $monProgramme = $manager->getRepository("SiteTrailBundle:Programme")->findOneBy(array('id' => $evenementDeCategorie->getProgramme()->getId()));          
+                $formBuilder->add('programme_label', 'text', array('max_length' => 255, 'mapped' => false, 'data' => $monProgramme->getLabel()))
+                            ->add('programme_duree', 'time', array('mapped' => false, 'data' => $monProgramme->getDuree()));
+            }
+            else if($idClasse == 3)
+            {
+                $formBuilder->add('descEventDiv', 'text', array('required' => true,
+                                                    'max_length' => 255,
+                                                    'mapped' => false,
+                                                    'data' => $evenementDeCategorie->getDescription()));
+            }
+            else if($idClasse == 4)
+            {
+                $selectedLieuRendezVous = $evenementDeCategorie->getLieuRendezVous()->getId();
+            }
+            else if($idClasse == 5)
+            {
+                $formBuilder->add('siteUrl', 'url', array('required' => true,
+                                                    'max_length' => 255,
+                                                    'mapped' => false,
+                                                    'data' => $evenementDeCategorie->getSiteUrl()));
+            }
 
             $form = $formBuilder->getForm();
             $form->handleRequest($request);
 
             if ($form->isValid()) 
             {
-                $type = $request->request->get('type', '');
+                //$type = $request->request->get('type', '');
                 $idCreateur = $request->request->get('createur', '');
 
                 $manager=$this->getDoctrine()->getManager();
@@ -682,19 +710,28 @@ class EvenementController extends Controller
                 $evenementAssocie->setDateCreation(new \DateTime("now"));
                 $evenementAssocie->setAlias("alias");
 
-                $manager = $this->getDoctrine()->getManager();
                 $manager->flush();
 
-                switch ($type)
+                switch (/*$type*/$idClasse)
                 {
-                    case '1': //Entrainement
-                        $repository=$manager->getRepository("SiteTrailBundle:Programme");
+                    case '1': //Entrainement   
+                        $repository = $manager->getRepository("SiteTrailBundle:Programme");
+                        $programme = $repository->findOneById($evenementDeCategorie->getProgramme()->getId());
+                        $programme->setLabel($request->get('form')['programme_label']);
+                        $dureeProgramme = new \DateTime("0001-01-01");
+                        $dureeProgramme->setTime($request->get('form')['programme_duree']['hour'], $request->get('form')['programme_duree']['minute'], "0");
+                        $programme->setDuree($dureeProgramme);
+                            
+                        /*$repository=$manager->getRepository("SiteTrailBundle:Programme");
                         $idProgramme = $request->request->get('programme', '');
-                        $programme = $repository->findOneById($idProgramme);
+                        $programme = $repository->findOneById($idProgramme);*/
+                        
+                        
                         $repository=$manager->getRepository("SiteTrailBundle:Lieurendezvous");
-                        $idLieu = $request->request->get('lieu', '');
+                        //$idLieu = $request->request->get('lieu', '');
+                        $idLieu = $request->get('lieu');
                         $lieu = $repository->findOneById($idLieu);
-                        $evenementDeCategorie->setProgramme($programme);
+                        //$evenementDeCategorie->setProgramme($programme);
                         $evenementDeCategorie->setLieuRendezVous($lieu);
                         $evenementDeCategorie->setEvenement($evenementAssocie);
                         $manager->flush();
@@ -704,7 +741,7 @@ class EvenementController extends Controller
                         $manager->flush();
                         break;
                     case '3': //Evenement divers
-                        $description = $request->request->get('desc', '');
+                        $description = $request->get('form')['descEventDiv'];
                         $evenementDeCategorie->setDescription($description);
                         $evenementDeCategorie->setEvenement($evenementAssocie);
                         $manager->flush();
@@ -719,7 +756,7 @@ class EvenementController extends Controller
                         break;
                     case '5': //Course officielle
                         $repository=$manager->getRepository("SiteTrailBundle:Courseofficielle");
-                        $siteUrl = $request->request->get('siteUrl', '');
+                        $siteUrl = $request->get('form')['siteUrl'];
                         $evenementDeCategorie->setSiteUrl($siteUrl);
                         $evenementDeCategorie->setEvenement($evenementAssocie);
                         $manager->flush();
@@ -748,25 +785,27 @@ class EvenementController extends Controller
             }
 
             $manager=$this->getDoctrine()->getManager();
-            $repository=$manager->getRepository("SiteTrailBundle:Programme");        
-            $listeProgramme = $repository->findAll();
+            /*$repository=$manager->getRepository("SiteTrailBundle:Programme");        
+            $listeProgramme = $repository->findAll();*/
+            
             $repository=$manager->getRepository("SiteTrailBundle:Lieurendezvous");        
             $listeLieuRendezVous = $repository->findAll();
 
-            $query = $manager->createQuery(
+            /*$query = $manager->createQuery(
                 'SELECT u
                 FROM SiteTrailBundle:Membre u
                 WHERE u.id != :createur'
             )->setParameter('createur', $idUser);
-            $listeUser = $query->getResult();        
+            $listeUser = $query->getResult();  */      
 
             $formulaire = $this->get("templating")->render("SiteTrailBundle:Event:modifEventForm.html.twig", array(
-                                                                'listeProgramme' => $listeProgramme,
+                                                                //'listeProgramme' => $listeProgramme,
                                                                 'listeLieuRendezVous' => $listeLieuRendezVous,
-                                                                'listeUser' => $listeUser,
+                                                                'selectedLieuRendezVous' => $selectedLieuRendezVous,
+                                                                //'listeUser' => $listeUser,
                                                                 'form' => $form->createView(),
                                                                 'idClasse' => $idClasse,
-                                                                'idObj' => $idEvenementDeClasse 
+                                                                'idObj' => $idEvenementDeClasse
                                                             ));
 
             return new Response($formulaire);

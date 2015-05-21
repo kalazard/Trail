@@ -327,8 +327,8 @@ class GalleryController extends Controller
                 $newImage->setTaille($taille);
                 $newImage->setAuteur($auteur);
                 $newImage->setCategorie($categorie);
-                //$newImage->setPath("http://130.79.214.167/uploads/".$fileName);
-                $newImage->setPath("localhost/uploads/".$fileName);
+                $newImage->setPath("http://130.79.214.167/uploads/".$fileName);
+                //$newImage->setPath("localhost/uploads/".$fileName);
                 $manager->persist($newImage);
                 $manager->flush();
                 
