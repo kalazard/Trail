@@ -936,7 +936,7 @@ class UserController extends Controller {
                 $response = new RedirectResponse($this->generateUrl('site_trail_profilmembre'));
                 return $response;
             } else {
-                return new Response("Il y a eu un problème lors de l'envoi du fichier.");
+                return new RedirectResponse($this->generateUrl('site_trail_profilmembre'));
             }
         }
     }
