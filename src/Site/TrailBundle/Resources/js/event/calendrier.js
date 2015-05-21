@@ -23,7 +23,7 @@ function afficherCalendrier(listeEvenements, isCo)
                     tabEvent['start'] = listeEvenements[categorie][evenement][entity].evenement.dateDebut.date;
                     
                     tabEvent['end'] = listeEvenements[categorie][evenement][entity].evenement.dateFin.date;
-                    tabEvent['description'] = listeEvenements[categorie][evenement][entity].evenement.description;
+                    //tabEvent['description'] = listeEvenements[categorie][evenement][entity].evenement.description;
                 }
                 else if(entity === '1') //Les participations
                 {
@@ -102,7 +102,7 @@ function afficherCalendrier(listeEvenements, isCo)
             eventRender: function(event, element) {
                 contenu = "<p>" + event.start.format('HH:mm') + " - " + event.end.format('HH:mm') + "<br/>";
                 contenu += "&#8226; <a style='color:white;cursor:pointer;font-style:italic;' onclick='afficherDetail(" + event.class + ", " + event.id +")' id='detailEvenement'>" + event.title + "</a><br/>";
-                contenu += "<label class='petitTexte'>" + event.description + "</label></p>";
+                //contenu += "<label class='petitTexte'>" + event.description + "</label></p>";
                 element.html(contenu);
                 element.css({
                     'word-wrap': 'break-word',
@@ -113,14 +113,21 @@ function afficherCalendrier(listeEvenements, isCo)
 }
 
 //Formulaire d'ajout d'événement dynamique
-function updateFormAddEvent(selectProgramme, selectLieuRendezVous, categorieEvenement)
+function updateFormAddEvent(divProgrammeLabel, divProgrammeDuree, selectLieuRendezVous, categorieEvenement)
 {
     $('#specificites').children().remove();
+    
+    console.log(divProgrammeDuree);
     
     switch (categorieEvenement)
     {
         case '1': //Entrainement
-            $('#specificites').append(selectProgramme);
+            $('#specificites').append('<div class="form-group" id="programmeLabelDiv">');
+            $('#programmeLabelDiv').append(divProgrammeLabel);
+            $('#specificites').append('</div>');
+            $('#specificites').append('<div class="form-group" id="programmeDureeDiv">');
+            $('#programmeDureeDiv').append(divProgrammeDuree);
+            $('#specificites').append('</div>');         
             $('#specificites').append(selectLieuRendezVous);                
             break;
         case '2': //Entrainement personnel
@@ -299,6 +306,92 @@ function checkDate(anneeD, moisD, jourD, heureD, minuteD, anneeF, moisF, jourF, 
                 $('input[type="submit"]').removeAttr('disabled');
             }
             
+        }
+    });
+}
+
+//Changemenet dynamique du formulaire (recherche d'événements)
+function changerFormulaire(inputType)
+{
+    var typeSelected = $("[name^=searchType]:checked").val();
+    var text = "";
+    
+    $('#contenuForm').children().remove();
+    
+    switch(typeSelected)
+    {
+        case 'type':
+            $('#contenuForm').html(inputType);
+            break;
+        case 'date':
+            text = "<ul>";
+            text += '<li><label>Intervalle inférieur : </label> ';
+            text += '<input type="text" name="dateDebut" id="dateDebut" class="date"></li> ';
+            text += '<li><label>Intervalle supérieur : </label> ';
+            text += '<input type="text" name="dateFin" id="dateFin" class="date"></li> ';  
+            text += "</ul>";
+            $('#contenuForm').html(text);
+            $( ".date" ).datepicker($.datepicker.regional[ "fr" ]);
+            $( ".date" ).datepicker( "option", "dateFormat", "yy-mm-dd" );
+            break;
+        case 'typeEtDate':
+            text = " <ul>";
+            text += '<li><label>Intervalle inférieur : </label> ';
+            text += '<input type="text" name="dateDebut" id="dateDebut" class="date"></li> ';
+            text += '<li><label>Intervalle supérieur : </label> ';
+            text += '<input type="text" name="dateFin" id="dateFin" class="date"></li> ';  
+            text += "</ul>";
+            $('#contenuForm').html(inputType + text);
+            $( ".date" ).datepicker($.datepicker.regional[ "fr" ]);
+            $( ".date" ).datepicker( "option", "dateFormat", "yy-mm-dd" );
+            break;
+    }
+}
+
+function recuperationResEvenement()
+{    
+    var data = $('#rechEvent').serialize();
+    
+    $.ajax({
+        type: "POST",
+        url: Routing.generate('site_trail_evenement_search'),
+        cache: false,
+        dataType: 'json',
+        data: data,
+        success: function(data){
+            $('#searchRes').children().remove();
+            
+            nbRes = 0;
+            contenuHtml = "";
+            nomEvenementCategorie = ["entrainement", "entrainement personnel", "événement divers", "sortie découverte", "course officielle"]; 
+            tabUnique = new Array();
+            
+            for(cleTypeEvenement in data)
+            {
+                nbRes += data[cleTypeEvenement].length;
+                
+                for(cleEvenement in data[cleTypeEvenement])
+                {
+                    for(indice in data[cleTypeEvenement][cleEvenement])
+                    {
+                        data[cleTypeEvenement][cleEvenement][indice]['typeEvenement'] = cleTypeEvenement;
+                    }
+                }
+                tabUnique = tabUnique.concat(data[cleTypeEvenement]);
+            }
+            
+            contenuHtml += "<p class='text-center'>"+nbRes+" résultats trouvés</p>"
+            
+            for(cleEvenement in tabUnique)
+            {                
+                contenuHtml += "<div class='blockRes'>";
+                contenuHtml += "<label> <a style='cursor:pointer' onclick='afficherDetail(" + (parseInt(tabUnique[cleEvenement][0].typeEvenement)+1) + ", " + tabUnique[cleEvenement][0].id +")'>"+tabUnique[cleEvenement][0].evenement.titre+" par "+tabUnique[cleEvenement][0].evenement.createur.prenom+tabUnique[cleEvenement][0].evenement.createur.nom+"</a></label>";
+                contenuHtml += "<br/>&nbsp;&nbsp;&nbsp;&nbsp;- "+nomEvenementCategorie[tabUnique[cleEvenement][0].typeEvenement]+"<br/>";
+                contenuHtml += "&nbsp;&nbsp;&nbsp;&nbsp;- du "+tabUnique[cleEvenement][0].evenement.dateDebut.date+" au "+tabUnique[cleEvenement][0].evenement.dateFin.date;
+                contenuHtml += "</div>";
+            }
+            
+            $('#searchRes').html(contenuHtml);
         }
     });
 }

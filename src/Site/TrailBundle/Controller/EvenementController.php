@@ -315,7 +315,9 @@ class EvenementController extends Controller
                     ->add('date_debut', 'datetime', array(
                                         'data' => new \DateTime($dateCliquee)))
                     ->add('date_fin', 'datetime', array(
-                                        'data' => new \DateTime($dateCliquee)));
+                                        'data' => new \DateTime($dateCliquee)))
+                    ->add('programme_label', 'text', array('max_length' => 255, 'mapped' => false))
+                    ->add('programme_duree', 'time', array('mapped' => false));
             
             $form = $formBuilder->getForm();
             $form->handleRequest($request);
@@ -355,10 +357,14 @@ class EvenementController extends Controller
 
                 switch ($type)
                 {
-                    case '1': //Entrainement
-                        $repository = $manager->getRepository("SiteTrailBundle:Programme");
-                        $idProgramme = $request->request->get('programme', '');
-                        $programme = $repository->findOneById($idProgramme);
+                    case '1': //Entrainement                        
+                        $programme = new Programme();  
+                        $programme->setLabel($request->get('form')['programme_label']);
+                        $dureeProgramme = new \DateTime("0001-01-01");
+                        $dureeProgramme->setTime($request->get('form')['programme_duree']['hour'], $request->get('form')['programme_duree']['minute'], "0");
+                        $programme->setDuree($dureeProgramme);
+                        $manager->persist($programme);
+                        $manager->flush();
                         $repository=$manager->getRepository("SiteTrailBundle:Lieurendezvous");
                         $idLieu = $request->request->get('lieu', '');
                         $lieu = $repository->findOneById($idLieu);
@@ -405,7 +411,7 @@ class EvenementController extends Controller
                 $manager->flush();
 
                 //Ajout des participants (et participations) s'il y en a
-                if($request->request->get('participants', '') != '')
+                /*if($request->request->get('participants', '') != '')
                 {
                     foreach($request->request->get('participants', '') as $monParticipant)
                     {
@@ -424,7 +430,7 @@ class EvenementController extends Controller
                         $manager->persist($participant);
                         $manager->flush();
                     }
-                }
+                }*/
 
                 return $this->redirect($this->generateUrl('site_trail_evenement'));
             }
@@ -438,7 +444,7 @@ class EvenementController extends Controller
             $listeMembre = $repository->findAll(); 
             
             //Création du select contenant les programmes
-            $selectProgramme = '<div class="form-group">';
+            /*$selectProgramme = '<div class="form-group">';
             $selectProgramme .= '<div class="row">';
             $selectProgramme .= '<label class="col-sm-3 control-label">Programme :</label>';
             $selectProgramme .= '<div class="col-sm-9">';
@@ -450,7 +456,7 @@ class EvenementController extends Controller
             $selectProgramme .= '</select>';
             $selectProgramme .= '</div>';
             $selectProgramme .= '</div>';
-            $selectProgramme .= '</div>';       
+            $selectProgramme .= '</div>';    */   
             
             //Création du select contenant les lieuRendezVous
             $selectLieuRendezVous = '<div class="form-group">';
@@ -468,7 +474,7 @@ class EvenementController extends Controller
             $selectLieuRendezVous .= '</div>';
             
             $formulaire = $this->get("templating")->render("SiteTrailBundle:Event:formAddEvent.html.twig", array(
-                                                                'selectProgramme' => $selectProgramme,
+                                                                //'selectProgramme' => $selectProgramme,
                                                                 'selectLieuRendezVous' => $selectLieuRendezVous,
                                                                 'listeUser' => $listeMembre,
                                                                 'form' => $form->createView()
@@ -535,12 +541,15 @@ class EvenementController extends Controller
                 $queryP = $manager->createQuery($reqP);
                 $participation = $queryP->getOneOrNullResult(); 
             }
+            
+            $evenementItineraire = $manager->getRepository("SiteTrailBundle:Evenementitineraire")->findBy(array('evenement' => $evenement->getEvenement()->getId())); 
                      
 
             $resp = $this->get("templating")->render("SiteTrailBundle:Event:detailEvenement.html.twig", array(
                                                                 'evenement' => $evenement,
                                                                 'idClasse' => $idClasse,
-                                                                'participation' => $participation
+                                                                'participation' => $participation,
+                                                                'evenementItineraire' => $evenementItineraire
                                                             ));
 
             return new Response($resp);
@@ -796,5 +805,94 @@ class EvenementController extends Controller
         }
         
         return new Response("ok");
+    }
+    
+    public function eventSearchFormAction()
+    {
+        $typeEvent = "";
+        
+        if($this->getUser())
+        {
+            $typeEvent = "<ul>";
+            $typeEvent .= "<li><input type='checkbox' name='type[]' value='0' checked /> Tous les types</li>";
+            $typeEvent .= "<li><input type='checkbox' name='type[]' value='1' /> Entrainement</li>";
+            $typeEvent .= "<li><input type='checkbox' name='type[]' value='2' /> Entrainement personnel</li>";
+            $typeEvent .= "<li><input type='checkbox' name='type[]' value='3' /> Evénements divers</li>";
+            $typeEvent .= "<li><input type='checkbox' name='type[]' value='4' /> Sortie découverte</li>";
+            $typeEvent .= "<li><input type='checkbox' name='type[]' value='5' /> Course officielle</li>";
+            $typeEvent .= "</ul>";
+        }
+        else
+        {
+            $typeEvent = "<input type='checkbox' name='type[]' value='4' checked disabled />Sortie découverte";
+        }
+
+        $content = $this->get("templating")->render("SiteTrailBundle:Event:search.html.twig", array(
+                                                        'typeEvent' => $typeEvent
+                                                    ));
+
+        return new Response($content);
+    }
+    
+    public function eventSearchAction(Request $request)
+    {
+        $textDebug = "";
+        
+        if($request->isXmlHttpRequest())
+        {
+            $onCherchePar = $request->request->get('searchType', '');
+            $resultats = array();
+            
+            switch($onCherchePar)
+            {
+                case 'type':
+                    $typesEvenement = $request->request->get('type', '');                    
+                    $resultats = EvenementController::getEventFrom(0, $this->getDoctrine()->getManager());
+                    
+                    if(!(in_array("0", $typesEvenement)))
+                    {
+                        foreach($resultats as $type => $evenement)
+                        {
+                            if(!(in_array($type+1, $typesEvenement)))
+                            {
+                                $resultats[$type] = array();
+                            }
+                        }
+                    }       
+                    
+                    break;
+                case 'date':
+                    $interDebut = $request->request->get('dateDebut', '');
+                    $interFin = $request->request->get('dateFin', '');
+                    $resultats = EvenementController::getEventFrom(0, $this->getDoctrine()->getManager(), $interDebut, $interFin);
+                    break;
+                case 'typeEtDate':
+                    $typesEvenement = $request->request->get('type', '');
+                    $interDebut = new \DateTime($request->request->get('dateDebut', ''));
+                    $interFin = new \DateTime($request->request->get('dateFin', ''));
+                    $resultats = EvenementController::getEventFrom(0, $this->getDoctrine()->getManager(), $interDebut, $interFin);
+                    
+                    if(!(in_array("0", $typesEvenement)))
+                    {
+                        foreach($resultats as $type => $evenement)
+                        {
+                            if(!(in_array($type+1, $typesEvenement)))
+                            {
+                                $resultats[$type] = array();
+                            }
+                        }
+                    }  
+                    
+                    break;
+            }
+            
+            $resultatsJson = json_encode($resultats);            
+            
+            return new Response($resultatsJson);
+        }
+        else
+        {
+            throw new NotFoundHttpException('Impossible de trouver la page demandée');
+        }
     }
 }

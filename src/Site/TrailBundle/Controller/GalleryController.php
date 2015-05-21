@@ -9,11 +9,32 @@ use Symfony\Component\HttpFoundation\Request;
 
 class GalleryController extends Controller
 {
-    public function indexAction()
+    public function getTheCategories($indStart)
     {
+        $listCategories = array();
+        
         $manager = $this->getDoctrine()->getManager();
         $repository = $manager->getRepository("SiteTrailBundle:Categorie");
-        $listeCategorie = $repository->findAll();
+        $qb = $manager->createQueryBuilder();
+        $qb->select('cat')
+            ->from('SiteTrailBundle:Categorie', 'cat')
+            ->orderBy('cat.label', 'ASC')
+            ->setFirstResult($indStart)
+            ->setMaxResults(5);
+
+        $query = $qb->getQuery();
+        $listCategories = $query->getResult();        
+        
+        return $listCategories;
+    }
+    
+    public function indexAction(Request $request)
+    {
+        $manager = $this->getDoctrine()->getManager();
+        $indStart = $request->get('indStart');  
+        $numPage = ($indStart/5)+1;
+
+        $listeCategorie = GalleryController::getTheCategories($indStart);
         
         $listeImage = array();
         
@@ -32,34 +53,52 @@ class GalleryController extends Controller
             
             $listeImage[] = $query->getResult();
         }
-                        
+        
+        $reqNb = "SELECT count(cat) FROM SiteTrailBundle:Categorie cat";
+        $queryNb = $manager->createQuery($reqNb);
+        $nbCategorie = $queryNb->getSingleScalarResult(); 
+        
         $content = $this->get("templating")->render("SiteTrailBundle:Gallery:index.html.twig", array(
                                                         'listeCategorie' => $listeCategorie,
-                                                        'listeImage' => $listeImage
+                                                        'listeImage' => $listeImage,
+                                                        'nbCategorie' => $nbCategorie,
+                                                        'numPage' => $numPage
                                                     ));
         return new Response($content);
     }
 	
-    public function categoryAction($idCategorie)
+    public function categoryAction(Request $request, $idCategorie)
     {
         $manager = $this->getDoctrine()->getManager();
         $repository = $manager->getRepository("SiteTrailBundle:Categorie");
         $categorie = $repository->findOneById($idCategorie);
         
+        $indStart = $request->get('indStart');  
+        $numPage = ($indStart/12)+1;
+        
+        $manager = $this->getDoctrine()->getManager();
+        $repository = $manager->getRepository("SiteTrailBundle:Categorie");
         $qb = $manager->createQueryBuilder();
         $qb->select('img')
             ->from('SiteTrailBundle:Image', 'img')
             ->where('img.categorie = :idCategorie')
             ->orderBy('img.id', 'DESC')
-            ->setParameter('idCategorie', $idCategorie);
+            ->setParameter('idCategorie', $idCategorie)
+            ->setFirstResult($indStart)
+            ->setMaxResults(12);            
 
         $query = $qb->getQuery();
-
         $listeImage = $query->getResult();
+        
+        $reqNb = "SELECT count(img) FROM SiteTrailBundle:Image img WHERE img.categorie=".$idCategorie;
+        $queryNb = $manager->createQuery($reqNb);
+        $nbImage = $queryNb->getSingleScalarResult(); 
 
         $content = $this->get("templating")->render("SiteTrailBundle:Gallery:category.html.twig", array(
                                                             'categorie' => $categorie,
-                                                            'listeImage' => $listeImage
+                                                            'listeImage' => $listeImage,
+                                                            'nbImage' => $nbImage,
+                                                            'numPage' => $numPage
                                                     ));
         return new Response($content);
     }
@@ -234,31 +273,31 @@ class GalleryController extends Controller
         if(isset($_POST["submit"])) {
             $check = getimagesize($_FILES["fichier"]["tmp_name"]);
             if($check !== false) {
-                echo "File is an image - " . $check["mime"] . ".";
+                //echo "File is an image - " . $check["mime"] . ".";
                 $uploadOk = 1;
             } else {
-                echo "Le fichier n'est pas une image.";
+                //echo "Le fichier n'est pas une image.";
                 $uploadOk = 0;
             }
         }
         
         //On vérifie la taille du fichier
         if ($_FILES["fichier"]["size"] > 5000000) {
-            echo "L'image est trop volomineuse.";
+            //echo "L'image est trop volomineuse.";
             $uploadOk = 0;
         }
         
         //Autorisation de certaines extensions de fichier
         if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
         && $imageFileType != "gif" ) {
-            echo "Seules les extensions JPG, JPEG, PNG & GIF sont autorisées.";
+            //echo "Seules les extensions JPG, JPEG, PNG & GIF sont autorisées.";
             $uploadOk = 0;
         }
         
         //On vérifie qu'il n'y a pas eu d'erreurs lors de l'upload
         if ($uploadOk == 0)
         {
-            echo "Il y a eu un problème lors de l'envoi du fichier.";
+            //echo "Il y a eu un problème lors de l'envoi du fichier.";
         }
         else
         {
@@ -288,8 +327,8 @@ class GalleryController extends Controller
                 $newImage->setTaille($taille);
                 $newImage->setAuteur($auteur);
                 $newImage->setCategorie($categorie);
-                $newImage->setPath("http://130.79.214.167/uploads/".$fileName);
-
+                //$newImage->setPath("http://130.79.214.167/uploads/".$fileName);
+                $newImage->setPath("localhost/uploads/".$fileName);
                 $manager->persist($newImage);
                 $manager->flush();
                 

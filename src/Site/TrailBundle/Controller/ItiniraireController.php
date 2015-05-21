@@ -141,9 +141,20 @@ class ItiniraireController extends Controller
 	        $response = $clientSOAP->__call('getById', $search);
 
 			$res = json_decode($response);
-			
-			$content = $this->get("templating")->render("SiteTrailBundle:Itiniraire:FicheItineraire.html.twig",array("resultats" => $res,"jsonObject" => $response));
-			return new Response($content);
+                        
+            //Récupération du service
+            $evenementService = $this->container->get('evenement_service');
+            $eventService = $evenementService->getEventAndEventUsed($id);
+            $listEvent = $eventService['allEvent'];
+            $selectedEvent = $eventService['usedEvent'];
+            
+            
+            $content = $this->get("templating")->render("SiteTrailBundle:Itiniraire:FicheItineraire.html.twig",
+                                                        array("resultats" => $res,
+                                                                "jsonObject" => $response,
+                                                                "listEvent" => $listEvent,
+                                                                "usedEvent" => $selectedEvent));
+            return new Response($content);
 	}
 
 	public function getByUserAction($user)
@@ -177,7 +188,7 @@ class ItiniraireController extends Controller
 			$params["status"] = $request->request->get("status");
 			$params["public"] = $request->request->get("public");
 			$params["id"] = $request->request->get("id");
-			var_dump($params);
+			//var_dump($params);
 			
 
 			$clientSOAP = new \SoapClient(null, array(
@@ -189,7 +200,15 @@ class ItiniraireController extends Controller
 
 	        $response = $clientSOAP->__call('update', $params);
 	        $res = json_decode($response);
-	        return new Response(json_encode(array("result" => "success","code" => 200)));      
+                
+            //Ajout des evenementItineraire
+            $evenementService = $this->container->get('evenement_service');
+           // var_dump($request->request->get("evenement"));
+           // var_dump($request->request->get("id"));
+           // var_dump($request->request->get("nom"));
+            $evenementService->updateEvenementItineraire($request->request->get("evenement"), $request->request->get("id"), $request->request->get("nom"));
+            
+	    return new Response(json_encode(array("result" => "success","code" => 200)));      
       }
       return new Response('This is not ajax!', 400);
     }

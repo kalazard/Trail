@@ -32,26 +32,30 @@
                 <a class="colored pull-right" href="{{ path('site_trail_category', {'idCategorie': categorie.getId()}) }}">Voir {{categorie.getLabel()}}</a>
             </div>
         {% endfor %}
-
-        <div class="text-center">
-          <ul class="pagination">
-                <li>
-                  <a href="#" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                  </a>
-                </li>
-                <li><a href="#">1</a></li>
-                <li><a href="#">2</a></li>
-                <li><a href="#">3</a></li>
-                <li><a href="#">4</a></li>
-                <li><a href="#">5</a></li>
-                <li>
-                  <a href="#" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                  </a>
-                </li>
-          </ul>
-        </div>
+        
+        {% if nbCategorie > 5 %}
+            <div class="text-center">
+                <ul class="pagination">
+                    {% if numPage > 1 %}
+                        <li>
+                            <a href="{{ path('site_trail_gallery', {'indStart': ((numPage-1)*5)-5}) }}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    {% endif %} 
+                    {% for i in 1..(nbCategorie/6)+1 %}                          
+                        <li><a href="{{ path('site_trail_gallery', {'indStart': (i*5)-5}) }}">{{ i }}</a></li>   
+                    {% endfor %}
+                    {% if numPage < ((nbCategorie/6)+1)|round(0, 'floor') %}
+                        <li>
+                            <a href="{{ path('site_trail_gallery', {'indStart': ((numPage+1)*5)-5}) }}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    {% endif %} 
+              </ul>
+            </div>
+        {% endif %}
     </div>
         
     {% javascripts '@SiteTrailBundle/Resources/js/*' '@SiteTrailBundle/Resources/js/gallery/*' %}

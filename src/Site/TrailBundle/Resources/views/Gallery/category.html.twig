@@ -26,26 +26,32 @@
                         </div>
                   </div>
                 {% endfor %}                                
-            </div>	
-            <div class="text-center">
-              <ul class="pagination">
-                    <li>
-                      <a href="#" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                      </a>
-                    </li>
-                    <li><a href="#">1</a></li>
-                    <li><a href="#">2</a></li>
-                    <li><a href="#">3</a></li>
-                    <li><a href="#">4</a></li>
-                    <li><a href="#">5</a></li>
-                    <li>
-                      <a href="#" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                      </a>
-                    </li>
-              </ul>
-            </div>
+            </div>            
+            
+            {% if nbImage > 12 %}
+                <div class="text-center">
+                    <ul class="pagination">
+                        {% if numPage > 1 %}
+                            <li>
+                                <a href="{{ path('site_trail_category', {'idCategorie': categorie.getId(), 'indStart': ((numPage-1)*12)-12}) }}" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                        {% endif %} 
+                        {% for i in 1..(nbImage/13)+1 %}                          
+                            <li><a href="{{ path('site_trail_category', {'idCategorie': categorie.getId(), 'indStart': (i*12)-12}) }}">{{ i }}</a></li>   
+                        {% endfor %}
+                        {% if numPage < ((nbImage/13)+1)|round(0, 'floor') %}
+                            <li>
+                                <a href="{{ path('site_trail_category', {'idCategorie': categorie.getId(), 'indStart': ((numPage+1)*12)-12}) }}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        {% endif %} 
+                  </ul>
+                </div>
+            {% endif %}
+            
             <div id="modalAvertissement" class="modal fade">
                 <div class="modal-dialog">
                     <div class="modal-content">      
