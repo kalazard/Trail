@@ -66,20 +66,16 @@ class GalleryController extends Controller
             $query = $qb->getQuery();
             
             $listeImage[] = $query->getResult();
-			
-			if(sizeof($query->getResult()) != 0)
-			{
-				$result_categ[] = $categorie;
-			}
         }
         
         /*$reqNb = "SELECT count(cat) FROM SiteTrailBundle:Categorie cat";
         $queryNb = $manager->createQuery($reqNb);
         $nbCategorie = $queryNb->getSingleScalarResult(); */
+		
 		$nbCategorie = sizeof($listeCategorie);
         
         $content = $this->get("templating")->render("SiteTrailBundle:Gallery:index.html.twig", array(
-                                                        'listeCategorie' => $result_categ,
+                                                        'listeCategorie' => $listeCategorie,
                                                         'listeImage' => $listeImage,
                                                         'nbCategorie' => $nbCategorie,
                                                         'numPage' => $numPage
