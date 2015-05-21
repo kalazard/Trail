@@ -1,0 +1,25 @@
+Favoris:
+    type: entity
+    table: favoris
+    indexes:
+        fk_favoris_membre_idx:
+            columns:
+                - membres
+    id:
+        itinerairefavoris:
+            type: integer
+            nullable: false
+            unsigned: false
+            comment: ''
+            id: true
+    oneToOne:
+        membres:
+            targetEntity: Membre
+            cascade: {  }
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                membres:
+                    referencedColumnName: id
+            orphanRemoval: false
+    lifecycleCallbacks: {  }

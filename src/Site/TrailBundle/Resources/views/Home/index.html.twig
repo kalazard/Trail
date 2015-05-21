@@ -10,14 +10,14 @@
 			<h2 class="colored text-center">Nouveautés</h2>
 			<div class="row">
 				<div class="col-sm-offset-1 col-sm-4">
-					<h3>Lorem ipsum dolor sit amet</h3>
-					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur id vestibulum lorem. Etiam eu diam sed diam dictum rutrum tristique in tortor. Praesent diam sapien, interdum in ultrices non, mattis sed erat. Nullam varius, mi ac aliquet interdum, turpis nisi consectetur mi, consequat imperdiet elit orci ut neque.</p>
-					<a href="{{path('site_trail_article', {'slug': 'article' })}}" class="colored pull-right">Voir la suite</a>
+					<h3>{{ news_one.titre }}</h3>
+					<p>{{ news_one.texte }}</p>
+					<a href="{{path('site_trail_article', {'slug': news_one.alias })}}" class="colored pull-right">Voir la suite</a>
 				</div>
 				<div class="col-sm-offset-2 col-sm-4">
-					<h3>Lorem ipsum dolor sit amet</h3>
-					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur id vestibulum lorem. Etiam eu diam sed diam dictum rutrum tristique in tortor. Praesent diam sapien, interdum in ultrices non, mattis sed erat. Nullam varius, mi ac aliquet interdum, turpis nisi consectetur mi, consequat imperdiet elit orci ut neque.</p>
-					<a href="{{path('site_trail_article', {'slug': 'article' })}}" class="colored pull-right">Voir la suite</a>
+					<h3>{{ news_two.titre }}</h3>
+					<p>{{ news_two.texte }}</p>
+					<a href="{{path('site_trail_article', {'slug': news_two.alias })}}" class="colored pull-right">Voir la suite</a>
 				</div>
 			</div>
 			<p class="text-center move-bottom-md">
@@ -30,13 +30,13 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-sm-offset-1 col-sm-4">
-					<h3>Le Club</h3>
-					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur id vestibulum lorem. Etiam eu diam sed diam dictum rutrum tristique in tortor. Praesent diam sapien, interdum in ultrices non, mattis sed erat. Nullam varius, mi ac aliquet interdum, turpis nisi consectetur mi, consequat imperdiet elit orci ut neque.</p>
+					<h3>{{ club.titre }}</h3>
+					<p>{{ club.texte }}</p>
 					<a href="{{path('site_trail_club')}}" class="pull-right">Voir la suite</a>
 				</div>
 				<div class="col-sm-offset-2 col-sm-4">
-					<h3>Le Trail</h3>
-					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur id vestibulum lorem. Etiam eu diam sed diam dictum rutrum tristique in tortor. Praesent diam sapien, interdum in ultrices non, mattis sed erat. Nullam varius, mi ac aliquet interdum, turpis nisi consectetur mi, consequat imperdiet elit orci ut neque.</p>
+					<h3>{{ trail.titre }}</h3>
+					<p>{{ trail.texte }}</p>
 					<a href="{{path('site_trail_trail')}}" class="pull-right">Voir la suite</a>
 				</div>
 			</div>

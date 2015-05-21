@@ -1,28 +1,25 @@
-Courseofficielle:
+Evenementitineraire:
     type: entity
-    table: courseofficielle
+    table: evenementitineraire
     indexes:
-        fk_courseofficielle_evenement_idx:
+        IDX_ABBE37DDB26681E:
             columns:
                 - evenement
     id:
-        id:
+        iditineraire:
             type: integer
             nullable: false
             unsigned: false
             comment: ''
             id: true
-            generator:
-                strategy: IDENTITY
     fields:
-        siteUrl:
+        nomitineraire:
             type: string
             nullable: false
             length: 255
             fixed: false
             comment: ''
-            column: site_url
-    manyToOne:
+    oneToOne:
         evenement:
             targetEntity: Evenement
             cascade: {  }
