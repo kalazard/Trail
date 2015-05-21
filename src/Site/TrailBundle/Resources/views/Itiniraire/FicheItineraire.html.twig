@@ -110,7 +110,6 @@
                     <select id="editevenement" name="editevenement[]" multiple>
                         {% for eventCategorie in listEvent %}
                             {% for event in eventCategorie %}
-                                {{dump(event)}}
                                 {% if event in usedEvent %}
                                     <option value='{{event.getEvenement().getId()}}' selected="selected">{{event.getEvenement().getTitre()}} ({{event.getEvenement().getDateDebut()|date('d/m/Y', false)}})</option>
                                 {% else %}
