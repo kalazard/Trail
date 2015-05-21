@@ -65,18 +65,18 @@
                 </div>
 
                 <!-- Champ participants -->
-                <div class="form-group">
+               <!-- <div class="form-group">
                     <div class="row">
                         <label class='col-sm-3 control-label'>Participants :</label>
                         <div class="col-sm-9">
                             <select class="form-control" name="participants[]" multiple>
-                                {% for monUser in listeUser %}
+                                {# {% for monUser in listeUser %}
                                     <option value='{{monUser.id}}'>{{monUser.userName}}</option>
-                                {% endfor %}
+                                {% endfor %} #}
                             </select>
                         </div>
                     </div>
-                </div>
+                </div>-->
 
                 <!-- Champ type d'événement -->
                 <div class="form-group">
@@ -96,7 +96,31 @@
 
                 <!-- Champs spécifiques à la catégorie de l'événement (entrainement par défaut) -->
                 <div id="specificites">
-                    {{ selectProgramme|raw }}
+                    {# {{ selectProgramme|raw }} #}
+                    
+                    <!-- Champ programme label -->
+                    <div class="form-group" id="programmeLabelDiv">
+                        <div class="row addEventDate">
+                            {{ form_label(form.programme_label, "Intitulé du programme : ", {'label_attr': {'class': 'col-sm-3 control-label'}}) }}
+                            {{ form_errors(form.programme_label) }}
+                            <div class="col-sm-9">
+                                {{ form_widget(form.programme_label, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Champ programme duree -->
+                    <div class="form-group" id="programmeDureeDiv">
+                        <div class="row addEventDate">
+                            {{ form_label(form.programme_duree, "Durée du programme : ", {'label_attr': {'class': 'col-sm-3 control-label'}}) }}
+                            {{ form_errors(form.programme_duree) }}
+                            <div class="col-sm-9">
+                                {{ form_widget(form.programme_duree) }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
                     {{ selectLieuRendezVous|raw }}
                 </div>
                 <div class="modal-footer">
@@ -110,10 +134,15 @@
 </div>
 
 <script>
+    divProgrammeLabel = $('#programmeLabelDiv').html();
+    divProgrammeDuree = $('#programmeDureeDiv').html();
+    
+    console.log(divProgrammeDuree);
+    
     //Modification dynamique du formulaire
     $("body").on("change", "#selectTypeEvent", function ()
     {
-        updateFormAddEvent('{{selectProgramme|raw}}', '{{selectLieuRendezVous|raw}}', $('#selectTypeEvent').val());
+        updateFormAddEvent(divProgrammeLabel, divProgrammeDuree, '{{selectLieuRendezVous|raw}}', $('#selectTypeEvent').val());
     });
     
     //Vérification des dates

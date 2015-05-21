@@ -9,11 +9,32 @@ use Symfony\Component\HttpFoundation\Request;
 
 class GalleryController extends Controller
 {
-    public function indexAction()
+    public function getTheCategories($indStart)
     {
+        $listCategories = array();
+        
         $manager = $this->getDoctrine()->getManager();
         $repository = $manager->getRepository("SiteTrailBundle:Categorie");
-        $listeCategorie = $repository->findAll();
+        $qb = $manager->createQueryBuilder();
+        $qb->select('cat')
+            ->from('SiteTrailBundle:Categorie', 'cat')
+            ->orderBy('cat.label', 'ASC')
+            ->setFirstResult($indStart)
+            ->setMaxResults(5);
+
+        $query = $qb->getQuery();
+        $listCategories = $query->getResult();        
+        
+        return $listCategories;
+    }
+    
+    public function indexAction(Request $request)
+    {
+        $manager = $this->getDoctrine()->getManager();
+        $indStart = $request->get('indStart');  
+        $numPage = ($indStart/5)+1;
+
+        $listeCategorie = GalleryController::getTheCategories($indStart);
         
         $listeImage = array();
         
@@ -32,41 +53,67 @@ class GalleryController extends Controller
             
             $listeImage[] = $query->getResult();
         }
-                        
+        
+        $reqNb = "SELECT count(cat) FROM SiteTrailBundle:Categorie cat";
+        $queryNb = $manager->createQuery($reqNb);
+        $nbCategorie = $queryNb->getSingleScalarResult(); 
+        
         $content = $this->get("templating")->render("SiteTrailBundle:Gallery:index.html.twig", array(
                                                         'listeCategorie' => $listeCategorie,
-                                                        'listeImage' => $listeImage
+                                                        'listeImage' => $listeImage,
+                                                        'nbCategorie' => $nbCategorie,
+                                                        'numPage' => $numPage
                                                     ));
         return new Response($content);
     }
 	
-    public function categoryAction($idCategorie)
+    public function categoryAction(Request $request, $idCategorie)
     {
         $manager = $this->getDoctrine()->getManager();
         $repository = $manager->getRepository("SiteTrailBundle:Categorie");
         $categorie = $repository->findOneById($idCategorie);
         
+        $indStart = $request->get('indStart');  
+        $numPage = ($indStart/12)+1;
+        
+        $manager = $this->getDoctrine()->getManager();
+        $repository = $manager->getRepository("SiteTrailBundle:Categorie");
         $qb = $manager->createQueryBuilder();
         $qb->select('img')
             ->from('SiteTrailBundle:Image', 'img')
             ->where('img.categorie = :idCategorie')
             ->orderBy('img.id', 'DESC')
-            ->setParameter('idCategorie', $idCategorie);
+            ->setParameter('idCategorie', $idCategorie)
+            ->setFirstResult($indStart)
+            ->setMaxResults(12);            
 
         $query = $qb->getQuery();
-
         $listeImage = $query->getResult();
+        
+        $reqNb = "SELECT count(img) FROM SiteTrailBundle:Image img WHERE img.categorie=".$idCategorie;
+        $queryNb = $manager->createQuery($reqNb);
+        $nbImage = $queryNb->getSingleScalarResult(); 
 
         $content = $this->get("templating")->render("SiteTrailBundle:Gallery:category.html.twig", array(
                                                             'categorie' => $categorie,
-                                                            'listeImage' => $listeImage
+                                                            'listeImage' => $listeImage,
+                                                            'nbImage' => $nbImage,
+                                                            'numPage' => $numPage
                                                     ));
         return new Response($content);
     }
 	
-	public function pictureAction()
+    public function pictureAction(Request $request)
     {
-        $content = $this->get("templating")->render("SiteTrailBundle:Gallery:picture.html.twig");
+        $idPicture = $request->get('idPicture');        
+        $manager = $this->getDoctrine()->getManager();
+        $repository = $manager->getRepository("SiteTrailBundle:Image");
+        $picture = $repository->findOneById($idPicture);
+        
+        $content = $this->get("templating")->render("SiteTrailBundle:Gallery:picture.html.twig", array(
+                                                        'picture' => $picture
+        ));
+        
         return new Response($content);
     }
     
@@ -214,10 +261,7 @@ class GalleryController extends Controller
     }
     
     public function addPictureAction(Request $request)
-    {
-        var_dump($_POST);
-        var_dump($_FILES);
-        
+    {        
         //Sauvegarde du fichier   
         //$target_dir = "C:/testUp/";
         $target_dir = "/var/www/uploads/";
@@ -229,39 +273,39 @@ class GalleryController extends Controller
         if(isset($_POST["submit"])) {
             $check = getimagesize($_FILES["fichier"]["tmp_name"]);
             if($check !== false) {
-                echo "File is an image - " . $check["mime"] . ".";
+                //echo "File is an image - " . $check["mime"] . ".";
                 $uploadOk = 1;
             } else {
-                echo "Le fichier n'est pas une image.";
+                //echo "Le fichier n'est pas une image.";
                 $uploadOk = 0;
             }
         }
         
         //On vérifie la taille du fichier
         if ($_FILES["fichier"]["size"] > 5000000) {
-            echo "L'image est trop volomineuse.";
+            //echo "L'image est trop volomineuse.";
             $uploadOk = 0;
         }
         
         //Autorisation de certaines extensions de fichier
         if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
         && $imageFileType != "gif" ) {
-            echo "Seules les extensions JPG, JPEG, PNG & GIF sont autorisées.";
+            //echo "Seules les extensions JPG, JPEG, PNG & GIF sont autorisées.";
             $uploadOk = 0;
         }
         
         //On vérifie qu'il n'y a pas eu d'erreurs lors de l'upload
         if ($uploadOk == 0)
         {
-            echo "Il y a eu un problème lors de l'envoi du fichier.";
+            //echo "Il y a eu un problème lors de l'envoi du fichier.";
         }
         else
         {
             $date = new \DateTime;
-            $newFile = $target_dir."image".date_format($date, 'U').".".$imageFileType;
+            $fileName = "image".date_format($date, 'U').".".$imageFileType;
+            $newFile = $target_dir.$fileName;
                 
             if (move_uploaded_file($_FILES["fichier"]["tmp_name"], $newFile)) {
-                echo "Le fichier a bien été envoyé.";
                 list($width, $height, $type, $attr) = getimagesize($newFile); 
                 
                 $manager = $this->getDoctrine()->getManager();
@@ -274,11 +318,7 @@ class GalleryController extends Controller
                 $auteur = $this->getUser();
                 $repository = $manager->getRepository("SiteTrailBundle:Categorie");
                 
-                var_dump($request->request->get('categorie', ''));
-                
                 $categorie = $repository->findOneById($request->request->get('categorie', ''));
-                $path = $newFile; 
-                
                 $repository = $manager->getRepository("SiteTrailBundle:Image");
                 $newImage = new Image();
                 $newImage->setTitre($titre);
@@ -287,16 +327,145 @@ class GalleryController extends Controller
                 $newImage->setTaille($taille);
                 $newImage->setAuteur($auteur);
                 $newImage->setCategorie($categorie);
-                $newImage->setPath($path);
-
+                //$newImage->setPath("http://130.79.214.167/uploads/".$fileName);
+                $newImage->setPath("localhost/uploads/".$fileName);
                 $manager->persist($newImage);
                 $manager->flush();
                 
+                $manager = $this->getDoctrine()->getManager();
+                $repository = $manager->getRepository("SiteTrailBundle:Categorie");
+                $listeCategorie = $repository->findAll();
+
+                $listeImage = array();
+
+                //récupération des 4 premières images de la catégorie
+                foreach($listeCategorie as $categorie)
+                {
+                    $qb = $manager->createQueryBuilder();
+                    $qb->select('img')
+                        ->from('SiteTrailBundle:Image', 'img')
+                        ->where('img.categorie = :idCategorie')
+                        ->orderBy('img.id', 'DESC')
+                        ->setParameter('idCategorie', $categorie->getId())
+                        ->setMaxResults(4);
+
+                    $query = $qb->getQuery();
+
+                    $listeImage[] = $query->getResult();
+                }
+
+                $content = $this->get("templating")->render("SiteTrailBundle:Gallery:index.html.twig", array(
+                                                                'listeCategorie' => $listeCategorie,
+                                                                'listeImage' => $listeImage
+                                                            ));
+                return new Response($content);
+                
             } else {
-                echo "Il y a eu un problème lors de l'envoi du fichier.";
+                return new Response("Il y a eu un problème lors de l'envoi du fichier.");
+            }
+        }
+    }
+    
+    public function showUpdatePictureFormAction(Request $request)
+    {
+        if($request->isXmlHttpRequest() && $this->getUser())
+        {
+            $idPicture = $request->request->get('idPicture', '');
+            $manager=$this->getDoctrine()->getManager();
+            $repository=$manager->getRepository("SiteTrailBundle:Image");        
+            $picture = $repository->findOneById($idPicture);
+            
+            $repository = $manager->getRepository("SiteTrailBundle:Categorie"); 
+            $listeCategorie = $repository->findAll();
+            $selectCategorie = '<div class="form-group">';
+            $selectCategorie .= '<div class="row">';
+            $selectCategorie .= '<label class="col-sm-3 control-label">Catégorie :</label>';
+            $selectCategorie .= '<div class="col-sm-9">';
+            $selectCategorie .= '<select name="categorie" class="form-control">';
+            
+            foreach($listeCategorie as $uneCategorie)
+            {
+                if($uneCategorie->getId() == $picture->getCategorie()->getId())
+                {
+                    $bonusSelected = " selected='selected'";
+                }
+                else
+                {
+                    $bonusSelected = "";
+                }
+                
+                $selectCategorie .= '<option value="'.$uneCategorie->getId().'"'.$bonusSelected.'>'.$uneCategorie->getLabel().'</option>';
+            }
+            $selectCategorie .= '</select>';
+            $selectCategorie .= '</div>';
+            $selectCategorie .= '</div>';
+            $selectCategorie .= '</div>';
+            
+            $content = $this->get("templating")->render("SiteTrailBundle:Gallery:updatePictureForm.html.twig", array(
+                                                                'picture' => $picture,
+                                                                'selectCategorie' => $selectCategorie
+                                                            ));
+            return new Response($content);
+        }
+        else
+        {
+            throw new NotFoundHttpException('Impossible de trouver la page demandée');
+        }
+    }
+    
+    public function updatePictureAction(Request $request)
+    {
+        $idPicture = $request->request->get('idPicture', '');
+        $titre = $request->request->get('titre', '');
+        $description = $request->request->get('description', '');
+        $idCategorie = $request->request->get('categorie', '');
+        
+        $manager=$this->getDoctrine()->getManager();
+        $repository=$manager->getRepository("SiteTrailBundle:Image");        
+        $picture = $repository->findOneById($idPicture);
+        $repository=$manager->getRepository("SiteTrailBundle:Categorie");        
+        $categorie = $repository->findOneById($idCategorie);
+        
+        $picture->setTitre($titre);
+        $picture->setDescription($description);
+        $picture->setCategorie($categorie);
+        $manager->flush();
+        
+        $content = $this->get("templating")->render("SiteTrailBundle:Gallery:picture.html.twig", array(
+                                                        'picture' => $picture
+        ));
+        
+        return new Response($content);
+    }
+    
+    public function deletePictureAction(Request $request)
+    {
+        $idPicture = $request->request->get('idPicture', '');
+        
+        $manager=$this->getDoctrine()->getManager();
+        $repository=$manager->getRepository("SiteTrailBundle:Image");        
+        $picture = $repository->findOneById($idPicture);
+        
+        //On cherche si le chemin de l'image contient /uploads/image*.* pour savoir si elle est sur le serveur
+        $isOnServ = ereg("/uploads/image.*\..*", $picture->getPath());
+        
+        //Suppression du fichier sur le serveur
+        if($isOnServ)
+        {
+            $findMe   = '/uploads/image';
+            $startInd = strpos($picture->getPath(), $findMe);
+            $absolutePath = "/var/www".substr($picture->getPath(), $startInd);
+            
+            if(file_exists($absolutePath))
+            {
+                unlink($absolutePath);
             }
         }
         
-        return new Response('OK');
+        //Suppression dans la base de données
+        $manager->remove($picture);
+        $manager->flush();
+        
+        return new Response();
     }
 }    

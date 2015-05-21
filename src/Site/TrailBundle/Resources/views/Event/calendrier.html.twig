@@ -6,6 +6,7 @@
             <h1>Calendrier</h1>
 	</div>
         <div class="col-sm-6">
+            <a href="{{ path('site_trail_evenement_searchForm') }}" class='btn btn-warning pull-left'>Rechercher un événement</a>
             {% if (app.user) %}
                 <button id="dlCal" type="button" class='btn btn-warning pull-right'>Télécharger mon calendrier</button>
             {% endif %}

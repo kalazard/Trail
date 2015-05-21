@@ -1,0 +1,46 @@
+<div id="modalUpdatePictureForm" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h4 class="modal-title">Edition d'image</h4>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{{ path('site_trail_picture_updatePicture') }}">
+                    <input type="hidden" name="idPicture" value="{{ picture.getId() }}"/>
+
+                    <!-- Champ titre -->
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-3 control-label">Titre : </label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" maxlength="255" name="titre" value="{{picture.getTitre()}}"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Champ description -->
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-3 control-label">Description : </label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" maxlength="255" name="description" value="{{picture.getDescription()}}"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Champ catégorie -->
+                    {{ selectCategorie|raw }}                       
+
+                    <div class="modal-footer">
+                        <input type="submit" class="btn btn-primary" value="Modifier" />
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% javascripts '@SiteTrailBundle/Resources/js/gallery/*' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}

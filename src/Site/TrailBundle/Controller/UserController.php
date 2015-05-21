@@ -19,6 +19,7 @@ use Exception;
 use SoapClient;
 use Site\TrailBundle\Security\CustomCrypto;
 use DateTime;
+use Site\TrailBundle\Entity\Image;
 
 class UserController extends Controller {
 
@@ -790,7 +791,7 @@ class UserController extends Controller {
                     $email = $this->getUser()->getEmail();
                     //On récupère son id
                     $id = $this->getUser()->getId();
-                    
+
                     if ($oldpassword == "" || $newpassword == "") {
                         $return = array('success' => false, 'serverError' => false, 'message' => "Veuillez remplir le formulaire");
                         $response = new Response(json_encode($return));
@@ -817,7 +818,7 @@ class UserController extends Controller {
                     }
                     //Le webservice possède bien un compte d'utilisateur pour les informations saisies.
                     //Maintenant il faut changer le mot de passe
-                    
+
                     $clientSOAP = new SoapClient(null, array(
                         'uri' => $this->container->getParameter("auth_server_host"),
                         'location' => $this->container->getParameter("auth_server_host"),
@@ -835,7 +836,7 @@ class UserController extends Controller {
                         $response->headers->set('Content-Type', 'application/json');
                         return $response;
                     }
-                    
+
                     $return = array('success' => true, 'serverError' => false);
                     $response = new Response(json_encode($return));
                     $response->headers->set('Content-Type', 'application/json');
@@ -861,6 +862,83 @@ class UserController extends Controller {
         $content = $this->get("templating")->render("SiteTrailBundle:User:annuaire.html.twig");
 
         return new Response($content);
+    }
+
+    public function uploadAvatarAction() {
+        //Sauvegarde du fichier   
+        $target_dir = $this->container->getParameter("upload_directory");
+        $target_file = $target_dir . basename($_FILES["fichier"]["name"]);
+        $uploadOk = 1;
+        $imageFileType = pathinfo($target_file, PATHINFO_EXTENSION);
+
+        // Check if image file is a actual image or fake image
+        if (isset($_POST["submit"])) {
+            $check = getimagesize($_FILES["fichier"]["tmp_name"]);
+            if ($check !== false) {
+                echo "File is an image - " . $check["mime"] . ".";
+                $uploadOk = 1;
+            } else {
+                echo "Le fichier n'est pas une image.";
+                $uploadOk = 0;
+            }
+        }
+
+        //On vérifie la taille du fichier
+        if ($_FILES["fichier"]["size"] > 5000000) {
+            echo "L'image est trop volomineuse.";
+            $uploadOk = 0;
+        }
+
+        //Autorisation de certaines extensions de fichier
+        if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif") {
+            echo "Seules les extensions JPG, JPEG, PNG & GIF sont autorisées.";
+            $uploadOk = 0;
+        }
+
+        //On vérifie qu'il n'y a pas eu d'erreurs lors de l'upload
+        if ($uploadOk == 0) {
+            echo "Il y a eu un problème lors de l'envoi du fichier.";
+        } else {
+            $date = new \DateTime;
+            $fileName = "image" . date_format($date, 'U') . "." . $imageFileType;
+            $newFile = $target_dir.$fileName;
+           
+            if (move_uploaded_file($_FILES["fichier"]["tmp_name"], $newFile)) {
+                list($width, $height, $type, $attr) = getimagesize($newFile);
+
+                $manager = $this->getDoctrine()->getManager();
+
+                //On rajoute l'image dans la base de données                
+                $titre = "Avatar";
+                $description = "avatar";
+                $poids = $_FILES["fichier"]["size"];
+                $taille = $height . 'x' . $width;
+                $auteur = $this->getUser();
+                $repository = $manager->getRepository("SiteTrailBundle:Categorie");
+
+                $categorie = $repository->find(1);
+                $repository = $manager->getRepository("SiteTrailBundle:Image");
+                $newImage = new Image();
+                $newImage->setTitre($titre);
+                $newImage->setDescription($description);
+                $newImage->setPoids($poids);
+                $newImage->setTaille($taille);
+                $newImage->setAuteur($auteur);
+                $newImage->setCategorie($categorie);
+                $newImage->setPath($this->container->getParameter("img_path").$fileName);
+                
+                $manager->persist($newImage);
+                $manager->flush();
+                
+                $user = $manager->getRepository("SiteTrailBundle:Membre")->find($this->getUser());
+                $user->setAvatar($manager->getRepository("SiteTrailBundle:Image")->find($newImage->getId()));
+                $manager->flush();
+                $response = new RedirectResponse($this->generateUrl('site_trail_profilmembre'));
+                return $response;
+            } else {
+                return new Response("Il y a eu un problème lors de l'envoi du fichier.");
+            }
+        }
     }
 
 }

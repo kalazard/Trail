@@ -3,16 +3,43 @@
 {% block title %}{{ parent() }} - Image{% endblock %}
 
 {% block body %}
-	<div class="container">
-		<h1>Image</h1>
-		<div class="col-lg-12">
-			<div class="thumbnail">
-			  <img src="http://strategic-property.com.au/wp-content/uploads/2013/11/city_view_1920x500.jpg" alt="Smiley face">
-			</div>
-		</div>
-		<p>Description :</p>
-		<p>Auteur :</p>
-		<p>Taille :</p>
-		<p>Poids :</p>
-	</div>
+    <div class="container">
+            <h1>{{picture.getTitre()}}</h1>
+            <div class="col-lg-12">
+                <a href="{{ path('site_trail_gallery') }}" class='btn btn-warning pull-left' title="Retour vers la galerie" ><<</a>
+                <a href="{{ path('site_trail_category', {'idCategorie': picture.getCategorie().getId()}) }}" class='btn btn-warning pull-left' title="Retour vers la catégorie" ><</a>
+                {% if (app.user.getRole().getId() == 1) %}
+                        <button class='btn btn-warning pull-right' onclick="deletePictureConfirm()">Supprimer l'image</button>
+                        <button class='btn btn-warning pull-right' onclick="showUpdateForm({{picture.getId()}})">Modifier l'image</button>                        
+                {% endif %}
+            </div> 
+            <div class="col-lg-12">
+                <div class="thumbnail">
+                    <img src="{{picture.getPath()}}" alt="-_-">
+                </div>
+            </div>
+            <p>Description : {{picture.getDescription()}}</p>
+            <p>Auteur : {{picture.getAuteur().getPrenom()}} {{picture.getAuteur().getNom()}}</p>
+            <p>Taille : {{picture.getTaille()}}</p>
+            <p>Poids : {{picture.getPoids()}}</p>
+    </div>
+    
+    <div id="modalAvertissement" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">      
+                <div class="modal-body text-center">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <p>Etes-vous sûr de vouloir supprimer cette image ?</p>
+                    <div class='wrapper text-center'>
+                        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="deletePicture({{picture.getId()}})">Oui</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal" >Non</button>
+                    </div>
+                </div>
+            </div>
+        </div>       
+    </div>
+    
+    {% javascripts '@SiteTrailBundle/Resources/js/*' '@SiteTrailBundle/Resources/js/gallery/*' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
 {% endblock %}

@@ -94,14 +94,16 @@ class MemberDisplayController extends Controller
 		$result['email'] = $data->getEmail();
 		$result['tel'] = $data->getTelephone();
 		$result['date'] = $data->getDatenaissance();
-		$result['licence'] = $data->getLicence();			
-		
+		$result['licence'] = $data->getLicence();		
+
+
+		$iti = $this->forward('SiteTrailBundle:Itiniraire:getByUser', array('user'  => $id_courant));
+		$result['itineraires'] = json_decode($iti->getContent());	
 		//chargement des itinéraires d'un utilisateur donné.
 		
 		//requete ->
 		
 		//retour
-	
 		$content = $this->get("templating")->render("SiteTrailBundle:MemberDisplay:ProfilMembre.html.twig",$result);
 		return new Response($content);
 	}

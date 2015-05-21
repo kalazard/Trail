@@ -1,0 +1,36 @@
+{% extends "SiteTrailBundle::layout.html.twig" %}
+{% block title %}{{ parent() }} - Evénements{% endblock %}
+{% block body %}
+    <div class="container">
+	<div class="col-sm-12">
+            <h1>Recherche d'événements</h1>
+	</div>
+
+        <form id="rechEvent" method="POST" action="{{ path('site_trail_evenement_search') }}" onSubmit="recuperationResEvenement(); return false;">
+            <div class="cadreRecherche text-center">
+                <ul>
+                    <li><label>Recherche par : </label></li>
+                    <li><input type="radio" name="searchType" value="type" checked> type</li>
+                    <li><input type="radio" name="searchType" value="date"> date</li>
+                    <li><input type="radio" name="searchType" value="typeEtDate"> type et date</li>
+                </ul>
+            </div>
+            <div class="col-sm-12 cadreRecherche text-center">
+                <div id='contenuForm'>
+                    {{ typeEvent|raw }}
+                </div>
+                <input type="submit" class="btn btn-primary" value="Lancer la recherche" />
+            </div>
+        </form>
+        <div id="searchRes"></div>    
+    <script>
+        $( "body" ).on( "change", "[name^=searchType]", function()
+        {
+            changerFormulaire("{{ typeEvent|raw }}");
+        });
+    </script>
+    
+    {% javascripts '@SiteTrailBundle/Resources/js/*' '@SiteTrailBundle/Resources/js/event/*' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
