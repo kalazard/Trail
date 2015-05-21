@@ -12,18 +12,31 @@ class GalleryController extends Controller
     public function getTheCategories($indStart)
     {
         $listCategories = array();
+		
+		$manager = $this->getDoctrine()->getManager();
         
-        $manager = $this->getDoctrine()->getManager();
         $repository = $manager->getRepository("SiteTrailBundle:Categorie");
         $qb = $manager->createQueryBuilder();
         $qb->select('cat')
             ->from('SiteTrailBundle:Categorie', 'cat')
+			->from('SiteTrailBundle:Image', 'img')
+			->where('cat.id = img.categorie')
             ->orderBy('cat.label', 'ASC')
+			->distinct()
             ->setFirstResult($indStart)
             ->setMaxResults(5);
+		
+		/*$repository = $manager->getRepository("SiteTrailBundle:Categorie");
+        $qb = $manager->createQueryBuilder();
+        $qb->select('cat')
+            ->from('SiteTrailBundle:Categorie', 'cat')
+			->where('cat.id in ('.implode(',',$list_id_categ).')')
+            ->orderBy('cat.label', 'ASC')
+            ->setFirstResult($indStart)
+            ->setMaxResults(5);*/
 
         $query = $qb->getQuery();
-        $listCategories = $query->getResult();        
+        $listCategories = $query->getResult();      
         
         return $listCategories;
     }
@@ -37,6 +50,7 @@ class GalleryController extends Controller
         $listeCategorie = GalleryController::getTheCategories($indStart);
         
         $listeImage = array();
+		$result_categ = array();
         
         //récupération des 4 premières images de la catégorie
         foreach($listeCategorie as $categorie)
@@ -52,14 +66,20 @@ class GalleryController extends Controller
             $query = $qb->getQuery();
             
             $listeImage[] = $query->getResult();
+			
+			if(sizeof($query->getResult()) != 0)
+			{
+				$result_categ[] = $categorie;
+			}
         }
         
-        $reqNb = "SELECT count(cat) FROM SiteTrailBundle:Categorie cat";
+        /*$reqNb = "SELECT count(cat) FROM SiteTrailBundle:Categorie cat";
         $queryNb = $manager->createQuery($reqNb);
-        $nbCategorie = $queryNb->getSingleScalarResult(); 
+        $nbCategorie = $queryNb->getSingleScalarResult(); */
+		$nbCategorie = sizeof($listeCategorie);
         
         $content = $this->get("templating")->render("SiteTrailBundle:Gallery:index.html.twig", array(
-                                                        'listeCategorie' => $listeCategorie,
+                                                        'listeCategorie' => $result_categ,
                                                         'listeImage' => $listeImage,
                                                         'nbCategorie' => $nbCategorie,
                                                         'numPage' => $numPage
