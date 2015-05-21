@@ -9,12 +9,15 @@
         {% if app.user %}
             <h1>Fiche Membre</h1>
             <!-- On appel directement le controlleur qui est sur le serveur !-->
+            
             <form method="POST" action="http://130.79.214.167/Trail/web/app_dev.php/user/avatarupload" enctype="multipart/form-data">
-                <input type="file" name='fichier' />
-                <button id="btn_avatar" class="btn btn-warning">Modifier l'image</button> 
+                <div class="row">
+                    <div id="avatar" class="img-size col-xs-3" style="background-image: url('{{app.user.avatar.path}}');"></div>
+                    <input class="col-xs-3" type="file" name='fichier' style="margin-top:32px" />
+                    <button id="btn_avatar" class="col-xs-3 btn btn-warning" style="margin-top:32px">Modifier l'image</button>
+                </div>
             </form>
 
-            <div id="avatar" class="img-size" style="background-image: url('{{app.user.avatar.path}}');"></div>
             <form action="{{ path("site_trail_submitprofilmembre") }}" method="post">  
                 {# avatar du membre #}
                 <p class="pre"><strong>Prenom : </strong><span class="pre" id="pr">{{ prenom }} </span></p>
@@ -37,6 +40,7 @@
                                 <th>Longueur du parcours</th>
                                 <th>Statut</th>
                                 <th>Visibilité</th>
+                                <th>Télécharger le fichier GPX</th>
                                 <th>Supprimer</th>
                             </tr>
                         </thead>
@@ -48,7 +52,7 @@
                                         <td><a href="{{ path('site_trail_getByIditineraire', {'id': itineraire.id}) }}">{{itineraire.nom}}</a></td>
                                         <td>{{itineraire.typechemin.label}}</td>
                                         <td>{{itineraire.difficulte.label}}</td>
-                                        <td>{{itineraire.datecreation}}</td>
+                                        <td>{{itineraire.datecreation | date("d/m/Y")}}</td>
                                         <td>{{itineraire.longueur}}km</td>
                                         <td>{{itineraire.status.label}}</td>
                                         <td><p class="public">
@@ -57,6 +61,11 @@
                                                 {% else %}
                                                     Publique
                                                 {% endif %}
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <p data-placement='top' data-toggle='tooltip' title='GPX'>
+                                                <a href="http://localhost/Carto/web/app_dev.php/download/gpx/{{itineraire.id}}" class='btn btn-success btn-xs btn_edit'><span class='glyphicon glyphicon-download'></span></a>
                                             </p>
                                         </td>
                                         <td>
