@@ -1,0 +1,31 @@
+Lieurendezvous:
+    type: entity
+    table: lieurendezvous
+    id:
+        id:
+            type: integer
+            nullable: false
+            unsigned: false
+            comment: ''
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        titre:
+            type: string
+            nullable: false
+            length: 255
+            fixed: false
+            comment: ''
+        description:
+            type: string
+            nullable: false
+            length: 255
+            fixed: false
+            comment: ''
+        coordonnees:
+            type: integer
+            nullable: false
+            unsigned: false
+            comment: ''
+    lifecycleCallbacks: {  }

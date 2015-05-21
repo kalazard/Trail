@@ -1,0 +1,25 @@
+Commentaireitineraire:
+    type: entity
+    table: commentaireitineraire
+    indexes:
+        fk_commentaireitineraire_commentaore_idx:
+            columns:
+                - commentaire
+    id:
+        itineraire:
+            type: integer
+            nullable: false
+            unsigned: false
+            comment: ''
+            id: true
+    oneToOne:
+        commentaire:
+            targetEntity: Commentaire
+            cascade: {  }
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                commentaire:
+                    referencedColumnName: id
+            orphanRemoval: false
+    lifecycleCallbacks: {  }

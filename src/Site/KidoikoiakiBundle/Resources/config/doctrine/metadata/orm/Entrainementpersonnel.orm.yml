@@ -1,11 +1,8 @@
-Sortiedecouverte:
+Entrainementpersonnel:
     type: entity
-    table: sortiedecouverte
+    table: entrainementpersonnel
     indexes:
-        fk_sortiedecouverte_rdv_idx:
-            columns:
-                - lieurendezvous
-        fk_sortiedecouverte_evenement_idx:
+        fk_entrainementpersonnel_evenement_idx:
             columns:
                 - evenement
     id:
@@ -25,15 +22,6 @@ Sortiedecouverte:
             inversedBy: null
             joinColumns:
                 evenement:
-                    referencedColumnName: id
-            orphanRemoval: false
-        lieurendezvous:
-            targetEntity: Lieurendezvous
-            cascade: {  }
-            mappedBy: null
-            inversedBy: null
-            joinColumns:
-                lieurendezvous:
                     referencedColumnName: id
             orphanRemoval: false
     lifecycleCallbacks: {  }

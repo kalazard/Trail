@@ -1,11 +1,8 @@
-Sortiedecouverte:
+Evenementdivers:
     type: entity
-    table: sortiedecouverte
+    table: evenementdivers
     indexes:
-        fk_sortiedecouverte_rdv_idx:
-            columns:
-                - lieurendezvous
-        fk_sortiedecouverte_evenement_idx:
+        fk_evenementdivers_evenement_idx:
             columns:
                 - evenement
     id:
@@ -17,6 +14,13 @@ Sortiedecouverte:
             id: true
             generator:
                 strategy: IDENTITY
+    fields:
+        description:
+            type: string
+            nullable: false
+            length: 255
+            fixed: false
+            comment: ''
     manyToOne:
         evenement:
             targetEntity: Evenement
@@ -25,15 +29,6 @@ Sortiedecouverte:
             inversedBy: null
             joinColumns:
                 evenement:
-                    referencedColumnName: id
-            orphanRemoval: false
-        lieurendezvous:
-            targetEntity: Lieurendezvous
-            cascade: {  }
-            mappedBy: null
-            inversedBy: null
-            joinColumns:
-                lieurendezvous:
                     referencedColumnName: id
             orphanRemoval: false
     lifecycleCallbacks: {  }
