@@ -278,25 +278,30 @@ class EvenementController extends Controller
         {
             $idUser = $this->getUser()->getId();            
             $listeEvenement = EvenementController::getEventFrom($idUser, $this->getDoctrine()->getManager());
+            /*}
+            else
+            {
+                $listeEvenement = EvenementController::getEventFrom(0, $this->getDoctrine()->getManager());
+
+                //On retire les événements qui ne sont pas disponibles pour les non connectés
+                $listeEvenement[0] = array();
+                $listeEvenement[1] = array();
+                $listeEvenement[2] = array();
+                $listeEvenement[4] = array();
+            }*/
+
+            //On transforme les résultats en json            
+            $listeEvenementJson = json_encode($listeEvenement);
+
+            $view = $this->get("templating")->render("SiteTrailBundle:Event:calendrier.html.twig", array(
+                                                                'listeEvenement' => $listeEvenementJson));
+
+            return new Response($view);
         }
         else
         {
-            $listeEvenement = EvenementController::getEventFrom(0, $this->getDoctrine()->getManager());
-            
-            //On retire les événements qui ne sont pas disponibles pour les non connectés
-            $listeEvenement[0] = array();
-            $listeEvenement[1] = array();
-            $listeEvenement[2] = array();
-            $listeEvenement[4] = array();
+            throw new NotFoundHttpException('Impossible de trouver la page demandée');
         }
-
-        //On transforme les résultats en json            
-        $listeEvenementJson = json_encode($listeEvenement);
-
-        $view = $this->get("templating")->render("SiteTrailBundle:Event:calendrier.html.twig", array(
-                                                            'listeEvenement' => $listeEvenementJson));
-
-        return new Response($view);
     }
     
     public function showFormAddEventAction(Request $request)
