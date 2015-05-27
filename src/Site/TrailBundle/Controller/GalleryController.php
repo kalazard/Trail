@@ -126,8 +126,20 @@ class GalleryController extends Controller
         $repository = $manager->getRepository("SiteTrailBundle:Image");
         $picture = $repository->findOneById($idPicture);
         
+        $arrayUnite = array("octets", "Ko", "Mo");
+        $i = 0;
+        $poidsConvert = $picture->getPoids();
+        
+        while((($poidsConvert/1024) > 1) && $i<2)
+        {
+            $poidsConvert /= 1024;
+            $i += 1;
+        }
+        
         $content = $this->get("templating")->render("SiteTrailBundle:Gallery:picture.html.twig", array(
-                                                        'picture' => $picture
+                                                        'picture' => $picture,
+                                                        'poids' => round($poidsConvert,2),
+                                                        'unite' => $arrayUnite[$i]
         ));
         
         return new Response($content);

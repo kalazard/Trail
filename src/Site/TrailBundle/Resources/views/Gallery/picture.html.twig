@@ -16,12 +16,12 @@
             <div class="col-lg-12">
                 <div class="thumbnail">
                     <img src="{{picture.getPath()}}" alt="-_-">
+                    <p>Description : {{picture.getDescription()}}</p>
+                    <p>Auteur : {{picture.getAuteur().getPrenom()}} {{picture.getAuteur().getNom()}}</p>
+                    <p>Taille : {{picture.getTaille()}}</p>
+                    <p>Poids : {{poids}} {{unite}}</p>
                 </div>
-            </div>
-            <p>Description : {{picture.getDescription()}}</p>
-            <p>Auteur : {{picture.getAuteur().getPrenom()}} {{picture.getAuteur().getNom()}}</p>
-            <p>Taille : {{picture.getTaille()}}</p>
-            <p>Poids : {{picture.getPoids()}}</p>
+            </div> 
     </div>
     
     <div id="modalAvertissement" class="modal fade">
