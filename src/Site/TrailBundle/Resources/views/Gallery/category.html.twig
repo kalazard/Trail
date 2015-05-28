@@ -7,10 +7,13 @@
             <div class="col-sm-12">
                 {% if (categorie is defined) %}
                     <h1>{{categorie.getLabel()}}
+                    <div class="col-lg-12">
+                        <a href="{{ path('site_trail_gallery') }}" class='btn btn-warning pull-left' title="Retour vers la galerie" ><<</a>
                         {% if (app.user.getRole().getId() == 1) %}
                             <button id="supprCategorie" type="button" class='btn btn-warning pull-right' onclick="supprCategorieConfirm()">Supprimer la catégorie</button>
                             <button id="modifCategorie" type="button" class='btn btn-warning pull-right' onclick="modifCategorie({{categorie.getId()}})">Modifier la catégorie</button>
                         {% endif %}
+                    </div> 
                     </h1>
                 {% endif %}
             </div>
