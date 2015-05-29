@@ -43,6 +43,23 @@
                         </div>
                     </div>
                 </div>
+                        
+                <div class="form-group">
+                    <div class="row">
+                        <label class='col-sm-3 control-label'>Statut :</label>
+                        <div class="col-sm-9">
+                            <select name='statut' class="form-control">
+                                {% for monStatut in listeStatut %}
+                                    {% if monStatut.getId() == selectedStatut %}
+                                        <option selected='selected' value='{{monStatut.id}}'>{{monStatut.label}}</option>
+                                    {% else %}
+                                        <option value='{{monStatut.id}}'>{{monStatut.label}}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Champ date début -->
                 <div class="form-group">
@@ -62,6 +79,24 @@
                         {{ form_errors(form.date_fin) }}
                         <div class="col-sm-9">
                             {{ form_widget(form.date_fin) }}
+                        </div>
+                    </div>
+                </div>    
+                 
+                <!-- Champ liste itinéraire -->
+                <div class="form-group">
+                    <div class="row">
+                        <label class="col-sm-3 control-label">Association d'itinéraire :</label>
+                        <div class="col-sm-9">
+                            <select id="addIti" name="addIti[]" multiple>
+                                {% for iti in listeIti.list %}
+                                    {% if iti.id in selectedIti %}
+                                        <option value='{{iti.id}}' selected="selected">{{iti.nom}} ({{iti.datecreation|date('d/m/Y', false)}})</option>  
+                                    {% else %}
+                                        <option value='{{iti.id}}'>{{iti.nom}} ({{iti.datecreation|date('d/m/Y', false)}})</option>  
+                                    {% endif %}  
+                                {% endfor %}
+                            </select>
                         </div>
                     </div>
                 </div>

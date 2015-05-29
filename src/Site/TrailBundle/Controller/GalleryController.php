@@ -43,44 +43,51 @@ class GalleryController extends Controller
     
     public function indexAction(Request $request)
     {
-        $manager = $this->getDoctrine()->getManager();
-        $indStart = $request->get('indStart');  
-        $numPage = ($indStart/5)+1;
-
-        $listeCategorie = GalleryController::getTheCategories($indStart);
-        
-        $listeImage = array();
-	$result_categ = array();
-        
-        //récupération des 4 premières images de la catégorie
-        foreach($listeCategorie as $categorie)
+        if($this->getUser())
         {
-            $qb = $manager->createQueryBuilder();
-            $qb->select('img')
-                ->from('SiteTrailBundle:Image', 'img')
-                ->where('img.categorie = :idCategorie')
-                ->orderBy('img.id', 'DESC')
-                ->setParameter('idCategorie', $categorie->getId())
-                ->setMaxResults(4);
-            
-            $query = $qb->getQuery();
-            
-            $listeImage[] = $query->getResult();
+            $manager = $this->getDoctrine()->getManager();
+            $indStart = $request->get('indStart');  
+            $numPage = ($indStart/5)+1;
+
+            $listeCategorie = GalleryController::getTheCategories($indStart);
+
+            $listeImage = array();
+            $result_categ = array();
+
+            //récupération des 4 premières images de la catégorie
+            foreach($listeCategorie as $categorie)
+            {
+                $qb = $manager->createQueryBuilder();
+                $qb->select('img')
+                    ->from('SiteTrailBundle:Image', 'img')
+                    ->where('img.categorie = :idCategorie')
+                    ->orderBy('img.id', 'DESC')
+                    ->setParameter('idCategorie', $categorie->getId())
+                    ->setMaxResults(4);
+
+                $query = $qb->getQuery();
+
+                $listeImage[] = $query->getResult();
+            }
+        
+            /*$reqNb = "SELECT count(cat) FROM SiteTrailBundle:Categorie cat";
+            $queryNb = $manager->createQuery($reqNb);
+            $nbCategorie = $queryNb->getSingleScalarResult(); */
+
+            $nbCategorie = sizeof($listeCategorie);
+
+            $content = $this->get("templating")->render("SiteTrailBundle:Gallery:index.html.twig", array(
+                                                            'listeCategorie' => $listeCategorie,
+                                                            'listeImage' => $listeImage,
+                                                            'nbCategorie' => $nbCategorie,
+                                                            'numPage' => $numPage
+                                                        ));
+            return new Response($content);
         }
-        
-        /*$reqNb = "SELECT count(cat) FROM SiteTrailBundle:Categorie cat";
-        $queryNb = $manager->createQuery($reqNb);
-        $nbCategorie = $queryNb->getSingleScalarResult(); */
-		
-	$nbCategorie = sizeof($listeCategorie);
-        
-        $content = $this->get("templating")->render("SiteTrailBundle:Gallery:index.html.twig", array(
-                                                        'listeCategorie' => $listeCategorie,
-                                                        'listeImage' => $listeImage,
-                                                        'nbCategorie' => $nbCategorie,
-                                                        'numPage' => $numPage
-                                                    ));
-        return new Response($content);
+        else
+        {
+            throw new NotFoundHttpException('Impossible de trouver la page demandée');
+        }
     }
 	
     public function categoryAction(Request $request, $idCategorie)
@@ -147,7 +154,7 @@ class GalleryController extends Controller
     
     public function categorieAjoutAction(Request $request)
     {
-        if($request->isXmlHttpRequest() && $this->getUser()->getRole()->getId() == 1)
+        if($request->isXmlHttpRequest() && $this->getUser() && $this->getUser()->getRole()->getId() == 1)
         {
             $categorie = new Categorie();
             $formBuilder = $this->get('form.factory')->createBuilder('form', $categorie);

@@ -146,8 +146,7 @@ class ItiniraireController extends Controller
             $evenementService = $this->container->get('evenement_service');
             $eventService = $evenementService->getEventAndEventUsed($id);
             $listEvent = $eventService['allEvent'];
-            $selectedEvent = $eventService['usedEvent'];
-            
+            $selectedEvent = $eventService['usedEvent'];            
             
             $content = $this->get("templating")->render("SiteTrailBundle:Itiniraire:FicheItineraire.html.twig",
                                                         array("resultats" => $res,
@@ -206,7 +205,7 @@ class ItiniraireController extends Controller
            // var_dump($request->request->get("evenement"));
            // var_dump($request->request->get("id"));
            // var_dump($request->request->get("nom"));
-            $evenementService->updateEvenementItineraire($request->request->get("evenement"), $request->request->get("id"), $request->request->get("nom"));
+            $evenementService->updateParcours($request->request->get("evenement"), $request->request->get("id"));
             
 	    return new Response(json_encode(array("result" => "success","code" => 200)));      
       }

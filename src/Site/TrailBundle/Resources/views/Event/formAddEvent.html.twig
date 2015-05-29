@@ -63,7 +63,21 @@
                         </div>
                     </div>
                 </div>
-
+                
+                <!-- Champ liste itinéraire -->
+                <div class="form-group">
+                    <div class="row">
+                        <label class="col-sm-3 control-label">Association d'itinéraire :</label>
+                        <div class="col-sm-9">
+                            <select id="addIti" name="addIti[]" multiple>
+                                {% for iti in listeIti.list %}
+                                    <option value='{{iti.id}}'>{{iti.nom}} ({{iti.datecreation|date('d/m/Y', false)}})</option>  
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                            
                 <!-- Champ participants -->
                <!-- <div class="form-group">
                     <div class="row">

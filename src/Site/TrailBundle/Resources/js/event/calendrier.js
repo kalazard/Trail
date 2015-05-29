@@ -23,6 +23,7 @@ function afficherCalendrier(listeEvenements, isCo)
                     tabEvent['start'] = listeEvenements[categorie][evenement][entity].evenement.dateDebut.date;
                     
                     tabEvent['end'] = listeEvenements[categorie][evenement][entity].evenement.dateFin.date;
+                    tabEvent['statut'] = listeEvenements[categorie][evenement][entity].evenement.status.label;
                     //tabEvent['description'] = listeEvenements[categorie][evenement][entity].evenement.description;
                 }
                 else if(entity === '1') //Les participations
@@ -101,7 +102,13 @@ function afficherCalendrier(listeEvenements, isCo)
             events: eventAffiches,
             eventRender: function(event, element) {
                 contenu = "<p>" + event.start.format('HH:mm') + " - " + event.end.format('HH:mm') + "<br/>";
-                contenu += "&#8226; <a style='color:white;cursor:pointer;font-style:italic;' onclick='afficherDetail(" + event.class + ", " + event.id +")' id='detailEvenement'>" + event.title + "</a><br/>";
+                contenu += "&#8226; <a style='color:white;cursor:pointer;font-style:italic;' onclick='afficherDetail(" + event.class + ", " + event.id +")' id='detailEvenement'>" + event.title;
+                if(event.statut === 'Annulé')
+                {
+                    contenu += " <label class='red'>(ANNULE)</label>";
+                }
+                contenu += "</a><br/>";
+                
                 //contenu += "<label class='petitTexte'>" + event.description + "</label></p>";
                 element.html(contenu);
                 element.css({

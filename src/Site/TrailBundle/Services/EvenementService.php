@@ -1,7 +1,7 @@
 <?php
 
 namespace Site\TrailBundle\Services;
-use Site\TrailBundle\Entity\Evenementitineraire;
+use Site\TrailBundle\Entity\Parcours;
 
 class EvenementService
 {
@@ -17,11 +17,11 @@ class EvenementService
         $listeEvenements = array();
         $listeEvenementsUtilises = array();
         $arrayEventId = array();
-        $listeEvenementItineraire = $this->entityManager->getRepository("SiteTrailBundle:Evenementitineraire")->findBy(array('idItineraire' => $idIti));
+        $listeParcours = $this->entityManager->getRepository("SiteTrailBundle:Parcours")->findBy(array('idItineraire' => $idIti));
         
-        foreach($listeEvenementItineraire as $eventIti)
+        foreach($listeParcours as $parcours)
         {
-            $arrayEventId[] = $eventIti->getEvenement()->getId();
+            $arrayEventId[] = $parcours->getEvenement()->getId();
         }
         
         if(sizeof($arrayEventId) == 0)
@@ -95,13 +95,13 @@ class EvenementService
         return $res;
     }
     
-    public function updateEvenementItineraire($arrayIdEvenement, $idItineraire, $nomItineraire)
+    public function updateParcours($arrayIdEvenement, $idItineraire)
     {        
-        $listeEvenementItineraire = $this->entityManager->getRepository("SiteTrailBundle:Evenementitineraire")->findBy(array('idItineraire' => $idItineraire));
+        $listeParcours = $this->entityManager->getRepository("SiteTrailBundle:Parcours")->findBy(array('idItineraire' => $idItineraire));
  
-        if(is_array($listeEvenementItineraire))
+        if(is_array($listeParcours))
         {
-            foreach($listeEvenementItineraire as $eventIti)
+            foreach($listeParcours as $eventIti)
             {
                 $this->entityManager->remove($eventIti);
                 $this->entityManager->flush();
@@ -112,15 +112,28 @@ class EvenementService
         {
             foreach($arrayIdEvenement as $id)
             {
-                $evenementItineraire = new EvenementItineraire();
+                $parcours = new Parcours();
                 
                 $evenement = $this->entityManager->getRepository("SiteTrailBundle:Evenement")->findOneById($id);                
-                $evenementItineraire->setEvenement($evenement);
-                $evenementItineraire->setIdItineraire($idItineraire);
-                $evenementItineraire->setNomItineraire($nomItineraire);
-                $this->entityManager->persist($evenementItineraire);
+                $parcours->setEvenement($evenement);
+                $parcours->setIdItineraire($idItineraire);
+                $this->entityManager->persist($parcours);
                 $this->entityManager->flush();
             }
         }
+    }
+    
+    public function getUsedIti($idEvent)
+    {
+        $evenement = $this->entityManager->getRepository("SiteTrailBundle:Evenement")->findOneBy(array('id' => $idEvent));
+        $listeParcours = $this->entityManager->getRepository("SiteTrailBundle:Parcours")->findBy(array('evenement' => $evenement));
+        $listeIdIti = array();
+        
+        foreach($listeParcours as $parcours)
+        {
+            $listeIdIti[] = $parcours->getIdItineraire();
+        }
+        
+        return $listeIdIti;
     }
 }

@@ -16,6 +16,7 @@ use Site\TrailBundle\Entity\Participants;
 use Site\TrailBundle\Entity\Participation;
 use Site\TrailBundle\Entity\Courseofficielle;
 use Site\TrailBundle\Entity\Status;
+use Site\TrailBundle\Entity\Parcours;
 
 class EvenementController extends Controller
 {
@@ -359,6 +360,27 @@ class EvenementController extends Controller
                 $event->setStatus($repository->findOneById(1)); //valeur par défaut
                 $manager->persist($event);
                 $manager->flush();
+                
+                $selectedIti = $request->request->get('addIti', ''); 
+                if(sizeof($selectedIti) > 0)
+                {
+                    $clientSOAP = new \SoapClient(null, array(
+	                    'uri' => "http://localhost/Carto/web/app_dev.php/itineraire",
+	                    'location' => "http://localhost/Carto/web/app_dev.php/itineraire",
+	                    'trace' => true,
+	                    'exceptions' => true
+	                ));
+                    
+                    foreach($selectedIti as $iti)
+                    {
+                        $parcours = new Parcours();
+                        $parcours->setEvenement($event);
+                        $parcours->setIdItineraire($iti);
+                        $manager->persist($parcours);
+                    }
+                }
+                
+                $manager->flush();
 
                 switch ($type)
                 {
@@ -444,9 +466,17 @@ class EvenementController extends Controller
             $listeProgramme = $repository->findAll();
             $repository = $manager->getRepository("SiteTrailBundle:Lieurendezvous");        
             $listeLieuRendezVous = $repository->findAll();
-
             $repository = $manager->getRepository("SiteTrailBundle:Membre");        
-            $listeMembre = $repository->findAll(); 
+            $listeMembre = $repository->findAll();
+            
+            $clientSOAP = new \SoapClient(null, array(
+                            'uri' => "http://localhost/Carto/web/app_dev.php/itineraire",
+                            'location' => "http://localhost/Carto/web/app_dev.php/itineraire",
+                            'trace' => true,
+                            'exceptions' => true
+                        ));
+            $response = $clientSOAP->__call('itilist', array());
+            $res_list = json_decode($response);
             
             //Création du select contenant les programmes
             /*$selectProgramme = '<div class="form-group">';
@@ -482,6 +512,7 @@ class EvenementController extends Controller
                                                                 //'selectProgramme' => $selectProgramme,
                                                                 'selectLieuRendezVous' => $selectLieuRendezVous,
                                                                 'listeUser' => $listeMembre,
+                                                                'listeIti' => $res_list,
                                                                 'form' => $form->createView()
                                                             ));
 
@@ -495,10 +526,10 @@ class EvenementController extends Controller
     
     public function afficherDetailEvenementAction(Request $request)
     {
-        if($request->isXmlHttpRequest())
-        {
-            $idClasse = $request->request->get('idClasse', '2');
-            $idObj = $request->request->get('idObj', '19');
+        /*if($request->isXmlHttpRequest())
+        {*/
+            $idClasse = $request->request->get('idClasse', '4');
+            $idObj = $request->request->get('idObj', '1');
             
             if($this->getUser())
             {
@@ -547,22 +578,38 @@ class EvenementController extends Controller
                 $participation = $queryP->getOneOrNullResult(); 
             }
             
-            $evenementItineraire = $manager->getRepository("SiteTrailBundle:Evenementitineraire")->findBy(array('evenement' => $evenement->getEvenement()->getId())); 
-                     
+            $parcoursAssocie = $manager->getRepository("SiteTrailBundle:Parcours")->findBy(array('evenement' => $evenement->getEvenement()->getId())); 
+            $listeParcours = array(); 
+            
+            $clientSOAP = new \SoapClient(null, array(
+	                    'uri' => "http://localhost/Carto/web/app_dev.php/itineraire",
+	                    'location' => "http://localhost/Carto/web/app_dev.php/itineraire",
+	                    'trace' => true,
+	                    'exceptions' => true
+	                ));
+            
+            foreach($parcoursAssocie as $parcours)
+            {                
+                $search = array();		
+                $search["id"] = $parcours->getIdItineraire();
+	        $response = $clientSOAP->__call('getById', $search);
+                $res = json_decode($response);   
+                $listeParcours[] = $res;
+            }  
 
             $resp = $this->get("templating")->render("SiteTrailBundle:Event:detailEvenement.html.twig", array(
                                                                 'evenement' => $evenement,
                                                                 'idClasse' => $idClasse,
                                                                 'participation' => $participation,
-                                                                'evenementItineraire' => $evenementItineraire
+                                                                'evenementItineraire' => $listeParcours
                                                             ));
 
             return new Response($resp);
-        }
+        /*}
         else
         {
             throw new NotFoundHttpException('Impossible de trouver la page demandée');
-        }
+        }*/
     }
     
     public function supprEvenementAction(Request $request)
@@ -647,11 +694,11 @@ class EvenementController extends Controller
     
     public function modifEvenementAction(Request $request)
     {
-        if($request->isXmlHttpRequest() && $this->getUser())
-        {      
+        /*if($request->isXmlHttpRequest() && $this->getUser())
+        {   */   
             $idUser = $this->getUser()->getId();
-            $idClasse = $request->request->get('idClasse', '1');
-            $idEvenementDeClasse = $request->request->get('idObj', '21');
+            $idClasse = $request->request->get('idClasse', '4');
+            $idEvenementDeClasse = $request->request->get('idObj', '1');
             $manager = $this->getDoctrine()->getManager();
             $selectedLieuRendezVous = 0;
 
@@ -714,8 +761,40 @@ class EvenementController extends Controller
                 $evenementAssocie->setCreateur($repository->findOneById($idCreateur));
                 $evenementAssocie->setDateCreation(new \DateTime("now"));
                 $evenementAssocie->setAlias("alias");
-
+                $repository=$manager->getRepository("SiteTrailBundle:Status");
+                $evenementAssocie->setStatus($repository->findOneById($request->request->get('statut', '')));
                 $manager->flush();
+                        
+                $listeParcours = $manager->getRepository("SiteTrailBundle:Parcours")->findBy(array('evenement' => $evenementAssocie));
+
+                if(is_array($listeParcours))
+                {
+                    foreach($listeParcours as $eventIti)
+                    {
+                        $manager->remove($eventIti);
+                        $manager->flush();
+                    }
+                }
+                
+                $selectedIti = $request->request->get('addIti', '');
+                var_dump($selectedIti);
+                if(sizeof($selectedIti) > 0 && $selectedIti != '')
+                {
+                    $clientSOAP = new \SoapClient(null, array(
+	                    'uri' => "http://localhost/Carto/web/app_dev.php/itineraire",
+	                    'location' => "http://localhost/Carto/web/app_dev.php/itineraire",
+	                    'trace' => true,
+	                    'exceptions' => true
+	                ));
+                    
+                    foreach($selectedIti as $iti)
+                    {
+                        $parcours = new Parcours();
+                        $parcours->setEvenement($evenementAssocie);
+                        $parcours->setIdItineraire($iti);
+                        $manager->persist($parcours);
+                    } 
+                }
 
                 switch (/*$type*/$idClasse)
                 {
@@ -769,7 +848,7 @@ class EvenementController extends Controller
                         break;
                 }
 
-                if($request->request->get('participants', '') != '')
+                /*if($request->request->get('participants', '') != '')
                 {
                     foreach($request->request->get('participants', '') as $monParticipant)
                     {
@@ -782,7 +861,7 @@ class EvenementController extends Controller
                         $manager->persist($participant);
                         $manager->flush();
                     }
-                }
+                }*/
 
                 $request->getSession()->getFlashBag()->add('notice', 'Evènement ajouté');
 
@@ -793,8 +872,12 @@ class EvenementController extends Controller
             /*$repository=$manager->getRepository("SiteTrailBundle:Programme");        
             $listeProgramme = $repository->findAll();*/
             
-            $repository=$manager->getRepository("SiteTrailBundle:Lieurendezvous");        
+            $repository = $manager->getRepository("SiteTrailBundle:Lieurendezvous");        
             $listeLieuRendezVous = $repository->findAll();
+            
+            $repository = $manager->getRepository("SiteTrailBundle:Status"); 
+            $listeStatut = $repository->findAll();            
+            $selectedStatut = $evenementAssocie->getStatus()->getId();
 
             /*$query = $manager->createQuery(
                 'SELECT u
@@ -802,23 +885,38 @@ class EvenementController extends Controller
                 WHERE u.id != :createur'
             )->setParameter('createur', $idUser);
             $listeUser = $query->getResult();  */      
+            
+            $clientSOAP = new \SoapClient(null, array(
+                            'uri' => "http://localhost/Carto/web/app_dev.php/itineraire",
+                            'location' => "http://localhost/Carto/web/app_dev.php/itineraire",
+                            'trace' => true,
+                            'exceptions' => true
+                        ));
+            $response = $clientSOAP->__call('itilist', array());
+            $res_list = json_decode($response);
+            $evenementService = $this->container->get('evenement_service');
+            $selectedIti = $evenementService->getUsedIti($evenementAssocie->getId());
 
             $formulaire = $this->get("templating")->render("SiteTrailBundle:Event:modifEventForm.html.twig", array(
                                                                 //'listeProgramme' => $listeProgramme,
                                                                 'listeLieuRendezVous' => $listeLieuRendezVous,
                                                                 'selectedLieuRendezVous' => $selectedLieuRendezVous,
+                                                                'listeStatut' => $listeStatut,
+                                                                'selectedStatut' => $selectedStatut,
                                                                 //'listeUser' => $listeUser,
                                                                 'form' => $form->createView(),
                                                                 'idClasse' => $idClasse,
+                                                                'listeIti' => $res_list,
+                                                                'selectedIti' => $selectedIti,
                                                                 'idObj' => $idEvenementDeClasse
                                                             ));
 
             return new Response($formulaire);
-        }
+       /* }
         else
         {
             throw new NotFoundHttpException('Impossible de trouver la page demandée');
-        }
+        }*/
     }
     
     public function checkDateAction(Request $request)

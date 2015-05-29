@@ -3,6 +3,7 @@
 namespace Site\TrailBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 
 /**
  * Parcours
@@ -10,17 +11,8 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="parcours", indexes={@ORM\Index(name="fk_parcours_evenement_idx", columns={"evenement"})})
  * @ORM\Entity
  */
-class Parcours
+class Parcours implements JsonSerializable
 {
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="itineraire", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
-     */
-    private $itineraire;
-
     /**
      * @var \Evenement
      *
@@ -33,38 +25,22 @@ class Parcours
      */
     private $evenement;
 
-
-
     /**
-     * Set itineraire
+     * @var integer
      *
-     * @param integer $itineraire
-     * @return Parcours
+     * @ORM\Column(name="iditineraire", type="integer", nullable=false)
+     * @ORM\Id
+     * 
      */
-    public function setItineraire($itineraire)
-    {
-        $this->itineraire = $itineraire;
-
-        return $this;
-    }
-
-    /**
-     * Get itineraire
-     *
-     * @return integer 
-     */
-    public function getItineraire()
-    {
-        return $this->itineraire;
-    }
+    private $idItineraire;
 
     /**
      * Set evenement
      *
      * @param \Site\TrailBundle\Entity\Evenement $evenement
-     * @return Parcours
+     * @return Evenement
      */
-    public function setEvenement(\Site\TrailBundle\Entity\Evenement $evenement)
+    public function setEvenement(\Site\TrailBundle\Entity\Evenement $evenement = null)
     {
         $this->evenement = $evenement;
 
@@ -79,5 +55,35 @@ class Parcours
     public function getEvenement()
     {
         return $this->evenement;
+    }
+    
+    /**
+     * Set idItineraire
+     *
+     * @param integer $idItineraire
+     * @return integer
+     */
+    public function setIdItineraire($idItineraire)
+    {
+        $this->idItineraire = $idItineraire;
+
+        return $this;
+    }
+
+    /**
+     * Get idItineraire
+     *
+     * @return integer 
+     */
+    public function getIdItineraire()
+    {
+        return $this->idItineraire;
+    }
+    
+    public function jsonSerialize() {
+        return [
+            '$evenement' => $this->getEvenement(),
+            '$idItineraire' => $this->getIdItineraire()
+        ];
     }
 }

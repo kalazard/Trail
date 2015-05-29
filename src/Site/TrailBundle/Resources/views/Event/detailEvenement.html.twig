@@ -36,7 +36,9 @@
                     {% if evenement.getEvenement().getLienKid() != null %}
                         <p>Lien KID : <a target="_blank" href="{{evenement.getEvenement().getLienKid()}}">{{evenement.getEvenement().getLienKid()}}</a></p>
                     {% endif %}
-                    <p>Statut : {{evenement.getEvenement().getStatus().getLabel()}}</p> 
+                    {% if evenement.getEvenement().getStatus().getLabel() == 'Annulé' %}
+                        <p>Statut : {{evenement.getEvenement().getStatus().getLabel()}}</p> 
+                    {% endif %}                  
                     {% if idClasse == 1 %} <!-- Entrainement -->
                         <p>Programme : {{evenement.getProgramme().getLabel()}} ({{evenement.getProgramme().getDuree()|date('H:i')}})</p>
                         <p>Lieu de rendez-vous : {{evenement.getLieuRendezVous().getTitre()}} ({{evenement.getLieuRendezVous().getCoordonnees()}})</p>
@@ -49,10 +51,11 @@
                         <p>URL du site : <a target="_blank" href="{{evenement.getSiteUrl()}}">{{evenement.getSiteUrl()}}</a></p>
                     {% else %}
                     {% endif %}
+                    
                     {% if evenementItineraire != null %}
                         <p>Itinéraires associés : </p>
                         {% for eventIti in evenementItineraire %}
-                            <a href="{{ path('site_trail_getByIditineraire', {'id': eventIti.idItineraire}) }}">{{eventIti.getNomItineraire()}}</a>
+                            <a href="{{ path('site_trail_getByIditineraire', {'id': eventIti.searchResults.id}) }}">{{eventIti.searchResults.nom}}</a>
                         {% endfor %}
                     {% endif %}
                     
