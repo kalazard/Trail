@@ -362,9 +362,17 @@ class GalleryController extends Controller
                 $poids = $_FILES["fichier"]["size"];
                 $taille = $width.'x'.$height;
                 $auteur = $this->getUser();
+                if($auteur == null)
+                {
+                    $auteur = $manager->getRepository("SiteTrailBundle:Membre")->find(1);
+                }
                 $repository = $manager->getRepository("SiteTrailBundle:Categorie");
                 
                 $categorie = $repository->findOneById($request->request->get('categorie', ''));
+                if($categorie == null)
+                {
+                    $categorie = $repository->find(1);
+                }
                 $repository = $manager->getRepository("SiteTrailBundle:Image");
                 $newImage = new Image();
                 $newImage->setTitre($titre);
