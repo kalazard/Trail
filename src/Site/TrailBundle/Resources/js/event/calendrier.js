@@ -83,8 +83,8 @@ function afficherCalendrier(listeEvenements, isCo)
             {
                 if(isCo ===  true)
                 {
-                    $("#modalAddEventForm").children().remove();
                     $("#modalAddEventForm").remove();
+                    $('#modalModifEventForm').remove();
 
                     $.ajax({
                         type: "POST",
@@ -120,7 +120,7 @@ function afficherCalendrier(listeEvenements, isCo)
 }
 
 //Formulaire d'ajout d'événement dynamique
-function updateFormAddEvent(divProgrammeLabel, divProgrammeDuree, selectLieuRendezVous, categorieEvenement)
+function updateFormAddEvent(divProgrammeLabel, divProgrammeDuree, divLieuTitre, divLieuDescription, categorieEvenement)
 {
     $('#specificites').children().remove();
     
@@ -132,8 +132,13 @@ function updateFormAddEvent(divProgrammeLabel, divProgrammeDuree, selectLieuRend
             $('#specificites').append('</div>');
             $('#specificites').append('<div class="form-group" id="programmeDureeDiv">');
             $('#programmeDureeDiv').append(divProgrammeDuree);
+            $('#specificites').append('</div>');                     
+            $('#specificites').append('<div class="form-group" id="lieuTitreDiv">');
+            $('#lieuTitreDiv').append(divLieuTitre);
+            $('#specificites').append('</div>');           
+            $('#specificites').append('<div class="form-group" id="lieuDescriptionDiv">');
+            $('#lieuDescriptionDiv').append(divLieuDescription);
             $('#specificites').append('</div>');         
-            $('#specificites').append(selectLieuRendezVous);                
             break;
         case '2': //Entrainement personnel
             break;
@@ -148,7 +153,12 @@ function updateFormAddEvent(divProgrammeLabel, divProgrammeDuree, selectLieuRend
             $('#specificites').append('</div>');
             break;
         case '4': //Sortie découverte
-            $('#specificites').append(selectLieuRendezVous);
+            $('#specificites').append('<div class="form-group" id="lieuTitreDiv">');
+            $('#lieuTitreDiv').append(divLieuTitre);
+            $('#specificites').append('</div>');           
+            $('#specificites').append('<div class="form-group" id="lieuDescriptionDiv">');
+            $('#lieuDescriptionDiv').append(divLieuDescription);
+            $('#specificites').append('</div>');   
             break;
         case '5': //Course officielle
             $('#specificites').append('<div class="form-group" id="grLabelRow">');
@@ -224,7 +234,7 @@ function suppressionEvenement(idClasse, idObj)
 //Modification d'un événement
 function modifEvenement(idClasse, idObj)
 {
-    $('#modalModifEventForm').children().remove();
+    $("#modalAddEventForm").remove();
     $('#modalModifEventForm').remove();
     
     $.ajax({
