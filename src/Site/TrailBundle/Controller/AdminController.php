@@ -15,12 +15,17 @@ class AdminController extends Controller
     // Liste des liens d'admin
     public function indexAction()
     {
+		$this->testDeDroits('Administration');
 		
+		$content = $this->get("templating")->render("SiteTrailBundle:Admin:index.html.twig"); 
+        return new Response($content);
     }
 	
 	// Gestion des permissions
 	public function aclAction(Request $request)
 	{
+		$this->testDeDroits('Administration');
+	
 		// Récupère le manager de doctrine
 		$manager = $this->getDoctrine()->getManager();
 		
@@ -84,6 +89,8 @@ class AdminController extends Controller
 	// Liste des news
     public function listeNewsAction()
     {
+		$this->testDeDroits('Administration');
+		
 		// Récupère le manager de doctrine
 		$manager = $this->getDoctrine()->getManager();
 		
@@ -104,6 +111,8 @@ class AdminController extends Controller
 	// Ajout/Modification d'une news
     public function gestionNewsAction($new_alias = NULL, Request $request)
     {		
+		$this->testDeDroits('Administration');
+		
 		// Récupère le manager de doctrine
 		$manager = $this->getDoctrine()->getManager();
 		
@@ -203,14 +212,14 @@ class AdminController extends Controller
 	public function convert_to_alias($chaine)
 	{	
 		$chaine = preg_replace("#[^a-zA-Z0-9 ]#", "", $chaine);
-		//$text = strtr($text, 'ÁÀÂÄÃÅÇÉÈÊËÍÏÎÌÑÓÒÔÖÕÚÙÛÜÝ', 'AAAAAACEEEEEIIIINOOOOOUUUUY');
-		//$text = strtr($text, 'áàâäãåçéèêëíìîïñóòôöõúùûüýÿ', 'aaaaaaceeeeiiiinooooouuuuyy');
 		return strtr($chaine, ' ', '-');
 	}
 	
 	// Suppression d'une news
     public function suppressionNewsAction($new_alias = NULL)
     {
+		$this->testDeDroits('Administration');
+		
 		// Récupère le manager de doctrine
 		$manager = $this->getDoctrine()->getManager();
 		
@@ -226,5 +235,29 @@ class AdminController extends Controller
 
 		return $this->redirect($this->generateUrl('site_trail_news_list'));
     }
+	
+	public function testDeDroits($permission)
+	{
+		$manager = $this->getDoctrine()->getManager();
+		
+		$repository_permissions = $manager->getRepository("SiteTrailBundle:Permission");
+		
+		$permissions = $repository_permissions->findOneBy(array('label' => $permission));
+
+		if(Count($permissions->getRole()) != 0)
+		{
+			$list_role = array();
+			foreach($permissions->getRole() as $role)
+			{
+				array_push($list_role, 'ROLE_'.$role->getLabel());
+			}
+			
+			// Test l'accès de l'utilisateur
+			if(!$this->isGranted($list_role))
+			{
+				throw $this->createNotFoundException("Vous n'avez pas acces a cette page");
+			}
+		}
+	}
 	
 }

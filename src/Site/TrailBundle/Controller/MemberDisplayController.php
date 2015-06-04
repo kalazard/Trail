@@ -13,6 +13,8 @@ class MemberDisplayController extends Controller
 {
 	public function listAction()
 	{
+		$this->testDeDroits('Profil');
+		
 		$user = $this->getUser();
 		
 		//si l'utilisateur courant est un membre
@@ -40,6 +42,8 @@ class MemberDisplayController extends Controller
 	
 	public function searchAction()
 	{
+		$this->testDeDroits('Profil');
+		
 		$user = $this->getUser();
 		
 		$search = "";
@@ -78,6 +82,8 @@ class MemberDisplayController extends Controller
 	
 	public function profilAction()
 	{
+		$this->testDeDroits('Profil');
+		
 		$result = array();
 		$user = $this->getUser();
 				
@@ -107,6 +113,8 @@ class MemberDisplayController extends Controller
 	
 	public function profilSubmitAction(Request $request)
 	{
+		$this->testDeDroits('Profil');
+		
 		//on récupère les infos et on les stocke
 		$prenom="";$nom="";$email="";$tel="";$date="";$licence="";
 		
@@ -141,7 +149,29 @@ class MemberDisplayController extends Controller
 		return $this->redirect($this->generateUrl('site_trail_profilmembre'));
 	}
 	
-	
+	public function testDeDroits($permission)
+	{
+		$manager = $this->getDoctrine()->getManager();
+		
+		$repository_permissions = $manager->getRepository("SiteTrailBundle:Permission");
+		
+		$permissions = $repository_permissions->findOneBy(array('label' => $permission));
+
+		if(Count($permissions->getRole()) != 0)
+		{
+			$list_role = array();
+			foreach($permissions->getRole() as $role)
+			{
+				array_push($list_role, 'ROLE_'.$role->getLabel());
+			}
+			
+			// Test l'accès de l'utilisateur
+			if(!$this->isGranted($list_role))
+			{
+				throw $this->createNotFoundException("Vous n'avez pas acces a cette page");
+			}
+		}
+	}
 }
 
 

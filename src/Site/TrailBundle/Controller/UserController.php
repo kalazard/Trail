@@ -24,15 +24,17 @@ use Site\TrailBundle\Entity\Image;
 class UserController extends Controller {
 
     public function indexAction() {
+		$this->testDeDroits('Administration');
 
         $content = $this->get("templating")->render("SiteTrailBundle:User:index.html.twig");
-
 
         return new Response($content);
     }
 
     //Création d'un utilisateur
     public function createAction() {
+		$this->testDeDroits('Administration');
+		
         //On récupère la requete courrante
         $request = $this->getRequest();
         //On regarde qu'il s'agit bien d'une requête AJAX
@@ -250,30 +252,23 @@ class UserController extends Controller {
 
     //Permttra de charger la liste des rôles disponibles
     public function loadRolesAction() {
+		$this->testDeDroits('Administration');
+		
         //On récupère la requête courrante
         $request = $this->getRequest();
         //On regarde qu'il s'agit bien d'une requête ajax
         if ($request->isXmlHttpRequest()) {
             try {
-                //On vérifie que l'utilisateur courant est boen administrateur
-                if ($this->get('security.context')->isGranted('ROLE_Administrateur')) {
-                    //On récupère le manager de Doctrine
-                    $manager = $this->getDoctrine()->getManager();
-                    //On récupère le dépôt role
-                    $repository = $manager->getRepository("SiteTrailBundle:Role");
-                    //On récupère tous les rôles
-                    $roles = $repository->findAll();
-                    $return = array('success' => true, 'serverError' => false, 'roles' => $roles);
-                    $response = new Response(json_encode($return));
-                    $response->headers->set('Content-Type', 'application/json');
-                    return $response;
-                } else {
-                    //L'utilisateur actuellement connecté n'es pas adminstrateur, on ne renvoie donc rien
-                    $return = array('success' => false, 'serverError' => false);
-                    $response = new Response(json_encode($return));
-                    $response->headers->set('Content-Type', 'application/json');
-                    return $response;
-                }
+				//On récupère le manager de Doctrine
+				$manager = $this->getDoctrine()->getManager();
+				//On récupère le dépôt role
+				$repository = $manager->getRepository("SiteTrailBundle:Role");
+				//On récupère tous les rôles
+				$roles = $repository->findAll();
+				$return = array('success' => true, 'serverError' => false, 'roles' => $roles);
+				$response = new Response(json_encode($return));
+				$response->headers->set('Content-Type', 'application/json');
+				return $response;
             } catch (Exception $e) {
                 //Il y a une erreur côté serveur
                 $return = array('success' => false, 'serverError' => true, 'message' => $e->getMessage());
@@ -288,43 +283,36 @@ class UserController extends Controller {
     }
 
     public function getUserActivationAction() {
+		$this->testDeDroits('Administration');
+		
         //Permet de récupérer dans le webservice si l'utilisateur passé en paramètre existe ou non
         $request = $this->getRequest();
         if ($request->isXmlHttpRequest()) {
             try {
-                //Seul l'administrateur peut récupérer les informations  d'un utilisateur
-                if ($this->get('security.context')->isGranted('ROLE_Administrateur')) {
-                    //On récupère l'id de l'utilisateur que l'on souhaite rechercher
-                    $id = $request->request->get('id_user');
-                    //On récupère le manager de doctrine
-                    $clientSOAP = new SoapClient(null, array(
-                        'uri' => $this->container->getParameter("auth_server_host"),
-                        'location' => $this->container->getParameter("auth_server_host"),
-                        'trace' => 1,
-                        'exceptions' => 1
-                    ));
+				//On récupère l'id de l'utilisateur que l'on souhaite rechercher
+				$id = $request->request->get('id_user');
+				//On récupère le manager de doctrine
+				$clientSOAP = new SoapClient(null, array(
+					'uri' => $this->container->getParameter("auth_server_host"),
+					'location' => $this->container->getParameter("auth_server_host"),
+					'trace' => 1,
+					'exceptions' => 1
+				));
 
-                    //On appel la méthode du webservice qui permet de se connecter
-                    $response = $clientSOAP->__call('getUserActivation', array('id' => CustomCrypto::encrypt($id), 'server' => CustomCrypto::encrypt($_SERVER['SERVER_ADDR'])));
-                    //Si il y a une erreur
+				//On appel la méthode du webservice qui permet de se connecter
+				$response = $clientSOAP->__call('getUserActivation', array('id' => CustomCrypto::encrypt($id), 'server' => CustomCrypto::encrypt($_SERVER['SERVER_ADDR'])));
+				//Si il y a une erreur
 
-                    if ($response['error'] == true) {
-                        $return = array('success' => false, 'serverError' => false, 'message' => $response['message']);
-                        $response = new Response(json_encode($return));
-                        $response->headers->set('Content-Type', 'application/json');
-                        return $response;
-                    }
-                    $return = array('success' => true, 'serverError' => false, 'actif' => $response['actif']);
-                    $response = new Response(json_encode($return));
-                    $response->headers->set('Content-Type', 'application/json');
-                    return $response;
-                } else {
-                    //L'utilisateur n'est pas un administrateur
-                    $return = array('success' => false, 'serverError' => false, 'message' => "Vous n'avez pas le droit de récupérer cette information");
-                    $response = new Response(json_encode($return));
-                    $response->headers->set('Content-Type', 'application/json');
-                    return $response;
-                }
+				if ($response['error'] == true) {
+					$return = array('success' => false, 'serverError' => false, 'message' => $response['message']);
+					$response = new Response(json_encode($return));
+					$response->headers->set('Content-Type', 'application/json');
+					return $response;
+				}
+				$return = array('success' => true, 'serverError' => false, 'actif' => $response['actif']);
+				$response = new Response(json_encode($return));
+				$response->headers->set('Content-Type', 'application/json');
+				return $response;
             } catch (Exception $e) {
                 //Il y a eu une erreur côté serveur
                 $return = array('success' => false, 'serverError' => true, 'message' => $e->getMessage());
@@ -340,53 +328,45 @@ class UserController extends Controller {
 
     //Récupération de la liste des utilisateurs
     public function getAllUsersAction() {
-
+		$this->testDeDroits('Annuaire');
+		
         //On récupère la requête courrante
         $request = $this->getRequest();
         //On regarde qu'il s'agit bien d'une requête ajax
         if ($request->isXmlHttpRequest()) {
             try {
-                //On vérifie que l'utilisateur courant est bien administrateur ou membre
-                if ($this->get('security.context')->isGranted('ROLE_Administrateur') || $this->get('security.context')->isGranted('ROLE_Utilisateur')) {
-                    //On récupère le manager de Doctrine
-                    $manager = $this->getDoctrine()->getManager();
-                    //On récupère le dépôt utilisateur
-                    $repository = $manager->getRepository("SiteTrailBundle:Membre");
-                    //On récupère tous les utilisateurs
-                    $users = $repository->findAll();
-                    $actifs = array();
-                    foreach ($users as $value) {
-                        $clientSOAP = new SoapClient(null, array(
-                            'uri' => $this->container->getParameter("auth_server_host"),
-                            'location' => $this->container->getParameter("auth_server_host"),
-                            'trace' => 1,
-                            'exceptions' => 1
-                        ));
+				//On récupère le manager de Doctrine
+				$manager = $this->getDoctrine()->getManager();
+				//On récupère le dépôt utilisateur
+				$repository = $manager->getRepository("SiteTrailBundle:Membre");
+				//On récupère tous les utilisateurs
+				$users = $repository->findAll();
+				$actifs = array();
+				foreach ($users as $value) {
+					$clientSOAP = new SoapClient(null, array(
+						'uri' => $this->container->getParameter("auth_server_host"),
+						'location' => $this->container->getParameter("auth_server_host"),
+						'trace' => 1,
+						'exceptions' => 1
+					));
 
-                        //On appel la méthode du webservice qui permet de se connecter
-                        $response = $clientSOAP->__call('getUserActivation', array('id' => CustomCrypto::encrypt($value->getId()), 'server' => CustomCrypto::encrypt($_SERVER['SERVER_ADDR'])));
-                        //Si il y a une erreur
+					//On appel la méthode du webservice qui permet de se connecter
+					$response = $clientSOAP->__call('getUserActivation', array('id' => CustomCrypto::encrypt($value->getId()), 'server' => CustomCrypto::encrypt($_SERVER['SERVER_ADDR'])));
+					//Si il y a une erreur
 
-                        if ($response['error'] == true) {
-                            $return = array('success' => false, 'serverError' => false, 'message' => $response['message']);
-                            $response = new Response(json_encode($return));
-                            $response->headers->set('Content-Type', 'application/json');
-                            return $response;
-                        }
-                        $actifs[] = $response['actif'];
-                    }
-                    $visibilite = $this->get('security.context')->isGranted('ROLE_Administrateur');
-                    $return = array('success' => true, 'serverError' => false, 'users' => $users, 'visibilite' => $visibilite, 'actif' => $actifs);
-                    $response = new Response(json_encode($return));
-                    $response->headers->set('Content-Type', 'application/json');
-                    return $response;
-                } else {
-                    //L'utilisateur actuellement connecté n'es pas adminstrateur, on ne renvoie donc rien
-                    $return = array('success' => false, 'serverError' => false);
-                    $response = new Response(json_encode($return));
-                    $response->headers->set('Content-Type', 'application/json');
-                    return $response;
-                }
+					if ($response['error'] == true) {
+						$return = array('success' => false, 'serverError' => false, 'message' => $response['message']);
+						$response = new Response(json_encode($return));
+						$response->headers->set('Content-Type', 'application/json');
+						return $response;
+					}
+					$actifs[] = $response['actif'];
+				}
+				$visibilite = $this->get('security.context')->isGranted('ROLE_Administrateur');
+				$return = array('success' => true, 'serverError' => false, 'users' => $users, 'visibilite' => $visibilite, 'actif' => $actifs);
+				$response = new Response(json_encode($return));
+				$response->headers->set('Content-Type', 'application/json');
+				return $response;
             } catch (Exception $e) {
                 //Il y a une erreur côté serveur
                 $return = array('success' => false, 'serverError' => true, 'message' => $e->getMessage());
@@ -401,54 +381,47 @@ class UserController extends Controller {
     }
 
     public function deleteAction() {
-        //Seul l'administrateur peut supprimer un utilisateur
+        $this->testDeDroits('Administration');
+		
         $request = $this->getRequest();
         if ($request->isXmlHttpRequest()) {
             try {
-                if ($this->get('security.context')->isGranted('ROLE_Administrateur')) {
-                    $id = $request->request->get('id_user');
-                    $activation = $request->request->get('activation');
-                    $manager = $this->getDoctrine()->getManager();    //On récupère le manager de doctrine
-                    $repository = $manager->getRepository("SiteTrailBundle:Membre");
-                    $usertodelete = $repository->find($id);
-                    if (is_null($usertodelete)) {
-                        $return = array('success' => false, 'serverError' => false, 'message' => "L'utilisateur spécifié n'existe plus dans la base de données");
-                        $response = new Response(json_encode($return));
-                        $response->headers->set('Content-Type', 'application/json');
-                        return $response;
-                    }
+				$id = $request->request->get('id_user');
+				$activation = $request->request->get('activation');
+				$manager = $this->getDoctrine()->getManager();    //On récupère le manager de doctrine
+				$repository = $manager->getRepository("SiteTrailBundle:Membre");
+				$usertodelete = $repository->find($id);
+				if (is_null($usertodelete)) {
+					$return = array('success' => false, 'serverError' => false, 'message' => "L'utilisateur spécifié n'existe plus dans la base de données");
+					$response = new Response(json_encode($return));
+					$response->headers->set('Content-Type', 'application/json');
+					return $response;
+				}
 
-                    //On désactive l'utilisateur sur le service d'authentification
-                    //Ensuite on essaye de se connecter avec le webservice
-                    $clientSOAP = new SoapClient(null, array(
-                        'uri' => $this->container->getParameter("auth_server_host"),
-                        'location' => $this->container->getParameter("auth_server_host"),
-                        'trace' => 1,
-                        'exceptions' => 1
-                    ));
+				//On désactive l'utilisateur sur le service d'authentification
+				//Ensuite on essaye de se connecter avec le webservice
+				$clientSOAP = new SoapClient(null, array(
+					'uri' => $this->container->getParameter("auth_server_host"),
+					'location' => $this->container->getParameter("auth_server_host"),
+					'trace' => 1,
+					'exceptions' => 1
+				));
 
-                    //On appel la méthode du webservice qui permet de modifier l'état de l'utilisateur
-                    $response = $clientSOAP->__call('updateUserActivation', array('id' => CustomCrypto::encrypt($usertodelete->getId()), 'activation' => CustomCrypto::encrypt($activation), 'server' => CustomCrypto::encrypt($_SERVER['SERVER_ADDR'])));
-                    //L'utilisateur n'existe pas dans la base de données du serveur d'authentification
+				//On appel la méthode du webservice qui permet de modifier l'état de l'utilisateur
+				$response = $clientSOAP->__call('updateUserActivation', array('id' => CustomCrypto::encrypt($usertodelete->getId()), 'activation' => CustomCrypto::encrypt($activation), 'server' => CustomCrypto::encrypt($_SERVER['SERVER_ADDR'])));
+				//L'utilisateur n'existe pas dans la base de données du serveur d'authentification
 
-                    if ($response['error'] == true) {
-                        $return = array('success' => false, 'serverError' => false, 'message' => $response['message']);
-                        $response = new Response(json_encode($return));
-                        $response->headers->set('Content-Type', 'application/json');
-                        return $response;
-                    }
-                    //L'utilisateur a bien été supprimé
-                    $return = array('success' => true, 'serverError' => false, 'message' => "L'utilisateur a bien été désactivé");
-                    $response = new Response(json_encode($return));
-                    $response->headers->set('Content-Type', 'application/json');
-                    return $response;
-                } else {
-                    //L'utilisateur n'es pas un administrateur
-                    $return = array('success' => false, 'serverError' => false, 'message' => "Vous n'avez pas le droit de désactiver un utilisateur");
-                    $response = new Response(json_encode($return));
-                    $response->headers->set('Content-Type', 'application/json');
-                    return $response;
-                }
+				if ($response['error'] == true) {
+					$return = array('success' => false, 'serverError' => false, 'message' => $response['message']);
+					$response = new Response(json_encode($return));
+					$response->headers->set('Content-Type', 'application/json');
+					return $response;
+				}
+				//L'utilisateur a bien été supprimé
+				$return = array('success' => true, 'serverError' => false, 'message' => "L'utilisateur a bien été désactivé");
+				$response = new Response(json_encode($return));
+				$response->headers->set('Content-Type', 'application/json');
+				return $response;
             } catch (Exception $e) {
                 //Il y a une erreur côté serveur
                 $return = array('success' => false, 'serverError' => true, 'message' => $e->getMessage());
@@ -464,39 +437,32 @@ class UserController extends Controller {
 
     //Récupération d'un utilisateur dans la base de données
     public function getUserAction() {
+		$this->testDeDroits('Administration');
+		
         $request = $this->getRequest();
         if ($request->isXmlHttpRequest()) {
             try {
-                //Seul l'administrateur peut récupérer les informations  d'un utilisateur
-                if ($this->get('security.context')->isGranted('ROLE_Administrateur')) {
-                    //On récupère l'id de l'utilisateur que l'on souhaite rechercher
-                    $id = $request->request->get('id_user');
-                    //On récupère le manager de doctrine
-                    $manager = $this->getDoctrine()->getManager();
-                    $repository = $manager->getRepository("SiteTrailBundle:Membre");
-                    //On récupère l'utilisateur à l'aide de l'id passé en paramètre à la requête
-                    $user = $repository->find($id);
-                    //Si l'utilisateur n'existe plus dans la base de données
-                    if (is_null($user)) {
-                        $return = array('success' => false, 'serverError' => false, 'message' => "L'utilisateur spécifié n'existe plus dans la base de données");
-                        $response = new Response(json_encode($return));
-                        $response->headers->set('Content-Type', 'application/json');
-                        return $response;
-                    }
-                    //On récupère l'id du role de l'utilisateur
-                    $repository = $manager->getRepository("SiteTrailBundle:Role");
-                    $role = $repository->find($user->getRole()->getId());
-                    $return = array('success' => true, 'serverError' => false, 'user' => $user, 'role' => $role);
-                    $response = new Response(json_encode($return));
-                    $response->headers->set('Content-Type', 'application/json');
-                    return $response;
-                } else {
-                    //L'utilisateur n'est pas un administrateur
-                    $return = array('success' => false, 'serverError' => false, 'message' => "Vous n'avez pas le droit de modifier un utilisateur");
-                    $response = new Response(json_encode($return));
-                    $response->headers->set('Content-Type', 'application/json');
-                    return $response;
-                }
+				//On récupère l'id de l'utilisateur que l'on souhaite rechercher
+				$id = $request->request->get('id_user');
+				//On récupère le manager de doctrine
+				$manager = $this->getDoctrine()->getManager();
+				$repository = $manager->getRepository("SiteTrailBundle:Membre");
+				//On récupère l'utilisateur à l'aide de l'id passé en paramètre à la requête
+				$user = $repository->find($id);
+				//Si l'utilisateur n'existe plus dans la base de données
+				if (is_null($user)) {
+					$return = array('success' => false, 'serverError' => false, 'message' => "L'utilisateur spécifié n'existe plus dans la base de données");
+					$response = new Response(json_encode($return));
+					$response->headers->set('Content-Type', 'application/json');
+					return $response;
+				}
+				//On récupère l'id du role de l'utilisateur
+				$repository = $manager->getRepository("SiteTrailBundle:Role");
+				$role = $repository->find($user->getRole()->getId());
+				$return = array('success' => true, 'serverError' => false, 'user' => $user, 'role' => $role);
+				$response = new Response(json_encode($return));
+				$response->headers->set('Content-Type', 'application/json');
+				return $response;
             } catch (Exception $e) {
                 //Il y a eu une erreur côté serveur
                 $return = array('success' => false, 'serverError' => true, 'message' => $e->getMessage());
@@ -512,176 +478,176 @@ class UserController extends Controller {
 
     //Mise à jour d'un utilisateur dans la base de données
     public function updateUserAction() {
+		$this->testDeDroits('Administration');
+		
         $request = $this->getRequest();  //On récupère la requete courrante
         if ($request->isXmlHttpRequest()) {    //On regarde qu'il s'agit bien d'une requête AJAX
             try {
-                //Seul l'administrateur peut mettre à jour un utilisateur
-                if ($this->get('security.context')->isGranted('ROLE_Administrateur')) {
-                    //On récupère l'identifiant de l'utilisateur à mettre à jour
-                    $userToUpdate = intval($request->request->get('id_user'));
-                    //On récupère son email
-                    $email = $request->request->get('emailUpdate');
-                    //On récupère son prenom
-                    $nom = $request->request->get('nomUpdate');
-                    //On récupère son prenom
-                    $prenom = $request->request->get('prenomUpdate');
-                    //On récupère sa date de naissance
-                    $datenaissance = $request->request->get('datenaissanceUpdate');
-                    //On récupère son telephone
-                    $telephone = $request->request->get('telephoneUpdate');
-                    //On récupère son role
-                    $roleupdate = intval($request->request->get('roleUpdate'));
+				//On récupère l'identifiant de l'utilisateur à mettre à jour
+				$userToUpdate = intval($request->request->get('id_user'));
+				//On récupère son email
+				$email = $request->request->get('emailUpdate');
+				//On récupère son prenom
+				$nom = $request->request->get('nomUpdate');
+				//On récupère son prenom
+				$prenom = $request->request->get('prenomUpdate');
+				//On récupère sa date de naissance
+				$datenaissance = $request->request->get('datenaissanceUpdate');
+				//On récupère son telephone
+				$telephone = $request->request->get('telephoneUpdate');
+				//On récupère son role
+				$roleupdate = intval($request->request->get('roleUpdate'));
 
 
-                    //On récupère le manager de Doctrine
-                    $manager = $this->getDoctrine()->getManager();
-                    //On récupère le depot role
-                    $repository = $manager->getRepository("SiteTrailBundle:Role");
+				//On récupère le manager de Doctrine
+				$manager = $this->getDoctrine()->getManager();
+				//On récupère le depot role
+				$repository = $manager->getRepository("SiteTrailBundle:Role");
 
-                    // On récupère l'utilisateur a mettre a jour
-                    $user = $manager->getRepository("SiteTrailBundle:Membre")->find($userToUpdate);
-                    //Si l'utilisateur n'existe plus dans la base de données
-                    if (is_null($user)) {
-                        $return = array('success' => false, 'serverError' => false, 'message' => "L'utilisateur spécifié n'existe plus dans la base de données");
-                        $response = new Response(json_encode($return));
-                        $response->headers->set('Content-Type', 'application/json');
-                        return $response;
-                    }
-                    //On récupère le role spécifié pour la mise à jour dans la base de données
-                    $role = $repository->find($roleupdate);
-                    if (is_null($role)) {
-                        $return = array('success' => false, 'serverError' => false, 'message' => "Le rôle spécifié n'existe plus dans la base de données");
-                        $response = new Response(json_encode($return));
-                        $response->headers->set('Content-Type', 'application/json');
-                        return $response;
-                    }
+				// On récupère l'utilisateur a mettre a jour
+				$user = $manager->getRepository("SiteTrailBundle:Membre")->find($userToUpdate);
+				//Si l'utilisateur n'existe plus dans la base de données
+				if (is_null($user)) {
+					$return = array('success' => false, 'serverError' => false, 'message' => "L'utilisateur spécifié n'existe plus dans la base de données");
+					$response = new Response(json_encode($return));
+					$response->headers->set('Content-Type', 'application/json');
+					return $response;
+				}
+				//On récupère le role spécifié pour la mise à jour dans la base de données
+				$role = $repository->find($roleupdate);
+				if (is_null($role)) {
+					$return = array('success' => false, 'serverError' => false, 'message' => "Le rôle spécifié n'existe plus dans la base de données");
+					$response = new Response(json_encode($return));
+					$response->headers->set('Content-Type', 'application/json');
+					return $response;
+				}
 
-                    //On fait des vérifications pour voir que les informations saisies sont valide
-                    //Si l'email est vide
-                    if ($email == "") {
-                        //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
-                        $return = array('success' => false, 'serverError' => false, 'message' => "L'email ne doit pas être vide");
-                        $response = new Response(json_encode($return));
-                        $response->headers->set('Content-Type', 'application/json');
-                        return $response;
-                    }
-                    //Si l'email n'es pas un email
-                    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                        //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
-                        $return = array('success' => false, 'serverError' => false, 'message' => "L'email n'a pas un format valide");
-                        $response = new Response(json_encode($return));
-                        $response->headers->set('Content-Type', 'application/json');
-                        return $response;
-                    }
-                    //Si l'email n'existe pas déjà dans la base de données (pour un utilisateur différent de celui que l'on met à jour
-                    $userWithEmail = $manager->getRepository('SiteTrailBundle:Membre')->findOneBy(array('email' => $email));
+				//On fait des vérifications pour voir que les informations saisies sont valide
+				//Si l'email est vide
+				if ($email == "") {
+					//success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
+					$return = array('success' => false, 'serverError' => false, 'message' => "L'email ne doit pas être vide");
+					$response = new Response(json_encode($return));
+					$response->headers->set('Content-Type', 'application/json');
+					return $response;
+				}
+				//Si l'email n'es pas un email
+				if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+					//success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
+					$return = array('success' => false, 'serverError' => false, 'message' => "L'email n'a pas un format valide");
+					$response = new Response(json_encode($return));
+					$response->headers->set('Content-Type', 'application/json');
+					return $response;
+				}
+				//Si l'email n'existe pas déjà dans la base de données (pour un utilisateur différent de celui que l'on met à jour
+				$userWithEmail = $manager->getRepository('SiteTrailBundle:Membre')->findOneBy(array('email' => $email));
 
-                    if (!is_null($userWithEmail) && $userWithEmail->getId() != $user->getId()) {
-                        //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
-                        $return = array('success' => false, 'serverError' => false, 'message' => "Cet email est déjà utilisé");
-                        $response = new Response(json_encode($return));
-                        $response->headers->set('Content-Type', 'application/json');
-                        return $response;
-                    }
-
-
-                    //Si le role est null
-                    if (is_null($role)) {
-                        //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
-                        $return = array('success' => false, 'serverError' => false, 'message' => "Le role spécifié est introuvable");
-                        $response = new Response(json_encode($return));
-                        $response->headers->set('Content-Type', 'application/json');
-                        return $response;
-                    }
+				if (!is_null($userWithEmail) && $userWithEmail->getId() != $user->getId()) {
+					//success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
+					$return = array('success' => false, 'serverError' => false, 'message' => "Cet email est déjà utilisé");
+					$response = new Response(json_encode($return));
+					$response->headers->set('Content-Type', 'application/json');
+					return $response;
+				}
 
 
-                    //Si le nom est vide
-                    if ($nom == "") {
-                        //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
-                        /* $return = array('success' => false, 'serverError' => false, 'message' => "Le nom ne doît pas être vide");
-                          $response = new Response(json_encode($return));
-                          $response->headers->set('Content-Type', 'application/json');
-                          return $response; */
-                        $nom = null;
-                    }
-                    //Si la date de naissance est vide
-                    if ($datenaissance == "") {
-                        //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
-                        /* $return = array('success' => false, 'serverError' => false, 'message' => "La date de naissance ne doît pas être vide");
-                          $response = new Response(json_encode($return));
-                          $response->headers->set('Content-Type', 'application/json');
-                          return $response; */
-                        $datenaissance = null;
-                    }
-                    //Si le prenom est vide
-                    if ($prenom == "") {
-                        //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
-                        /* $return = array('success' => false, 'serverError' => false, 'message' => "Le prénom ne doît pas être vide");
-                          $response = new Response(json_encode($return));
-                          $response->headers->set('Content-Type', 'application/json');
-                          return $response; */
-                        $prenom = null;
-                    }
-                    //Si le telephone est vide
-                    if ($telephone == "") {
-                        //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
-                        /* $return = array('success' => false, 'serverError' => false, 'message' => "Le telephone ne doît pas être vide");
-                          $response = new Response(json_encode($return));
-                          $response->headers->set('Content-Type', 'application/json');
-                          return $response; */
-                        $telephone = null;
-                    }
-
-                    if ($datenaissance != null) {
-                        $datenaissance = DateTime::createFromFormat('d/m/Y', $datenaissance);
-                        $date_errors = DateTime::getLastErrors();
-                        if ($date_errors['warning_count'] + $date_errors['error_count'] > 0) {
-                            $return = array('success' => false, 'serverError' => false, 'message' => "Le format de la date est invalide");
-                            $response = new Response(json_encode($return));
-                            $response->headers->set('Content-Type', 'application/json');
-                            return $response;
-                        }
-                    }
+				//Si le role est null
+				if (is_null($role)) {
+					//success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
+					$return = array('success' => false, 'serverError' => false, 'message' => "Le role spécifié est introuvable");
+					$response = new Response(json_encode($return));
+					$response->headers->set('Content-Type', 'application/json');
+					return $response;
+				}
 
 
-                    $user->setEmail($email);
-                    $user->setNom($nom);
-                    $user->setPrenom($prenom);
-                    $user->setDatenaissance($datenaissance);
-                    $user->setTelephone($telephone);
+				//Si le nom est vide
+				if ($nom == "") {
+					//success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
+					/* $return = array('success' => false, 'serverError' => false, 'message' => "Le nom ne doît pas être vide");
+					  $response = new Response(json_encode($return));
+					  $response->headers->set('Content-Type', 'application/json');
+					  return $response; */
+					$nom = null;
+				}
+				//Si la date de naissance est vide
+				if ($datenaissance == "") {
+					//success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
+					/* $return = array('success' => false, 'serverError' => false, 'message' => "La date de naissance ne doît pas être vide");
+					  $response = new Response(json_encode($return));
+					  $response->headers->set('Content-Type', 'application/json');
+					  return $response; */
+					$datenaissance = null;
+				}
+				//Si le prenom est vide
+				if ($prenom == "") {
+					//success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
+					/* $return = array('success' => false, 'serverError' => false, 'message' => "Le prénom ne doît pas être vide");
+					  $response = new Response(json_encode($return));
+					  $response->headers->set('Content-Type', 'application/json');
+					  return $response; */
+					$prenom = null;
+				}
+				//Si le telephone est vide
+				if ($telephone == "") {
+					//success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
+					/* $return = array('success' => false, 'serverError' => false, 'message' => "Le telephone ne doît pas être vide");
+					  $response = new Response(json_encode($return));
+					  $response->headers->set('Content-Type', 'application/json');
+					  return $response; */
+					$telephone = null;
+				}
+
+				if ($datenaissance != null) {
+					$datenaissance = DateTime::createFromFormat('d/m/Y', $datenaissance);
+					$date_errors = DateTime::getLastErrors();
+					if ($date_errors['warning_count'] + $date_errors['error_count'] > 0) {
+						$return = array('success' => false, 'serverError' => false, 'message' => "Le format de la date est invalide");
+						$response = new Response(json_encode($return));
+						$response->headers->set('Content-Type', 'application/json');
+						return $response;
+					}
+				}
 
 
-                    // On définit le rôle de l'utilisateur (récupéré dans la base de donnée)
-                    $user->setRole($role);
+				$user->setEmail($email);
+				$user->setNom($nom);
+				$user->setPrenom($prenom);
+				$user->setDatenaissance($datenaissance);
+				$user->setTelephone($telephone);
 
-                    //On déclenche l'enregistrement dans la base de données
-                    $manager->flush();
 
-                    //On ajoute les modifications dans le serveur d'authentification (juste l'email)
-                    $clientSOAP = new SoapClient(null, array(
-                        'uri' => $this->container->getParameter("auth_server_host"),
-                        'location' => $this->container->getParameter("auth_server_host"),
-                        'trace' => 1,
-                        'exceptions' => 1
-                    ));
+				// On définit le rôle de l'utilisateur (récupéré dans la base de donnée)
+				$user->setRole($role);
 
-                    //On appel la méthode du webservice qui permet de modifier l'état de l'utilisateur
-                    $response = $clientSOAP->__call('updateUser', array('id' => CustomCrypto::encrypt($user->getId()), 'email' => CustomCrypto::encrypt($user->getEmail()), 'server' => CustomCrypto::encrypt($_SERVER['SERVER_ADDR'])));
-                    //L'utilisateur n'existe pas dans la base de données du serveur d'authentification
+				//On déclenche l'enregistrement dans la base de données
+				$manager->flush();
 
-                    if ($response['error'] == true) {
-                        $return = array('success' => false, 'serverError' => false, 'message' => $response['message']);
-                        $response = new Response(json_encode($return));
-                        $response->headers->set('Content-Type', 'application/json');
-                        return $response;
-                    }
+				//On ajoute les modifications dans le serveur d'authentification (juste l'email)
+				$clientSOAP = new SoapClient(null, array(
+					'uri' => $this->container->getParameter("auth_server_host"),
+					'location' => $this->container->getParameter("auth_server_host"),
+					'trace' => 1,
+					'exceptions' => 1
+				));
 
-                    //Tout s'est déroulé correctement
-                    $return = array('success' => true, 'serverError' => false, 'message' => "L'utilisateur a été mis à jour");
-                    $response = new Response(json_encode($return));
-                    $response->headers->set('Content-Type', 'application/json');
-                    return $response;
-                }
+				//On appel la méthode du webservice qui permet de modifier l'état de l'utilisateur
+				$response = $clientSOAP->__call('updateUser', array('id' => CustomCrypto::encrypt($user->getId()), 'email' => CustomCrypto::encrypt($user->getEmail()), 'server' => CustomCrypto::encrypt($_SERVER['SERVER_ADDR'])));
+				//L'utilisateur n'existe pas dans la base de données du serveur d'authentification
+
+				if ($response['error'] == true) {
+					$return = array('success' => false, 'serverError' => false, 'message' => $response['message']);
+					$response = new Response(json_encode($return));
+					$response->headers->set('Content-Type', 'application/json');
+					return $response;
+				}
+
+				//Tout s'est déroulé correctement
+				$return = array('success' => true, 'serverError' => false, 'message' => "L'utilisateur a été mis à jour");
+				$response = new Response(json_encode($return));
+				$response->headers->set('Content-Type', 'application/json');
+				return $response;
+					
             } catch (Exception $e) {
                 $return = array('success' => false, 'serverError' => true, 'message' => $e->getMessage());
                 $response = new Response(json_encode($return));
@@ -858,13 +824,16 @@ class UserController extends Controller {
     //Affichage du formulaire d'ajout d'un utilisateur
     //Affichage de la liste des membres
     public function annuaireAction() {
-
+		$this->testDeDroits('Annuaire');
+		
         $content = $this->get("templating")->render("SiteTrailBundle:User:annuaire.html.twig");
 
         return new Response($content);
     }
 
     public function uploadAvatarAction() {
+		$this->testDeDroits('Administration');
+		
         //Sauvegarde du fichier   
         $target_dir = $this->container->getParameter("upload_directory");
         $target_file = $target_dir . basename($_FILES["fichier"]["name"]);
@@ -940,5 +909,29 @@ class UserController extends Controller {
             }
         }
     }
+	
+	public function testDeDroits($permission)
+	{
+		$manager = $this->getDoctrine()->getManager();
+		
+		$repository_permissions = $manager->getRepository("SiteTrailBundle:Permission");
+		
+		$permissions = $repository_permissions->findOneBy(array('label' => $permission));
+
+		if(Count($permissions->getRole()) != 0)
+		{
+			$list_role = array();
+			foreach($permissions->getRole() as $role)
+			{
+				array_push($list_role, 'ROLE_'.$role->getLabel());
+			}
+			
+			// Test l'accès de l'utilisateur
+			if(!$this->isGranted($list_role))
+			{
+				throw $this->createNotFoundException("Vous n'avez pas acces a cette page");
+			}
+		}
+	}
 
 }

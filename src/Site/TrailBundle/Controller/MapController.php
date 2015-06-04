@@ -24,7 +24,7 @@ class MapController extends Controller
 {
     public function indexAction()
     {
-		
+		$this->testDeDroits('Carte');
 		
         $content = $this->get("templating")->render("SiteTrailBundle:Map:index.html.twig");
         
@@ -34,6 +34,8 @@ class MapController extends Controller
 
     public function createRouteAction(Request $request)
     {
+		$this->testDeDroits('Carte');
+		
       if ($request->isXMLHttpRequest()) 
       {
         $manager=$this->getDoctrine()->getManager();
@@ -66,6 +68,8 @@ class MapController extends Controller
 
     public function createPoiAction(Request $request)
     {
+		$this->testDeDroits('Carte');
+		
       /*if ($request->isXMLHttpRequest()) 
       {*/
         $manager=$this->getDoctrine()->getManager();
@@ -92,12 +96,15 @@ class MapController extends Controller
         $manager->flush();
         return new JsonResponse(array('data' => 'Poi Crée'),200);
       }
-/*
+	  
+	/*
       return new Response('This is not ajax!', 400);
     }*/
 	
 	public function uploadAction()
 	{		
+		$this->testDeDroits('Carte');
+	
 		$content = $this->get("templating")->render("SiteTrailBundle:Map:upload.html.twig");
 		return new Response($content);
 	}
@@ -105,6 +112,8 @@ class MapController extends Controller
 
     public function saveTypelieuAction()
     {  
+		$this->testDeDroits('Carte');
+		
         if ($this->get('security.context')->isGranted('ROLE_Administrateur')) 
         {     
             $content = $this->get("templating")->render("SiteTrailBundle:Map:saveTypelieu.html.twig");
@@ -115,6 +124,30 @@ class MapController extends Controller
            throw $this->createNotFoundException("Vous n'avez pas accès à cette page.");
         }
     }
+	
+	public function testDeDroits($permission)
+	{
+		$manager = $this->getDoctrine()->getManager();
+		
+		$repository_permissions = $manager->getRepository("SiteTrailBundle:Permission");
+		
+		$permissions = $repository_permissions->findOneBy(array('label' => $permission));
+
+		if(Count($permissions->getRole()) != 0)
+		{
+			$list_role = array();
+			foreach($permissions->getRole() as $role)
+			{
+				array_push($list_role, 'ROLE_'.$role->getLabel());
+			}
+			
+			// Test l'accès de l'utilisateur
+			if(!$this->isGranted($list_role))
+			{
+				throw $this->createNotFoundException("Vous n'avez pas acces a cette page");
+			}
+		}
+	}
 }
 
 /* 

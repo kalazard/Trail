@@ -17,6 +17,8 @@ class HomeController extends Controller
     //Affichage de la page d'accueil
     public function indexAction()
     {
+		$this->testDeDroits('Accueil');
+	
 		// Récupère le manager de doctrine
 		$manager = $this->getDoctrine()->getManager();
 		
@@ -90,6 +92,8 @@ class HomeController extends Controller
 	
 	public function clubAction()
     {
+		$this->testDeDroits('LeClub');
+		
         // Récupère le manager de doctrine
 		$manager = $this->getDoctrine()->getManager();
 		
@@ -108,6 +112,8 @@ class HomeController extends Controller
 	
 	public function trailAction()
     {
+		$this->testDeDroits('LeTrail');
+		
         // Récupère le manager de doctrine
 		$manager = $this->getDoctrine()->getManager();
 		
@@ -126,6 +132,8 @@ class HomeController extends Controller
 	
 	public function contactAction()
     {
+		$this->testDeDroits('Contact');
+		
         $content = $this->get("templating")->render("SiteTrailBundle:Home:contact.html.twig"); 
         return new Response($content);
     }
@@ -149,7 +157,7 @@ class HomeController extends Controller
 			// Test l'accès de l'utilisateur
 			if(!$this->isGranted($list_role))
 			{
-				throw $this->createNotFoundException("Vous n'avez pas accès à cette page");
+				throw $this->createNotFoundException("Vous n'avez pas acces a cette page");
 			}
 		}
 	}

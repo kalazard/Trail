@@ -15,6 +15,8 @@ class IcsController extends Controller
 {
     public function indexAction($id, $dateDebut='', $dateFin='')
     {
+		$this->testDeDroits('Calendrier');
+		
         //Cas où on clique sur le lien télécharger le calendrier dans le site
         if($id == "default")
         {
@@ -48,7 +50,9 @@ class IcsController extends Controller
     
     public function icsFormAction(Request $request)
     { 
-        if($request->isXmlHttpRequest() && $this->getUser())
+		$this->testDeDroits('Calendrier');
+		
+        if($request->isXmlHttpRequest())
         {
             $content = $this->get("templating")->render("SiteTrailBundle:Event:icsForm.html.twig");
         
@@ -56,7 +60,7 @@ class IcsController extends Controller
         }
         else
         {
-            throw new NotFoundHttpException('Impossible de trouver la page demandée');
+				throw $this->createNotFoundException("Vous n'avez pas acces a cette page");
         }
         
     }

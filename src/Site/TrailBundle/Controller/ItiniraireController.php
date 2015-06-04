@@ -14,6 +14,8 @@ class ItiniraireController extends Controller
 {
 	public function listAction()
 	{
+		$this->testDeDroits('Itinéraires');
+		
 		$clientSOAP = new \SoapClient(null, array(
                     'uri' => "http://localhost/Carto/web/app_dev.php/itineraire",
                     'location' => "http://localhost/Carto/web/app_dev.php/itineraire",
@@ -31,6 +33,7 @@ class ItiniraireController extends Controller
 	
 	public function searchAction(Request $request)
 	{
+		$this->testDeDroits('Itinéraires');
 		
 		$clientSOAP = new \SoapClient(null, array(
                     'uri' => "http://localhost/Carto/web/app_dev.php/itineraire",
@@ -84,6 +87,8 @@ class ItiniraireController extends Controller
 
 	public function saveRouteAction(Request $request)
     {
+		$this->testDeDroits('Itinéraires');
+		
       if ($request->isXMLHttpRequest()) 
       {
       	$clientSOAPDiff = new \SoapClient(null, array(
@@ -127,6 +132,7 @@ class ItiniraireController extends Controller
 
 	public function getByIdAction($id)
 	{
+		$this->testDeDroits('Itinéraires');
         	//Appel du service de recherche
         	$search = array();		
 			$search["id"] = $id;
@@ -158,6 +164,8 @@ class ItiniraireController extends Controller
 
 	public function getByUserAction($user)
 	{
+		$this->testDeDroits('Itinéraires');
+		
 		$clientSOAP = new \SoapClient(null, array(
                     'uri' => "http://localhost/Carto/web/app_dev.php/itineraire",
                     'location' => "http://localhost/Carto/web/app_dev.php/itineraire",
@@ -174,6 +182,8 @@ class ItiniraireController extends Controller
 
 	public function updateAction(Request $request)
     {
+		$this->testDeDroits('Itinéraires');
+		
       if ($request->isXMLHttpRequest()) 
       {
       	//Appel du service de sauvegarde
@@ -214,6 +224,8 @@ class ItiniraireController extends Controller
 
     public function deleteAction(Request $request)
     {
+		$this->testDeDroits('Itinéraires');
+		
       if ($request->isXMLHttpRequest()) 
       {
       	//Appel du service de sauvegarde
@@ -236,6 +248,8 @@ class ItiniraireController extends Controller
 
     public function getFormDataAction(Request $request)
     {
+		$this->testDeDroits('Itinéraires');
+		
     	//Chargement de la liste des difficultés dans le select
 		$clientSOAPDiff = new \SoapClient(null, array(
                     'uri' => "http://localhost/Carto/web/app_dev.php/itineraire",
@@ -271,6 +285,30 @@ class ItiniraireController extends Controller
 		$resType = json_decode($responseType);
 		return new JsonResponse(array("diffs" => $resDiff,"stats" => $resStat,"typechemin" => $resType));
     }
+	
+	public function testDeDroits($permission)
+	{
+		$manager = $this->getDoctrine()->getManager();
+		
+		$repository_permissions = $manager->getRepository("SiteTrailBundle:Permission");
+		
+		$permissions = $repository_permissions->findOneBy(array('label' => $permission));
+
+		if(Count($permissions->getRole()) != 0)
+		{
+			$list_role = array();
+			foreach($permissions->getRole() as $role)
+			{
+				array_push($list_role, 'ROLE_'.$role->getLabel());
+			}
+			
+			// Test l'accès de l'utilisateur
+			if(!$this->isGranted($list_role))
+			{
+				throw $this->createNotFoundException("Vous n'avez pas acces a cette page");
+			}
+		}
+	}
 
 }
 

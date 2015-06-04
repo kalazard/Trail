@@ -23,6 +23,8 @@ class EvenementController extends Controller
     //Retourne l'événement l'objet evenement et l'objet de sa categorie
     public static function getEvenementEtEvenementDeCategorie($manager, $idClasse, $idEvenementDeClasse)
     {
+		$this->testDeDroits('Calendrier');
+		
         //On récupère l'événement de la catégorie
         switch ($idClasse)
         {
@@ -59,6 +61,8 @@ class EvenementController extends Controller
     
     public static function getEventFrom($idUser, $em, $dateDebut='', $dateFin='')
     {
+		$this->testDeDroits('Calendrier');
+		
         $listeEvenement = array();
         $listeEntrainement = array();
         $listeEntrainementPersonnel = array();
@@ -275,39 +279,36 @@ class EvenementController extends Controller
     //Affiche le calendrier
     public function indexAction()
     {
-        if($this->getUser())
-        {
-            $idUser = $this->getUser()->getId();            
-            $listeEvenement = EvenementController::getEventFrom($idUser, $this->getDoctrine()->getManager());
-            /*}
-            else
-            {
-                $listeEvenement = EvenementController::getEventFrom(0, $this->getDoctrine()->getManager());
+		$this->testDeDroits('Calendrier');
+		
+		$idUser = $this->getUser()->getId();            
+		$listeEvenement = EvenementController::getEventFrom($idUser, $this->getDoctrine()->getManager());
+		/*}
+		else
+		{
+			$listeEvenement = EvenementController::getEventFrom(0, $this->getDoctrine()->getManager());
 
-                //On retire les événements qui ne sont pas disponibles pour les non connectés
-                $listeEvenement[0] = array();
-                $listeEvenement[1] = array();
-                $listeEvenement[2] = array();
-                $listeEvenement[4] = array();
-            }*/
+			//On retire les événements qui ne sont pas disponibles pour les non connectés
+			$listeEvenement[0] = array();
+			$listeEvenement[1] = array();
+			$listeEvenement[2] = array();
+			$listeEvenement[4] = array();
+		}*/
 
-            //On transforme les résultats en json            
-            $listeEvenementJson = json_encode($listeEvenement);
+		//On transforme les résultats en json            
+		$listeEvenementJson = json_encode($listeEvenement);
 
-            $view = $this->get("templating")->render("SiteTrailBundle:Event:calendrier.html.twig", array(
-                                                                'listeEvenement' => $listeEvenementJson));
+		$view = $this->get("templating")->render("SiteTrailBundle:Event:calendrier.html.twig", array(
+															'listeEvenement' => $listeEvenementJson));
 
-            return new Response($view);
-        }
-        else
-        {
-            throw new NotFoundHttpException('Impossible de trouver la page demandée');
-        }
+		return new Response($view);
     }
     
     public function showFormAddEventAction(Request $request)
     {
-        if($request->isXmlHttpRequest() && $this->getUser())
+		$this->testDeDroits('Calendrier');
+		
+        if($request->isXmlHttpRequest())
         {
             $dateCliquee = $request->request->get('dateCliquee', '');
             $idUser = $this->getUser()->getId();
@@ -547,6 +548,8 @@ class EvenementController extends Controller
     
     public function afficherDetailEvenementAction(Request $request)
     {
+		$this->testDeDroits('Calendrier');
+		
         if($request->isXmlHttpRequest())
         {
             $idClasse = $request->request->get('idClasse', '');
@@ -657,7 +660,9 @@ class EvenementController extends Controller
     
     public function supprEvenementAction(Request $request)
     {
-        if($request->isXmlHttpRequest() && $this->getUser())
+		$this->testDeDroits('Calendrier');
+		
+        if($request->isXmlHttpRequest())
         {
             $idClasse = $request->request->get('idClasse', '');
             $idEvenementDeClasse = $request->request->get('idObj', '');
@@ -737,7 +742,9 @@ class EvenementController extends Controller
     
     public function modifEvenementAction(Request $request)
     {
-        if($request->isXmlHttpRequest() && $this->getUser())
+		$this->testDeDroits('Calendrier');
+		
+        if($request->isXmlHttpRequest())
         {   
             $idUser = $this->getUser()->getId();
             $idClasse = $request->request->get('idClasse', '4');
@@ -989,6 +996,8 @@ class EvenementController extends Controller
     
     public function checkDateAction(Request $request)
     {
+		$this->testDeDroits('Calendrier');
+		
         $anneeD = $request->request->get('anneeD', '');
         $moisD = $request->request->get('moisD', '');
         $jourD = $request->request->get('jourD', '');
@@ -1019,6 +1028,8 @@ class EvenementController extends Controller
     
     public function eventSearchFormAction()
     {
+		$this->testDeDroits('Calendrier');
+		
         $typeEvent = "";
         
         if($this->getUser())
@@ -1046,135 +1057,127 @@ class EvenementController extends Controller
     
     public function eventSearchAction(Request $request)
     {
-        $textDebug = "";
-        
-        if($request->isXmlHttpRequest())
-        {
-            $onCherchePar = $request->request->get('searchType', '');
-            $resultats = array();
-            
-            switch($onCherchePar)
-            {
-                case 'type':
-                    $typesEvenement = $request->request->get('type', '');                    
-                    $resultats = EvenementController::getEventFrom(0, $this->getDoctrine()->getManager());
-                    
-                    if(!(in_array("0", $typesEvenement)))
-                    {
-                        foreach($resultats as $type => $evenement)
-                        {
-                            if(!(in_array($type+1, $typesEvenement)))
-                            {
-                                $resultats[$type] = array();
-                            }
-                        }
-                    }       
-                    
-                    break;
-                case 'date':
-                    $interDebut = new \DateTime($request->request->get('dateDebut', ''));
-                    $interFin = new \DateTime($request->request->get('dateFin', ''));
-                    $resultats = EvenementController::getEventFrom(0, $this->getDoctrine()->getManager(), $interDebut, $interFin);
-                    break;
-                case 'typeEtDate':
-                    $typesEvenement = $request->request->get('type', '');
-                    $interDebut = new \DateTime($request->request->get('dateDebut', ''));
-                    $interFin = new \DateTime($request->request->get('dateFin', ''));
-                    $resultats = EvenementController::getEventFrom(0, $this->getDoctrine()->getManager(), $interDebut, $interFin);
-                    
-                    if(!(in_array("0", $typesEvenement)))
-                    {
-                        foreach($resultats as $type => $evenement)
-                        {
-                            if(!(in_array($type+1, $typesEvenement)))
-                            {
-                                $resultats[$type] = array();
-                            }
-                        }
-                    }  
-                    
-                    break;
-            }
-            
-            $resultatsJson = json_encode($resultats);            
-            
-            return new Response($resultatsJson);
-        }
-        else
-        {
-            throw new NotFoundHttpException('Impossible de trouver la page demandée');
-        }
+        $this->testDeDroits('Calendrier');
+		
+        if(!$request->isXmlHttpRequest()) show_404();
+		
+		$textDebug = "";
+		$onCherchePar = $request->request->get('searchType', '');
+		$resultats = array();
+		
+		switch($onCherchePar)
+		{
+			case 'type':
+				$typesEvenement = $request->request->get('type', '');                    
+				$resultats = EvenementController::getEventFrom(0, $this->getDoctrine()->getManager());
+				
+				if(!(in_array("0", $typesEvenement)))
+				{
+					foreach($resultats as $type => $evenement)
+					{
+						if(!(in_array($type+1, $typesEvenement)))
+						{
+							$resultats[$type] = array();
+						}
+					}
+				}       
+				
+				break;
+			case 'date':
+				$interDebut = new \DateTime($request->request->get('dateDebut', ''));
+				$interFin = new \DateTime($request->request->get('dateFin', ''));
+				$resultats = EvenementController::getEventFrom(0, $this->getDoctrine()->getManager(), $interDebut, $interFin);
+				break;
+			case 'typeEtDate':
+				$typesEvenement = $request->request->get('type', '');
+				$interDebut = new \DateTime($request->request->get('dateDebut', ''));
+				$interFin = new \DateTime($request->request->get('dateFin', ''));
+				$resultats = EvenementController::getEventFrom(0, $this->getDoctrine()->getManager(), $interDebut, $interFin);
+				
+				if(!(in_array("0", $typesEvenement)))
+				{
+					foreach($resultats as $type => $evenement)
+					{
+						if(!(in_array($type+1, $typesEvenement)))
+						{
+							$resultats[$type] = array();
+						}
+					}
+				}  
+				
+				break;
+		}
+		
+		$resultatsJson = json_encode($resultats);            
+		
+		return new Response($resultatsJson);
     }
     
     public function demandeParticipationAction(Request $request)
     {
-        if($request->isXmlHttpRequest())
-        {
-            $manager = $this->getDoctrine()->getManager();   
-            $idUser = $this->getUser()->getId();
-            $repository = $manager->getRepository("SiteTrailBundle:Membre");
-            $user = $repository->findOneById($idUser);
-            $idEvenement = $request->request->get('idEvenement', '');
-            $repository = $manager->getRepository("SiteTrailBundle:Evenement");
-            $event = $repository->findOneById($idEvenement);       
-            $repository = $manager->getRepository("SiteTrailBundle:Participants");
-            $participant = $repository->findOneBy(array('membre' => $user, 'evenement' => $event));
-            
-            if($participant)
-            {
-                return $this->redirect($this->generateUrl('site_trail_evenement'));
-            }
-            
-            $participation = new Participation();
-            $participation->setEtatinscription('enattente');
-            $participation->setDivers('');
-            $participation->setResultat('');
-            $manager->persist($participation);
-            $manager->flush();
-            
-            $participant = new Participants();
-            $participant->setEvenement($event);
-            $participant->setMembre($user);
-            $participant->setParticipation($participation);
-            $manager->persist($participant);
-            $manager->flush();
-            
-            return new Response("");
-        }
-        else
-        {
-            throw new NotFoundHttpException('Impossible de trouver la page demandée');
-        }
+        $this->testDeDroits('Calendrier');
+		
+        if(!$request->isXmlHttpRequest()) show_404();
+		
+		$manager = $this->getDoctrine()->getManager();   
+		$idUser = $this->getUser()->getId();
+		$repository = $manager->getRepository("SiteTrailBundle:Membre");
+		$user = $repository->findOneById($idUser);
+		$idEvenement = $request->request->get('idEvenement', '');
+		$repository = $manager->getRepository("SiteTrailBundle:Evenement");
+		$event = $repository->findOneById($idEvenement);       
+		$repository = $manager->getRepository("SiteTrailBundle:Participants");
+		$participant = $repository->findOneBy(array('membre' => $user, 'evenement' => $event));
+		
+		if($participant)
+		{
+			return $this->redirect($this->generateUrl('site_trail_evenement'));
+		}
+		
+		$participation = new Participation();
+		$participation->setEtatinscription('enattente');
+		$participation->setDivers('');
+		$participation->setResultat('');
+		$manager->persist($participation);
+		$manager->flush();
+		
+		$participant = new Participants();
+		$participant->setEvenement($event);
+		$participant->setMembre($user);
+		$participant->setParticipation($participation);
+		$manager->persist($participant);
+		$manager->flush();
+		
+		return new Response("");
     }
     
     public function retirerParticipationAction(Request $request)
     {
-        if($request->isXmlHttpRequest())
-        {
-            $manager = $this->getDoctrine()->getManager();   
-            $idUser = $this->getUser()->getId();
-            $repository = $manager->getRepository("SiteTrailBundle:Membre");
-            $user = $repository->findOneById($idUser);
-            $idEvenement = $request->request->get('idEvenement', '');
-            $repository = $manager->getRepository("SiteTrailBundle:Evenement");
-            $event = $repository->findOneById($idEvenement);       
-            $repository = $manager->getRepository("SiteTrailBundle:Participants");
-            $participant = $repository->findOneBy(array('membre' => $user, 'evenement' => $event));
-            $repository = $manager->getRepository("SiteTrailBundle:Participation");
-            $participation = $repository->findOneBy(array('id' => $participant->getParticipation()->getId()));            
-            $manager->remove($participant);
-            $manager->remove($participation);
-            $manager->flush();
-            return new Response("");
-        }
-        else
-        {
-            throw new NotFoundHttpException('Impossible de trouver la page demandée');
-        }
+		$this->testDeDroits('Calendrier');
+		
+        if(!$request->isXmlHttpRequest()) show_404();
+		
+		$manager = $this->getDoctrine()->getManager();   
+		$idUser = $this->getUser()->getId();
+		$repository = $manager->getRepository("SiteTrailBundle:Membre");
+		$user = $repository->findOneById($idUser);
+		$idEvenement = $request->request->get('idEvenement', '');
+		$repository = $manager->getRepository("SiteTrailBundle:Evenement");
+		$event = $repository->findOneById($idEvenement);       
+		$repository = $manager->getRepository("SiteTrailBundle:Participants");
+		$participant = $repository->findOneBy(array('membre' => $user, 'evenement' => $event));
+		$repository = $manager->getRepository("SiteTrailBundle:Participation");
+		$participation = $repository->findOneBy(array('id' => $participant->getParticipation()->getId()));            
+		$manager->remove($participant);
+		$manager->remove($participation);
+		$manager->flush();
+		return new Response("");
     }
     
     public function gererParticipationAction(Request $request)
     {
+		$this->testDeDroits('Calendrier');
+		
         $manager = $this->getDoctrine()->getManager();            
         $idEvenement = $request->get('idEvenement');       
         $qb = $manager->createQueryBuilder();
@@ -1243,6 +1246,8 @@ class EvenementController extends Controller
     
     function updateParticipationAction(Request $request)
     {
+		$this->testDeDroits('Calendrier');
+		
         $manager = $this->getDoctrine()->getManager();  
         $listeParticipation = $request->request->get('part', '');
         $idEvenement = $request->request->get('idEvenement', '');
@@ -1261,4 +1266,28 @@ class EvenementController extends Controller
         
         return $this->redirect($this->generateUrl('site_trail_evenement'));
     }
+	
+	public function testDeDroits($permission)
+	{
+		$manager = $this->getDoctrine()->getManager();
+		
+		$repository_permissions = $manager->getRepository("SiteTrailBundle:Permission");
+		
+		$permissions = $repository_permissions->findOneBy(array('label' => $permission));
+
+		if(Count($permissions->getRole()) != 0)
+		{
+			$list_role = array();
+			foreach($permissions->getRole() as $role)
+			{
+				array_push($list_role, 'ROLE_'.$role->getLabel());
+			}
+			
+			// Test l'accès de l'utilisateur
+			if(!$this->isGranted($list_role))
+			{
+				throw $this->createNotFoundException("Vous n'avez pas acces a cette page");
+			}
+		}
+	}
 }

@@ -4,21 +4,12 @@
 
 {% block body %}
 <div class="container">
-  <h1>Liste des news</h1>
+	<h1>Administration</h1>
 	<div class="content">
-		<table class="table table-striped sieve">
-			<thead>
-				<tr>
-					<th>Titre</th>
-					<th>Auteur</th>
-					<th>Date</th>
-					<th></th>
-					<th></th>
-				</tr>
-			</thead>
-			<tbody>
-			</tbody>
-		</table>
+		<ul>
+			<li><a href="{{path('site_trail_acl')}}">- Gestion des Permissions</a></li><br />
+			<li><a href="{{path('site_trail_news_list')}}">- Gestion des News</a></li>
+		</ul>
 	</div>
 </div>
 {% endblock %}

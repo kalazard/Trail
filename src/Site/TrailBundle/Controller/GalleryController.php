@@ -25,15 +25,6 @@ class GalleryController extends Controller
 			->distinct()
             ->setFirstResult($indStart)
             ->setMaxResults(5);
-		
-		/*$repository = $manager->getRepository("SiteTrailBundle:Categorie");
-        $qb = $manager->createQueryBuilder();
-        $qb->select('cat')
-            ->from('SiteTrailBundle:Categorie', 'cat')
-			->where('cat.id in ('.implode(',',$list_id_categ).')')
-            ->orderBy('cat.label', 'ASC')
-            ->setFirstResult($indStart)
-            ->setMaxResults(5);*/
 
         $query = $qb->getQuery();
         $listCategories = $query->getResult();      
@@ -43,55 +34,52 @@ class GalleryController extends Controller
     
     public function indexAction(Request $request)
     {
-        if($this->getUser())
-        {
-            $manager = $this->getDoctrine()->getManager();
-            $indStart = $request->get('indStart');  
-            $numPage = ($indStart/5)+1;
+		$this->testDeDroits('Gallerie');
+	
+		$manager = $this->getDoctrine()->getManager();
+		$indStart = $request->get('indStart');  
+		$numPage = ($indStart/5)+1;
 
-            $listeCategorie = GalleryController::getTheCategories($indStart);
+		$listeCategorie = GalleryController::getTheCategories($indStart);
 
-            $listeImage = array();
-            $result_categ = array();
+		$listeImage = array();
+		$result_categ = array();
 
-            //récupération des 4 premières images de la catégorie
-            foreach($listeCategorie as $categorie)
-            {
-                $qb = $manager->createQueryBuilder();
-                $qb->select('img')
-                    ->from('SiteTrailBundle:Image', 'img')
-                    ->where('img.categorie = :idCategorie')
-                    ->orderBy('img.id', 'DESC')
-                    ->setParameter('idCategorie', $categorie->getId())
-                    ->setMaxResults(4);
+		//récupération des 4 premières images de la catégorie
+		foreach($listeCategorie as $categorie)
+		{
+			$qb = $manager->createQueryBuilder();
+			$qb->select('img')
+				->from('SiteTrailBundle:Image', 'img')
+				->where('img.categorie = :idCategorie')
+				->orderBy('img.id', 'DESC')
+				->setParameter('idCategorie', $categorie->getId())
+				->setMaxResults(4);
 
-                $query = $qb->getQuery();
+			$query = $qb->getQuery();
 
-                $listeImage[] = $query->getResult();
-            }
-        
-            /*$reqNb = "SELECT count(cat) FROM SiteTrailBundle:Categorie cat";
-            $queryNb = $manager->createQuery($reqNb);
-            $nbCategorie = $queryNb->getSingleScalarResult(); */
+			$listeImage[] = $query->getResult();
+		}
+	
+		/*$reqNb = "SELECT count(cat) FROM SiteTrailBundle:Categorie cat";
+		$queryNb = $manager->createQuery($reqNb);
+		$nbCategorie = $queryNb->getSingleScalarResult(); */
 
-            $nbCategorie = sizeof($listeCategorie);
+		$nbCategorie = sizeof($listeCategorie);
 
-            $content = $this->get("templating")->render("SiteTrailBundle:Gallery:index.html.twig", array(
-                                                            'listeCategorie' => $listeCategorie,
-                                                            'listeImage' => $listeImage,
-                                                            'nbCategorie' => $nbCategorie,
-                                                            'numPage' => $numPage
-                                                        ));
-            return new Response($content);
-        }
-        else
-        {
-            throw new NotFoundHttpException('Impossible de trouver la page demandée');
-        }
+		$content = $this->get("templating")->render("SiteTrailBundle:Gallery:index.html.twig", array(
+														'listeCategorie' => $listeCategorie,
+														'listeImage' => $listeImage,
+														'nbCategorie' => $nbCategorie,
+														'numPage' => $numPage
+													));
+		return new Response($content);
     }
 	
     public function categoryAction(Request $request, $idCategorie)
     {
+		$this->testDeDroits('Gallerie');
+		
         $manager = $this->getDoctrine()->getManager();
         $repository = $manager->getRepository("SiteTrailBundle:Categorie");
         $categorie = $repository->findOneById($idCategorie);
@@ -128,6 +116,8 @@ class GalleryController extends Controller
 	
     public function pictureAction(Request $request)
     {
+		$this->testDeDroits('Gallerie');
+		
         $idPicture = $request->get('idPicture');        
         $manager = $this->getDoctrine()->getManager();
         $repository = $manager->getRepository("SiteTrailBundle:Image");
@@ -154,121 +144,112 @@ class GalleryController extends Controller
     
     public function categorieAjoutAction(Request $request)
     {
-        if($request->isXmlHttpRequest() && $this->getUser() && $this->getUser()->getRole()->getId() == 1)
-        {
-            $categorie = new Categorie();
-            $formBuilder = $this->get('form.factory')->createBuilder('form', $categorie);
-            $formBuilder
-                    ->setAction($this->generateUrl('site_trail_category_ajout'))
-                    ->add('label', 'text', array('max_length' => 255));
-            
-            $form = $formBuilder->getForm();
-            $form->handleRequest($request);
+		$this->testDeDroits('Gallerie');
 
-            $manager = $this->getDoctrine()->getManager();
-            
-            if ($form->isValid()) 
-            {
-                
-                
-                $repository = $manager->getRepository("SiteTrailBundle:Categorie");               
-                $manager->persist($categorie);
-                $manager->flush();
+		$categorie = new Categorie();
+		$formBuilder = $this->get('form.factory')->createBuilder('form', $categorie);
+		$formBuilder
+				->setAction($this->generateUrl('site_trail_category_ajout'))
+				->add('label', 'text', array('max_length' => 255));
+		
+		$form = $formBuilder->getForm();
+		$form->handleRequest($request);
 
-                return $this->redirect($this->generateUrl('site_trail_gallery'));
-            }
-            
-            $formulaire = $this->get("templating")->render("SiteTrailBundle:Gallery:formAddCategorie.html.twig", array(
-                                                                'form' => $form->createView()
-                                                            ));
+		$manager = $this->getDoctrine()->getManager();
+		
+		if ($form->isValid()) 
+		{
+			
+			
+			$repository = $manager->getRepository("SiteTrailBundle:Categorie");               
+			$manager->persist($categorie);
+			$manager->flush();
 
-            return new Response($formulaire);
-        }
-        else
-        {
-            throw new NotFoundHttpException('Impossible de trouver la page demandée');
-        }
+			return $this->redirect($this->generateUrl('site_trail_gallery'));
+		}
+		
+		$formulaire = $this->get("templating")->render("SiteTrailBundle:Gallery:formAddCategorie.html.twig", array(
+															'form' => $form->createView()
+														));
+
+		return new Response($formulaire);
     }
     
     public function categorieSuppressionAction(Request $request)
     {
-        if($request->isXmlHttpRequest() && $this->getUser()->getRole()->getId() == 1)
-        {
-            $idCategorie = $request->request->get('idCategorie', '');
-            $manager=$this->getDoctrine()->getManager();
+		$this->testDeDroits('Gallerie');
+		
+        if(!$request->isXmlHttpRequest()) show_404();
 
-            //On récupère l'objet catégorie
-            $repository=$manager->getRepository("SiteTrailBundle:Categorie");        
-            $categorie = $repository->findOneById($idCategorie);
+		$idCategorie = $request->request->get('idCategorie', '');
+		$manager=$this->getDoctrine()->getManager();
 
-            //On récupère les images liées à la catégorie
-            $repository=$manager->getRepository("SiteTrailBundle:Image"); 
-            $images = $repository->findBy(
-                array('categorie' => $idCategorie)
-            );
+		//On récupère l'objet catégorie
+		$repository=$manager->getRepository("SiteTrailBundle:Categorie");        
+		$categorie = $repository->findOneById($idCategorie);
 
-            foreach($images as $image)
-            {
-                $manager->remove($image);       
-            }
+		//On récupère les images liées à la catégorie
+		$repository=$manager->getRepository("SiteTrailBundle:Image"); 
+		$images = $repository->findBy(
+			array('categorie' => $idCategorie)
+		);
 
-            //Suppression de l'entité catégorie
-            $manager->remove($categorie);
-            $manager->flush();
+		foreach($images as $image)
+		{
+			$manager->remove($image);       
+		}
 
-            $request->getSession()->getFlashBag()->add('notice', 'Catégorie supprimé');
+		//Suppression de l'entité catégorie
+		$manager->remove($categorie);
+		$manager->flush();
 
-            return $this->redirect($this->generateUrl('site_trail_gallery'));
-        }
-        else
-        {
-            throw new NotFoundHttpException('Impossible de trouver la page demandée');
-        }
+		$request->getSession()->getFlashBag()->add('notice', 'Catégorie supprimé');
+
+		return $this->redirect($this->generateUrl('site_trail_gallery'));
     }
     
     public function CategorieModifAction(Request $request)
     {
-        if($request->isXmlHttpRequest() && $this->getUser()->getRole()->getId() == 1)
-        {      
-            $idCategorie = $request->request->get('idCategorie', '');
-            
-            $manager=$this->getDoctrine()->getManager();
-            $repository=$manager->getRepository("SiteTrailBundle:Categorie");        
-            $maCategorie = $repository->findOneById($idCategorie);
+		$this->testDeDroits('Gallerie');
+		
+        if(!$request->isXmlHttpRequest()) show_404();
+		
+		$idCategorie = $request->request->get('idCategorie', '');
+		
+		$manager=$this->getDoctrine()->getManager();
+		$repository=$manager->getRepository("SiteTrailBundle:Categorie");        
+		$maCategorie = $repository->findOneById($idCategorie);
 
-            $formBuilder = $this->get('form.factory')->createBuilder('form', $maCategorie);
-            $formBuilder
-                    ->setAction($this->generateUrl('site_trail_category_modification'))
-                    ->add('label', 'text', array('max_length' => 255,
-                                                    'data' => $maCategorie->getLabel()));
+		$formBuilder = $this->get('form.factory')->createBuilder('form', $maCategorie);
+		$formBuilder
+				->setAction($this->generateUrl('site_trail_category_modification'))
+				->add('label', 'text', array('max_length' => 255,
+												'data' => $maCategorie->getLabel()));
 
-            $form = $formBuilder->getForm();
-            $form->handleRequest($request);
+		$form = $formBuilder->getForm();
+		$form->handleRequest($request);
 
-            if ($form->isValid()) 
-            {
-                $manager = $this->getDoctrine()->getManager();
-                $manager->flush();
-                $request->getSession()->getFlashBag()->add('notice', 'Catégorie ajouté');
+		if ($form->isValid()) 
+		{
+			$manager = $this->getDoctrine()->getManager();
+			$manager->flush();
+			$request->getSession()->getFlashBag()->add('notice', 'Catégorie ajouté');
 
-                return $this->redirect($this->generateUrl('site_trail_gallery'));
-            }
-            
-            $formulaire = $this->get("templating")->render("SiteTrailBundle:Gallery:modifCategoryForm.html.twig", array(
-                                                                'categorie' => $maCategorie,
-                                                                'form' => $form->createView()
-                                                            ));
+			return $this->redirect($this->generateUrl('site_trail_gallery'));
+		}
+		
+		$formulaire = $this->get("templating")->render("SiteTrailBundle:Gallery:modifCategoryForm.html.twig", array(
+															'categorie' => $maCategorie,
+															'form' => $form->createView()
+														));
 
-            return new Response($formulaire);
-        }
-        else
-        {
-            throw new NotFoundHttpException('Impossible de trouver la page demandée');
-        }
+		return new Response($formulaire);
     }
     
     public function showAddPictureAction()
     {
+		$this->testDeDroits('Gallerie');
+		
         //Création du select contenant les catégories
         $manager = $this->getDoctrine()->getManager();
         $repository = $manager->getRepository("SiteTrailBundle:Categorie"); 
@@ -297,6 +278,8 @@ class GalleryController extends Controller
     
     public function addPictureAction(Request $request)
     {        
+		$this->testDeDroits('Gallerie');
+		
         //Sauvegarde du fichier   
         //$target_dir = "C:/testUp/";
         $target_dir = '';
@@ -422,53 +405,52 @@ class GalleryController extends Controller
     
     public function showUpdatePictureFormAction(Request $request)
     {
-        if($request->isXmlHttpRequest() && $this->getUser())
-        {
-            $idPicture = $request->request->get('idPicture', '');
-            $manager=$this->getDoctrine()->getManager();
-            $repository=$manager->getRepository("SiteTrailBundle:Image");        
-            $picture = $repository->findOneById($idPicture);
-            
-            $repository = $manager->getRepository("SiteTrailBundle:Categorie"); 
-            $listeCategorie = $repository->findAll();
-            $selectCategorie = '<div class="form-group">';
-            $selectCategorie .= '<div class="row">';
-            $selectCategorie .= '<label class="col-sm-3 control-label">Catégorie :</label>';
-            $selectCategorie .= '<div class="col-sm-9">';
-            $selectCategorie .= '<select name="categorie" class="form-control">';
-            
-            foreach($listeCategorie as $uneCategorie)
-            {
-                if($uneCategorie->getId() == $picture->getCategorie()->getId())
-                {
-                    $bonusSelected = " selected='selected'";
-                }
-                else
-                {
-                    $bonusSelected = "";
-                }
-                
-                $selectCategorie .= '<option value="'.$uneCategorie->getId().'"'.$bonusSelected.'>'.$uneCategorie->getLabel().'</option>';
-            }
-            $selectCategorie .= '</select>';
-            $selectCategorie .= '</div>';
-            $selectCategorie .= '</div>';
-            $selectCategorie .= '</div>';
-            
-            $content = $this->get("templating")->render("SiteTrailBundle:Gallery:updatePictureForm.html.twig", array(
-                                                                'picture' => $picture,
-                                                                'selectCategorie' => $selectCategorie
-                                                            ));
-            return new Response($content);
-        }
-        else
-        {
-            throw new NotFoundHttpException('Impossible de trouver la page demandée');
-        }
+		$this->testDeDroits('Gallerie');
+		
+        if(!$request->isXmlHttpRequest()) show_404();
+		
+		$idPicture = $request->request->get('idPicture', '');
+		$manager=$this->getDoctrine()->getManager();
+		$repository=$manager->getRepository("SiteTrailBundle:Image");        
+		$picture = $repository->findOneById($idPicture);
+		
+		$repository = $manager->getRepository("SiteTrailBundle:Categorie"); 
+		$listeCategorie = $repository->findAll();
+		$selectCategorie = '<div class="form-group">';
+		$selectCategorie .= '<div class="row">';
+		$selectCategorie .= '<label class="col-sm-3 control-label">Catégorie :</label>';
+		$selectCategorie .= '<div class="col-sm-9">';
+		$selectCategorie .= '<select name="categorie" class="form-control">';
+		
+		foreach($listeCategorie as $uneCategorie)
+		{
+			if($uneCategorie->getId() == $picture->getCategorie()->getId())
+			{
+				$bonusSelected = " selected='selected'";
+			}
+			else
+			{
+				$bonusSelected = "";
+			}
+			
+			$selectCategorie .= '<option value="'.$uneCategorie->getId().'"'.$bonusSelected.'>'.$uneCategorie->getLabel().'</option>';
+		}
+		$selectCategorie .= '</select>';
+		$selectCategorie .= '</div>';
+		$selectCategorie .= '</div>';
+		$selectCategorie .= '</div>';
+		
+		$content = $this->get("templating")->render("SiteTrailBundle:Gallery:updatePictureForm.html.twig", array(
+															'picture' => $picture,
+															'selectCategorie' => $selectCategorie
+														));
+		return new Response($content);
     }
     
     public function updatePictureAction(Request $request)
     {
+		$this->testDeDroits('Gallerie');
+		
         $idPicture = $request->request->get('idPicture', '');
         $titre = $request->request->get('titre', '');
         $description = $request->request->get('description', '');
@@ -494,6 +476,8 @@ class GalleryController extends Controller
     
     public function deletePictureAction(Request $request)
     {
+		$this->testDeDroits('Gallerie');
+		
         $idPicture = $request->request->get('idPicture', '');
         
         $manager=$this->getDoctrine()->getManager();
@@ -522,4 +506,28 @@ class GalleryController extends Controller
         
         return new Response();
     }
+	
+	public function testDeDroits($permission)
+	{
+		$manager = $this->getDoctrine()->getManager();
+		
+		$repository_permissions = $manager->getRepository("SiteTrailBundle:Permission");
+		
+		$permissions = $repository_permissions->findOneBy(array('label' => $permission));
+
+		if(Count($permissions->getRole()) != 0)
+		{
+			$list_role = array();
+			foreach($permissions->getRole() as $role)
+			{
+				array_push($list_role, 'ROLE_'.$role->getLabel());
+			}
+			
+			// Test l'accès de l'utilisateur
+			if(!$this->isGranted($list_role))
+			{
+				throw $this->createNotFoundException("Vous n'avez pas acces a cette page");
+			}
+		}
+	}
 }    

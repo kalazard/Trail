@@ -399,7 +399,6 @@ site_trail_upload:
 site_trail_saveTypelieu:
     path :    /saveTypelieu
     defaults: { _controller: SiteTrailBundle:Map:saveTypelieu}
-
 site_trail_admin:
     path:    /admin
     defaults: { _controller: SiteTrailBundle:Admin:index }
