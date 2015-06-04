@@ -54,6 +54,22 @@ site_trail_evenement_checkdate:
     defaults: { _controller: SiteTrailBundle:Evenement:checkDate }
     options:
         expose: true
+site_trail_evenement_demandeParticipation:
+    path: /evenement/participation
+    defaults: { _controller: SiteTrailBundle:Evenement:demandeParticipation }
+    options:
+        expose: true
+site_trail_evenement_retirerParticipation:
+    path: /evenement/retirerParticipation
+    defaults: { _controller: SiteTrailBundle:Evenement:retirerParticipation }
+    options:
+        expose: true
+site_trail_evenement_gererParticipation:
+    path: /evenement/gererParticipation
+    defaults: { _controller: SiteTrailBundle:Evenement:gererParticipation }
+site_trail_evenement_updateParticipation:
+    path: /evenement/updateParticipation
+    defaults: { _controller: SiteTrailBundle:Evenement:updateParticipation }
 site_trail_evenement_ics:
     path: /ics/{id}/{dateDebut}/{dateFin}
     defaults: { _controller: SiteTrailBundle:Ics:index, id: default, dateDebut: '', dateFin: '' }

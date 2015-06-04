@@ -549,8 +549,8 @@ class EvenementController extends Controller
     {
         if($request->isXmlHttpRequest())
         {
-            $idClasse = $request->request->get('idClasse', '4');
-            $idObj = $request->request->get('idObj', '1');
+            $idClasse = $request->request->get('idClasse', '');
+            $idObj = $request->request->get('idObj', '');
             
             if($this->getUser())
             {
@@ -617,11 +617,33 @@ class EvenementController extends Controller
                 $res = json_decode($response);   
                 $listeParcours[] = $res;
             }  
-
+            
+            $nbPartAttente = 0;
+            $r = "SELECT COUNT(pion) ";
+            $r .= "FROM SiteTrailBundle:Participants pant, SiteTrailBundle:Participation pion ";
+            $r .= "WHERE pant.evenement = ".$evenement->getEvenement()->getId();
+            $r .= " AND pant.participation = pion.id";
+            $r .= " AND pion.etatinscription = 'enattente'";
+            $query = $manager->createQuery($r);
+            $nbPartAttente = $query->getOneOrNullResult();
+            
+            if($nbPartAttente == null)
+            {
+                $nbPartAttente = 0;
+            }
+            
+            
+           /* SELECT *
+            FROM participants, participation
+            WHERE participants.evenement = machin
+            AND participants.participation = participation.id
+            AND participant.etatInscrition = enattente*/
+            
             $resp = $this->get("templating")->render("SiteTrailBundle:Event:detailEvenement.html.twig", array(
                                                                 'evenement' => $evenement,
                                                                 'idClasse' => $idClasse,
                                                                 'participation' => $participation,
+                                                                'participationAttente'=>$nbPartAttente,
                                                                 'evenementItineraire' => $listeParcours
                                                             ));
 
@@ -1082,5 +1104,161 @@ class EvenementController extends Controller
         {
             throw new NotFoundHttpException('Impossible de trouver la page demandée');
         }
+    }
+    
+    public function demandeParticipationAction(Request $request)
+    {
+        if($request->isXmlHttpRequest())
+        {
+            $manager = $this->getDoctrine()->getManager();   
+            $idUser = $this->getUser()->getId();
+            $repository = $manager->getRepository("SiteTrailBundle:Membre");
+            $user = $repository->findOneById($idUser);
+            $idEvenement = $request->request->get('idEvenement', '');
+            $repository = $manager->getRepository("SiteTrailBundle:Evenement");
+            $event = $repository->findOneById($idEvenement);       
+            $repository = $manager->getRepository("SiteTrailBundle:Participants");
+            $participant = $repository->findOneBy(array('membre' => $user, 'evenement' => $event));
+            
+            if($participant)
+            {
+                return $this->redirect($this->generateUrl('site_trail_evenement'));
+            }
+            
+            $participation = new Participation();
+            $participation->setEtatinscription('enattente');
+            $participation->setDivers('');
+            $participation->setResultat('');
+            $manager->persist($participation);
+            $manager->flush();
+            
+            $participant = new Participants();
+            $participant->setEvenement($event);
+            $participant->setMembre($user);
+            $participant->setParticipation($participation);
+            $manager->persist($participant);
+            $manager->flush();
+            
+            return new Response("");
+        }
+        else
+        {
+            throw new NotFoundHttpException('Impossible de trouver la page demandée');
+        }
+    }
+    
+    public function retirerParticipationAction(Request $request)
+    {
+        if($request->isXmlHttpRequest())
+        {
+            $manager = $this->getDoctrine()->getManager();   
+            $idUser = $this->getUser()->getId();
+            $repository = $manager->getRepository("SiteTrailBundle:Membre");
+            $user = $repository->findOneById($idUser);
+            $idEvenement = $request->request->get('idEvenement', '');
+            $repository = $manager->getRepository("SiteTrailBundle:Evenement");
+            $event = $repository->findOneById($idEvenement);       
+            $repository = $manager->getRepository("SiteTrailBundle:Participants");
+            $participant = $repository->findOneBy(array('membre' => $user, 'evenement' => $event));
+            $repository = $manager->getRepository("SiteTrailBundle:Participation");
+            $participation = $repository->findOneBy(array('id' => $participant->getParticipation()->getId()));            
+            $manager->remove($participant);
+            $manager->remove($participation);
+            $manager->flush();
+            return new Response("");
+        }
+        else
+        {
+            throw new NotFoundHttpException('Impossible de trouver la page demandée');
+        }
+    }
+    
+    public function gererParticipationAction(Request $request)
+    {
+        $manager = $this->getDoctrine()->getManager();            
+        $idEvenement = $request->get('idEvenement');       
+        $qb = $manager->createQueryBuilder();
+        $qb->select('pant')
+            ->from('SiteTrailBundle:Participants', 'pant')
+            ->from('SiteTrailBundle:Participation', 'pion')
+            ->where('pant.participation = pion.id')
+            ->andWhere('pant.evenement = '.$idEvenement)
+            ->andWhere("pion.etatinscription = 'enattente'");
+        $query = $qb->getQuery();
+        $listeEnAttente = $query->getResult(); 
+        
+        $qb = $manager->createQueryBuilder();
+        $qb->select('pant')
+            ->from('SiteTrailBundle:Participants', 'pant')
+            ->from('SiteTrailBundle:Participation', 'pion')
+            ->where('pant.participation = pion.id')
+            ->andWhere('pant.evenement = '.$idEvenement)
+            ->andWhere("pion.etatinscription = 'accepte'");
+        $query = $qb->getQuery();
+        $listeAccepte = $query->getResult(); 
+        
+        $qb = $manager->createQueryBuilder();
+        $qb->select('pant')
+            ->from('SiteTrailBundle:Participants', 'pant')
+            ->from('SiteTrailBundle:Participation', 'pion')
+            ->where('pant.participation = pion.id')
+            ->andWhere('pant.evenement = '.$idEvenement)
+            ->andWhere("pion.etatinscription = 'refuse'");
+        $query = $qb->getQuery();
+        $listeRefuse = $query->getResult();
+        
+        $nbResParListe = array();
+        $nbResParListe[] = sizeof($listeEnAttente);
+        $nbResParListe[] = sizeof($listeAccepte);
+        $nbResParListe[] = sizeof($listeRefuse);
+        $max = max($nbResParListe);
+        
+        $membreEnAttente = array();
+        foreach($listeEnAttente as $enAttente)
+        {
+            $membreEnAttente[] = $enAttente->getMembre();
+        }
+        
+        $membreAccepte = array();
+        foreach($listeAccepte as $accepte)
+        {
+            $membreAccepte[] = $accepte->getMembre();
+        }
+        
+        $membreRefuse = array();
+        foreach($listeRefuse as $refuse)
+        {
+            $membreRefuse[] = $refuse->getMembre();
+        }
+  
+        $view = $this->get("templating")->render("SiteTrailBundle:Event:gestionParticipation.html.twig", array(
+                                                            'max' => $max,
+                                                            'idEvenement' => $idEvenement,
+                                                            'listeEnAttente' => $membreEnAttente,
+                                                            'listeAccepte' => $membreAccepte,
+                                                            'listeRefuse' => $membreRefuse));
+
+        return new Response($view);
+    }
+    
+    function updateParticipationAction(Request $request)
+    {
+        $manager = $this->getDoctrine()->getManager();  
+        $listeParticipation = $request->request->get('part', '');
+        $idEvenement = $request->request->get('idEvenement', '');
+        $listeEtatInscription = array("enattente", "accepte", "refuse");
+        
+        foreach($listeParticipation as $participation)
+        {
+            $part = explode('|', $participation);
+            $idMembre = $part[0];
+            $etatInscription = $listeEtatInscription[$part[1]];
+            $objPant = $manager->getRepository("SiteTrailBundle:Participants")->findOneBy(array('evenement' => $idEvenement, 'membre' => $idMembre));
+            $objParticipation = $objPant->getParticipation();
+            $objParticipation->setEtatInscription($etatInscription);
+            $manager->flush();
+        }
+        
+        return $this->redirect($this->generateUrl('site_trail_evenement'));
     }
 }

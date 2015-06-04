@@ -186,7 +186,7 @@ function envoiFormAjout()
         cache: false,
         data: data,
         success: function(data){
-            document.location.href=Routing.generate('site_trail_evenement')
+            document.location.href=Routing.generate('site_trail_evenement');
         }
     });
 }
@@ -407,6 +407,32 @@ function recuperationResEvenement()
             }
             
             $('#searchRes').html(contenuHtml);
+        }
+    });
+}
+
+//Demande de participation à un événement
+function demanderParticipation(idEvenement)
+{
+    $.ajax({
+        type: "POST",
+        url: Routing.generate('site_trail_evenement_demandeParticipation'),
+        data: {"idEvenement" : idEvenement},
+        success: function(data){
+            document.location.href=Routing.generate('site_trail_evenement');
+        }
+    });
+}
+
+//Suppression d'une demande de participation à un événement
+function retirerParticipation(idEvenement)
+{
+    $.ajax({
+        type: "POST",
+        url: Routing.generate('site_trail_evenement_retirerParticipation'),
+        data: {"idEvenement" : idEvenement},
+        success: function(data){
+            document.location.href=Routing.generate('site_trail_evenement');
         }
     });
 }
