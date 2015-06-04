@@ -102,10 +102,18 @@ class MapController extends Controller
 		return new Response($content);
 	}
 
+
     public function saveTypelieuAction()
-    {       
-        $content = $this->get("templating")->render("SiteTrailBundle:Map:saveTypelieu.html.twig");
-        return new Response($content);
+    {  
+        if ($this->get('security.context')->isGranted('ROLE_Administrateur')) 
+        {     
+            $content = $this->get("templating")->render("SiteTrailBundle:Map:saveTypelieu.html.twig");
+            return new Response($content);
+        }
+        else
+        {
+           throw $this->createNotFoundException("Vous n'avez pas accès à cette page.");
+        }
     }
 }
 

@@ -63,7 +63,21 @@
                         </div>
                     </div>
                 </div>
-
+                
+                <!-- Champ liste itinéraire -->
+                <div class="form-group">
+                    <div class="row">
+                        <label class="col-sm-3 control-label">Association d'itinéraire :</label>
+                        <div class="col-sm-9">
+                            <select id="addIti" name="addIti[]" multiple>
+                                {% for iti in listeIti.list %}
+                                    <option value='{{iti.id}}'>{{iti.nom}} ({{iti.datecreation|date('d/m/Y', false)}})</option>  
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                            
                 <!-- Champ participants -->
                <!-- <div class="form-group">
                     <div class="row">
@@ -100,7 +114,7 @@
                     
                     <!-- Champ programme label -->
                     <div class="form-group" id="programmeLabelDiv">
-                        <div class="row addEventDate">
+                        <div class="row">
                             {{ form_label(form.programme_label, "Intitulé du programme : ", {'label_attr': {'class': 'col-sm-3 control-label'}}) }}
                             {{ form_errors(form.programme_label) }}
                             <div class="col-sm-9">
@@ -111,7 +125,7 @@
                     
                     <!-- Champ programme duree -->
                     <div class="form-group" id="programmeDureeDiv">
-                        <div class="row addEventDate">
+                        <div class="row">
                             {{ form_label(form.programme_duree, "Durée du programme : ", {'label_attr': {'class': 'col-sm-3 control-label'}}) }}
                             {{ form_errors(form.programme_duree) }}
                             <div class="col-sm-9">
@@ -119,9 +133,29 @@
                             </div>
                         </div>
                     </div>
-                    
-                    
-                    {{ selectLieuRendezVous|raw }}
+                            
+                    <!-- Champ lieu rendez vous titre -->
+                    <div class="form-group" id="lieuTitreDiv">
+                        <div class="row">
+                            {{ form_label(form.rendezvous_titre, "Lieu de rendez-vous : ", {'label_attr': {'class': 'col-sm-3 control-label'}}) }}
+                            {{ form_errors(form.rendezvous_titre) }}
+                            <div class="col-sm-9">
+                                {{ form_widget(form.rendezvous_titre) }}
+                            </div>
+                        </div>
+                    </div>
+                            
+                    <!-- Champ lieu rendez vous description -->
+                    <div class="form-group" id="lieuDescriptionDiv">
+                        <div class="row">
+                            {{ form_label(form.rendezvous_description, "Précision sur le lieu : ", {'label_attr': {'class': 'col-sm-3 control-label'}}) }}
+                            {{ form_errors(form.rendezvous_description) }}
+                            <div class="col-sm-9">
+                                {{ form_widget(form.rendezvous_description) }}
+                            </div>
+                        </div>
+                    </div>  
+                    {#{{ selectLieuRendezVous|raw }}#}
                 </div>
                 <div class="modal-footer">
                     <input type="submit" class="btn btn-primary" value="Ajouter" />
@@ -136,15 +170,30 @@
 <script>
     divProgrammeLabel = $('#programmeLabelDiv').html();
     divProgrammeDuree = $('#programmeDureeDiv').html();
+    divLieuTitre = $('#lieuTitreDiv').html();
+    divLieuDescription = $('#lieuDescriptionDiv').html();
+    
+    //auto completion
+    $(function(){
+        $( "#form_rendezvous_titre" ).autocomplete({
+            appendTo: $("#form_rendezvous_titre").parent(),
+            source: {{AClieu|raw}}
+        });
+    });
     
     //Modification dynamique du formulaire
     $("body").on("change", "#selectTypeEvent", function ()
     {
-        updateFormAddEvent(divProgrammeLabel, divProgrammeDuree, '{{selectLieuRendezVous|raw}}', $('#selectTypeEvent').val());
+        updateFormAddEvent(divProgrammeLabel, divProgrammeDuree, divLieuTitre, divLieuDescription, $('#selectTypeEvent').val());
+        
+        $( "#form_rendezvous_titre" ).autocomplete({
+            appendTo: $("#form_rendezvous_titre").parent(),
+            source: {{AClieu|raw}}
+        });
     });
     
     //Vérification des dates
-    $("body").on("change", ".addEventDate", function ()
+    $("#modalAddEventForm").on("change", ".addEventDate", function ()
     { 
         checkDate($('#form_date_debut_date_year').val(), $('#form_date_debut_date_month').val(),
                     $('#form_date_debut_date_day').val(), $('#form_date_debut_time_hour').val(),
@@ -154,7 +203,3 @@
         );
     });
 </script>
-
-{% javascripts '@SiteTrailBundle/Resources/js/event/*' %}
-    <script type="text/javascript" src="{{ asset_url }}"></script>
-{% endjavascripts %}

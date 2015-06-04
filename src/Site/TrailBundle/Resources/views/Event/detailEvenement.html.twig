@@ -36,39 +36,47 @@
                     {% if evenement.getEvenement().getLienKid() != null %}
                         <p>Lien KID : <a target="_blank" href="{{evenement.getEvenement().getLienKid()}}">{{evenement.getEvenement().getLienKid()}}</a></p>
                     {% endif %}
-                    <p>Statut : {{evenement.getEvenement().getStatus().getLabel()}}</p> 
+                    {% if evenement.getEvenement().getStatus().getLabel() == 'Annulé' %}
+                        <p>Statut : {{evenement.getEvenement().getStatus().getLabel()}}</p> 
+                    {% endif %}                  
                     {% if idClasse == 1 %} <!-- Entrainement -->
                         <p>Programme : {{evenement.getProgramme().getLabel()}} ({{evenement.getProgramme().getDuree()|date('H:i')}})</p>
-                        <p>Lieu de rendez-vous : {{evenement.getLieuRendezVous().getTitre()}} ({{evenement.getLieuRendezVous().getCoordonnees()}})</p>
+                        <p>Lieu de rendez-vous : {{evenement.getLieuRendezVous().getTitre()}} ({{evenement.getLieuRendezVous().getDescription()}})</p>
                     {% elseif idClasse == 2 %} <!-- Entrainement personnel -->
                     {% elseif idClasse == 3 %} <!-- Evenement divers -->
                         <p>Description : {{evenement.getDescription()}} </p>
                     {% elseif idClasse == 4 %} <!-- Sortie découverte -->
-                        <p>Lieu de rendez-vous : {{evenement.getLieuRendezVous().getTitre()}} ({{evenement.getLieuRendezVous().getCoordonnees()}})</p>
+                        <p>Lieu de rendez-vous : {{evenement.getLieuRendezVous().getTitre()}} ({{evenement.getLieuRendezVous().getDescription()}})</p>
                     {% elseif idClasse == 5 %} <!-- Course officielle -->
                         <p>URL du site : <a target="_blank" href="{{evenement.getSiteUrl()}}">{{evenement.getSiteUrl()}}</a></p>
                     {% else %}
                     {% endif %}
+                    
                     {% if evenementItineraire != null %}
                         <p>Itinéraires associés : </p>
                         {% for eventIti in evenementItineraire %}
-                            <a href="{{ path('site_trail_getByIditineraire', {'id': eventIti.idItineraire}) }}">{{eventIti.getNomItineraire()}}</a>
+                            <a href="{{ path('site_trail_getByIditineraire', {'id': eventIti.searchResults.id}) }}">{{eventIti.searchResults.nom}}</a>
                         {% endfor %}
                     {% endif %}
                     
                     {% if (app.user) %}
                         <div class="modal-footer">
                             <div class='wrapper text-center'>
-                                {% if (app.user.getRole().getId() == 1 or evenement.getEvenement().getCreateur().getId() == app.user.getId()) %}
+                                {% if (app.user.getRole().getId() == 1 or evenement.getEvenement().getCreateur().getId() == app.user.getId()) %} 
+                                    {% if (participationAttente.1 > 0) %}
+                                        <a class="btn btn-warning" href="{{ path('site_trail_evenement_gererParticipation', {'idEvenement': evenement.getEvenement().getId()}) }}">{{participationAttente.1}}</a>
+                                    {% else %}
+                                        <a class="btn btn-default" href="{{ path('site_trail_evenement_gererParticipation', {'idEvenement': evenement.getEvenement().getId()}) }}">{{participationAttente.1}}</a>
+                                    {% endif %}
                                     <button type="button" class="btn btn-default" data-dismiss="modal" onclick="modifEvenement({{idClasse}}, {{evenement.getId()}})">Modifier</button>
                                     <button type="button" class="btn btn-default" data-dismiss="modal" onclick="supprEvenementConfirm()">Supprimer</button>
                                 {% endif %}
                                 {% if (participation != null ) %}
-                                    {% if (participation.getEtatInscription() == '') %}
-                                        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="">Participer</button>
+                                    {% if (participation.getEtatInscription() == 'enattente' or participation.getEtatInscription() == 'accepte') %}
+                                        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="retirerParticipation({{evenement.getEvenement().getId()}})">Retirer la participation</button>
                                     {% endif %}
                                 {% else %}
-                                    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="">Participer</button>
+                                    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="demanderParticipation({{evenement.getEvenement().getId()}})">Participer</button>
                                 {% endif %}
                             </div>
                         </div>

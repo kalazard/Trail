@@ -16,6 +16,7 @@ use Site\TrailBundle\Entity\Participants;
 use Site\TrailBundle\Entity\Participation;
 use Site\TrailBundle\Entity\Courseofficielle;
 use Site\TrailBundle\Entity\Status;
+use Site\TrailBundle\Entity\Parcours;
 
 class EvenementController extends Controller
 {
@@ -278,25 +279,30 @@ class EvenementController extends Controller
         {
             $idUser = $this->getUser()->getId();            
             $listeEvenement = EvenementController::getEventFrom($idUser, $this->getDoctrine()->getManager());
+            /*}
+            else
+            {
+                $listeEvenement = EvenementController::getEventFrom(0, $this->getDoctrine()->getManager());
+
+                //On retire les événements qui ne sont pas disponibles pour les non connectés
+                $listeEvenement[0] = array();
+                $listeEvenement[1] = array();
+                $listeEvenement[2] = array();
+                $listeEvenement[4] = array();
+            }*/
+
+            //On transforme les résultats en json            
+            $listeEvenementJson = json_encode($listeEvenement);
+
+            $view = $this->get("templating")->render("SiteTrailBundle:Event:calendrier.html.twig", array(
+                                                                'listeEvenement' => $listeEvenementJson));
+
+            return new Response($view);
         }
         else
         {
-            $listeEvenement = EvenementController::getEventFrom(0, $this->getDoctrine()->getManager());
-            
-            //On retire les événements qui ne sont pas disponibles pour les non connectés
-            $listeEvenement[0] = array();
-            $listeEvenement[1] = array();
-            $listeEvenement[2] = array();
-            $listeEvenement[4] = array();
+            throw new NotFoundHttpException('Impossible de trouver la page demandée');
         }
-
-        //On transforme les résultats en json            
-        $listeEvenementJson = json_encode($listeEvenement);
-
-        $view = $this->get("templating")->render("SiteTrailBundle:Event:calendrier.html.twig", array(
-                                                            'listeEvenement' => $listeEvenementJson));
-
-        return new Response($view);
     }
     
     public function showFormAddEventAction(Request $request)
@@ -317,7 +323,9 @@ class EvenementController extends Controller
                     ->add('date_fin', 'datetime', array(
                                         'data' => new \DateTime($dateCliquee)))
                     ->add('programme_label', 'text', array('max_length' => 255, 'mapped' => false))
-                    ->add('programme_duree', 'time', array('mapped' => false));
+                    ->add('programme_duree', 'time', array('mapped' => false))
+                    ->add('rendezvous_titre', 'text', array('max_length' => 255, 'mapped' => false))
+                    ->add('rendezvous_description', 'text', array('max_length' => 255, 'mapped' => false));
             
             $form = $formBuilder->getForm();
             $form->handleRequest($request);
@@ -334,8 +342,8 @@ class EvenementController extends Controller
                 if($kid == 1)
                 {
                     $clientSOAP = new \SoapClient(null, array(
-                        'uri' => "http://130.79.214.167/Kidoikoiaki/web/app_dev.php/evenement",
-                        'location' => "http://130.79.214.167/Kidoikoiaki/web/app_dev.php/evenement",
+                        'uri' => $this->container->getParameter("server")."/Kidoikoiaki/web/app_dev.php/evenement",
+                        'location' => $this->container->getParameter("server")."/Kidoikoiaki/web/app_dev.php/evenement",
                         'trace' => true,
                         'exceptions' => true
                     ));
@@ -343,7 +351,7 @@ class EvenementController extends Controller
                     //renvoie le token : mettre titre evenement
                     $token = json_decode($clientSOAP->__call('creerevenement', array('title' => $event->getTitre())));
                     
-                    $event->setLienKid("http://130.79.214.167/Kidoikoiaki/web/app_dev.php/participants/".$token->token);
+                    $event->setLienKid($this->container->getParameter("server")."/Kidoikoiaki/web/app_dev.php/participants/".$token->token);
                 }
                 
                 $repository = $manager->getRepository("SiteTrailBundle:Membre");
@@ -353,6 +361,27 @@ class EvenementController extends Controller
                 $repository = $manager->getRepository("SiteTrailBundle:Status");
                 $event->setStatus($repository->findOneById(1)); //valeur par défaut
                 $manager->persist($event);
+                $manager->flush();
+                
+                $selectedIti = $request->request->get('addIti', ''); 
+                if(sizeof($selectedIti) > 0 && $selectedIti != '')
+                {
+                    $clientSOAP = new \SoapClient(null, array(
+	                    'uri' => $this->container->getParameter("server")."/Carto/web/app_dev.php/itineraire",
+	                    'location' => $this->container->getParameter("server")."/Carto/web/app_dev.php/itineraire",
+	                    'trace' => true,
+	                    'exceptions' => true
+	                ));
+                    
+                    foreach($selectedIti as $iti)
+                    {
+                        $parcours = new Parcours();
+                        $parcours->setEvenement($event);
+                        $parcours->setIdItineraire($iti);
+                        $manager->persist($parcours);
+                    }
+                }
+                
                 $manager->flush();
 
                 switch ($type)
@@ -365,12 +394,17 @@ class EvenementController extends Controller
                         $programme->setDuree($dureeProgramme);
                         $manager->persist($programme);
                         $manager->flush();
-                        $repository=$manager->getRepository("SiteTrailBundle:Lieurendezvous");
+                        /*$repository=$manager->getRepository("SiteTrailBundle:Lieurendezvous");
                         $idLieu = $request->request->get('lieu', '');
-                        $lieu = $repository->findOneById($idLieu);
+                        $lieu = $repository->findOneById(1);*/
+                        $lieuRdv = new Lieurendezvous();
+                        $lieuRdv->setTitre($request->get('form')['rendezvous_titre']);
+                        $lieuRdv->setDescription($request->get('form')['rendezvous_description']);
+                        $manager->persist($lieuRdv);
+                        $manager->flush();
                         $entrainement = new Entrainement;
                         $entrainement->setProgramme($programme);
-                        $entrainement->setLieuRendezVous($lieu);
+                        $entrainement->setLieuRendezVous($lieuRdv);
                         $entrainement->setEvenement($event);
                         $manager->persist($entrainement);
                         break;
@@ -388,12 +422,17 @@ class EvenementController extends Controller
                         $manager->persist($evenementDivers);
                         break;
                     case '4': //Sortie découverte
-                        $repository = $manager->getRepository("SiteTrailBundle:Lieurendezvous");
+                        /*$repository = $manager->getRepository("SiteTrailBundle:Lieurendezvous");
                         //$idLieu = htmlspecialchars($_POST['lieu']);
                         $idLieu = $request->request->get('lieu', '');
-                        $lieu = $repository->findOneById($idLieu);
+                        $lieu = $repository->findOneById(1);*/
+                        $lieuRdv = new Lieurendezvous();
+                        $lieuRdv->setTitre($request->get('form')['rendezvous_titre']);
+                        $lieuRdv->setDescription($request->get('form')['rendezvous_description']);
+                        $manager->persist($lieuRdv);
+                        $manager->flush();
                         $sortieDecouverte = new Sortiedecouverte;
-                        $sortieDecouverte->setLieuRendezVous($lieu);
+                        $sortieDecouverte->setLieuRendezVous($lieuRdv);
                         $sortieDecouverte->setEvenement($event);
                         $manager->persist($sortieDecouverte);
                         break;
@@ -439,9 +478,25 @@ class EvenementController extends Controller
             $listeProgramme = $repository->findAll();
             $repository = $manager->getRepository("SiteTrailBundle:Lieurendezvous");        
             $listeLieuRendezVous = $repository->findAll();
-
             $repository = $manager->getRepository("SiteTrailBundle:Membre");        
-            $listeMembre = $repository->findAll(); 
+            $listeMembre = $repository->findAll();
+            $acLieuRdv = array();
+            
+            foreach($listeLieuRendezVous as $lieurdv)
+            {
+                $acLieuRdv[] = $lieurdv->getTitre();
+            }
+            
+            $acLieuRdv = array_unique($acLieuRdv);
+            
+            $clientSOAP = new \SoapClient(null, array(
+                            'uri' => $this->container->getParameter("server")."/Carto/web/app_dev.php/itineraire",
+                            'location' => $this->container->getParameter("server")."/Carto/web/app_dev.php/itineraire",
+                            'trace' => true,
+                            'exceptions' => true
+                        ));
+            $response = $clientSOAP->__call('itilist', array());
+            $res_list = json_decode($response);
             
             //Création du select contenant les programmes
             /*$selectProgramme = '<div class="form-group">';
@@ -459,7 +514,7 @@ class EvenementController extends Controller
             $selectProgramme .= '</div>';    */   
             
             //Création du select contenant les lieuRendezVous
-            $selectLieuRendezVous = '<div class="form-group">';
+            /*$selectLieuRendezVous = '<div class="form-group">';
             $selectLieuRendezVous .= '<div class="row">';
             $selectLieuRendezVous .= '<label class="col-sm-3 control-label">Lieu de rendez-vous :</label>';
             $selectLieuRendezVous .= '<div class="col-sm-9">';
@@ -471,12 +526,14 @@ class EvenementController extends Controller
             $selectLieuRendezVous .= '</select>';
             $selectLieuRendezVous .= '</div>';
             $selectLieuRendezVous .= '</div>';
-            $selectLieuRendezVous .= '</div>';
+            $selectLieuRendezVous .= '</div>';*/
             
             $formulaire = $this->get("templating")->render("SiteTrailBundle:Event:formAddEvent.html.twig", array(
                                                                 //'selectProgramme' => $selectProgramme,
-                                                                'selectLieuRendezVous' => $selectLieuRendezVous,
+                                                                //'selectLieuRendezVous' => $selectLieuRendezVous,
                                                                 'listeUser' => $listeMembre,
+                                                                'listeIti' => $res_list,
+                                                                'AClieu' => json_encode($acLieuRdv),
                                                                 'form' => $form->createView()
                                                             ));
 
@@ -492,8 +549,8 @@ class EvenementController extends Controller
     {
         if($request->isXmlHttpRequest())
         {
-            $idClasse = $request->request->get('idClasse', '2');
-            $idObj = $request->request->get('idObj', '19');
+            $idClasse = $request->request->get('idClasse', '');
+            $idObj = $request->request->get('idObj', '');
             
             if($this->getUser())
             {
@@ -542,14 +599,52 @@ class EvenementController extends Controller
                 $participation = $queryP->getOneOrNullResult(); 
             }
             
-            $evenementItineraire = $manager->getRepository("SiteTrailBundle:Evenementitineraire")->findBy(array('evenement' => $evenement->getEvenement()->getId())); 
-                     
-
+            $parcoursAssocie = $manager->getRepository("SiteTrailBundle:Parcours")->findBy(array('evenement' => $evenement->getEvenement()->getId())); 
+            $listeParcours = array(); 
+            
+            $clientSOAP = new \SoapClient(null, array(
+	                    'uri' => $this->container->getParameter("server")."/Carto/web/app_dev.php/itineraire",
+	                    'location' => $this->container->getParameter("server")."/Carto/web/app_dev.php/itineraire",
+	                    'trace' => true,
+	                    'exceptions' => true
+	                ));
+            
+            foreach($parcoursAssocie as $parcours)
+            {                
+                $search = array();		
+                $search["id"] = $parcours->getIdItineraire();
+	        $response = $clientSOAP->__call('getById', $search);
+                $res = json_decode($response);   
+                $listeParcours[] = $res;
+            }  
+            
+            $nbPartAttente = 0;
+            $r = "SELECT COUNT(pion) ";
+            $r .= "FROM SiteTrailBundle:Participants pant, SiteTrailBundle:Participation pion ";
+            $r .= "WHERE pant.evenement = ".$evenement->getEvenement()->getId();
+            $r .= " AND pant.participation = pion.id";
+            $r .= " AND pion.etatinscription = 'enattente'";
+            $query = $manager->createQuery($r);
+            $nbPartAttente = $query->getOneOrNullResult();
+            
+            if($nbPartAttente == null)
+            {
+                $nbPartAttente = 0;
+            }
+            
+            
+           /* SELECT *
+            FROM participants, participation
+            WHERE participants.evenement = machin
+            AND participants.participation = participation.id
+            AND participant.etatInscrition = enattente*/
+            
             $resp = $this->get("templating")->render("SiteTrailBundle:Event:detailEvenement.html.twig", array(
                                                                 'evenement' => $evenement,
                                                                 'idClasse' => $idClasse,
                                                                 'participation' => $participation,
-                                                                'evenementItineraire' => $evenementItineraire
+                                                                'participationAttente'=>$nbPartAttente,
+                                                                'evenementItineraire' => $listeParcours
                                                             ));
 
             return new Response($resp);
@@ -643,12 +738,12 @@ class EvenementController extends Controller
     public function modifEvenementAction(Request $request)
     {
         if($request->isXmlHttpRequest() && $this->getUser())
-        {      
+        {   
             $idUser = $this->getUser()->getId();
-            $idClasse = $request->request->get('idClasse', '1');
-            $idEvenementDeClasse = $request->request->get('idObj', '21');
+            $idClasse = $request->request->get('idClasse', '4');
+            $idEvenementDeClasse = $request->request->get('idObj', '1');
             $manager = $this->getDoctrine()->getManager();
-            $selectedLieuRendezVous = 0;
+            //$selectedLieuRendezVous = 0;
 
             $tabEvenements = EvenementController::getEvenementEtEvenementDeCategorie($this->getDoctrine()->getManager(), $idClasse, $idEvenementDeClasse);
 
@@ -675,7 +770,13 @@ class EvenementController extends Controller
                 $selectedLieuRendezVous = $evenementDeCategorie->getLieuRendezVous()->getId();
                 $monProgramme = $manager->getRepository("SiteTrailBundle:Programme")->findOneBy(array('id' => $evenementDeCategorie->getProgramme()->getId()));          
                 $formBuilder->add('programme_label', 'text', array('max_length' => 255, 'mapped' => false, 'data' => $monProgramme->getLabel()))
-                            ->add('programme_duree', 'time', array('mapped' => false, 'data' => $monProgramme->getDuree()));
+                            ->add('programme_duree', 'time', array('mapped' => false, 'data' => $monProgramme->getDuree()))
+                            ->add('rendezvous_titre', 'text', array('max_length' => 255,
+                                                                    'mapped' => false,
+                                                                    'data' => $evenementDeCategorie->getLieuRendezvous()->getTitre()))
+                            ->add('rendezvous_description', 'text', array('max_length' => 255,
+                                                                            'mapped' => false,
+                                                                            'data' => $evenementDeCategorie->getLieuRendezvous()->getDescription()));
             }
             else if($idClasse == 3)
             {
@@ -686,7 +787,13 @@ class EvenementController extends Controller
             }
             else if($idClasse == 4)
             {
-                $selectedLieuRendezVous = $evenementDeCategorie->getLieuRendezVous()->getId();
+                //$selectedLieuRendezVous = $evenementDeCategorie->getLieuRendezVous()->getId();
+                $formBuilder->add('rendezvous_titre', 'text', array('max_length' => 255,
+                                                                    'mapped' => false,
+                                                                    'data' => $evenementDeCategorie->getLieuRendezvous()->getTitre()))
+                                ->add('rendezvous_description', 'text', array('max_length' => 255,
+                                                                'mapped' => false,
+                                                                'data' => $evenementDeCategorie->getLieuRendezvous()->getDescription()));
             }
             else if($idClasse == 5)
             {
@@ -709,8 +816,40 @@ class EvenementController extends Controller
                 $evenementAssocie->setCreateur($repository->findOneById($idCreateur));
                 $evenementAssocie->setDateCreation(new \DateTime("now"));
                 $evenementAssocie->setAlias("alias");
-
+                $repository=$manager->getRepository("SiteTrailBundle:Status");
+                $evenementAssocie->setStatus($repository->findOneById($request->request->get('statut', '')));
                 $manager->flush();
+                        
+                $listeParcours = $manager->getRepository("SiteTrailBundle:Parcours")->findBy(array('evenement' => $evenementAssocie));
+
+                if(is_array($listeParcours))
+                {
+                    foreach($listeParcours as $eventIti)
+                    {
+                        $manager->remove($eventIti);
+                        $manager->flush();
+                    }
+                }
+                
+                $selectedIti = $request->request->get('addIti', '');
+                
+                if(sizeof($selectedIti) > 0 && $selectedIti != '')
+                {
+                    $clientSOAP = new \SoapClient(null, array(
+	                    'uri' => $this->container->getParameter("server")."/Carto/web/app_dev.php/itineraire",
+	                    'location' => $this->container->getParameter("server")."/Carto/web/app_dev.php/itineraire",
+	                    'trace' => true,
+	                    'exceptions' => true
+	                ));
+                    
+                    foreach($selectedIti as $iti)
+                    {
+                        $parcours = new Parcours();
+                        $parcours->setEvenement($evenementAssocie);
+                        $parcours->setIdItineraire($iti);
+                        $manager->persist($parcours);
+                    } 
+                }
 
                 switch (/*$type*/$idClasse)
                 {
@@ -729,10 +868,12 @@ class EvenementController extends Controller
                         
                         $repository=$manager->getRepository("SiteTrailBundle:Lieurendezvous");
                         //$idLieu = $request->request->get('lieu', '');
-                        $idLieu = $request->get('lieu');
-                        $lieu = $repository->findOneById($idLieu);
+                        //$idLieu = $request->get('lieu');
+                        $lieu = $repository->findOneById($evenementDeCategorie->getLieuRendezvous()->getId());
+                        $lieu->setTitre($request->get('form')['rendezvous_titre']);
+                        $lieu->setDescription($request->get('form')['rendezvous_description']);
                         //$evenementDeCategorie->setProgramme($programme);
-                        $evenementDeCategorie->setLieuRendezVous($lieu);
+                        //$evenementDeCategorie->setLieuRendezVous($lieu);
                         $evenementDeCategorie->setEvenement($evenementAssocie);
                         $manager->flush();
                         break;
@@ -748,9 +889,9 @@ class EvenementController extends Controller
                         break;
                     case '4': //Sortie découverte
                         $repository=$manager->getRepository("SiteTrailBundle:Lieurendezvous");
-                        $idLieu = $request->request->get('lieu', '');
-                        $lieu = $repository->findOneById($idLieu);
-                        $evenementDeCategorie->setLieuRendezVous($lieu);
+                        $lieu = $repository->findOneById($evenementDeCategorie->getLieuRendezvous()->getId());
+                        $lieu->setTitre($request->get('form')['rendezvous_titre']);
+                        $lieu->setDescription($request->get('form')['rendezvous_description']);
                         $evenementDeCategorie->setEvenement($evenementAssocie);
                         $manager->flush();
                         break;
@@ -764,7 +905,7 @@ class EvenementController extends Controller
                         break;
                 }
 
-                if($request->request->get('participants', '') != '')
+                /*if($request->request->get('participants', '') != '')
                 {
                     foreach($request->request->get('participants', '') as $monParticipant)
                     {
@@ -777,7 +918,7 @@ class EvenementController extends Controller
                         $manager->persist($participant);
                         $manager->flush();
                     }
-                }
+                }*/
 
                 $request->getSession()->getFlashBag()->add('notice', 'Evènement ajouté');
 
@@ -788,8 +929,12 @@ class EvenementController extends Controller
             /*$repository=$manager->getRepository("SiteTrailBundle:Programme");        
             $listeProgramme = $repository->findAll();*/
             
-            $repository=$manager->getRepository("SiteTrailBundle:Lieurendezvous");        
-            $listeLieuRendezVous = $repository->findAll();
+            /*$repository = $manager->getRepository("SiteTrailBundle:Lieurendezvous");        
+            $listeLieuRendezVous = $repository->findAll();*/
+            
+            $repository = $manager->getRepository("SiteTrailBundle:Status"); 
+            $listeStatut = $repository->findAll();            
+            $selectedStatut = $evenementAssocie->getStatus()->getId();
 
             /*$query = $manager->createQuery(
                 'SELECT u
@@ -797,14 +942,40 @@ class EvenementController extends Controller
                 WHERE u.id != :createur'
             )->setParameter('createur', $idUser);
             $listeUser = $query->getResult();  */      
+            
+            $clientSOAP = new \SoapClient(null, array(
+                            'uri' => $this->container->getParameter("server")."/Carto/web/app_dev.php/itineraire",
+                            'location' => $this->container->getParameter("server")."/Carto/web/app_dev.php/itineraire",
+                            'trace' => true,
+                            'exceptions' => true
+                        ));
+            $response = $clientSOAP->__call('itilist', array());
+            $res_list = json_decode($response);
+            $evenementService = $this->container->get('evenement_service');
+            $selectedIti = $evenementService->getUsedIti($evenementAssocie->getId());
+            $repository = $manager->getRepository("SiteTrailBundle:Lieurendezvous");        
+            $listeLieuRendezVous = $repository->findAll();
+            $acLieuRdv = array();
+            
+            foreach($listeLieuRendezVous as $lieurdv)
+            {
+                $acLieuRdv[] = $lieurdv->getTitre();
+            }
+            
+            $acLieuRdv = array_unique($acLieuRdv);
 
             $formulaire = $this->get("templating")->render("SiteTrailBundle:Event:modifEventForm.html.twig", array(
                                                                 //'listeProgramme' => $listeProgramme,
-                                                                'listeLieuRendezVous' => $listeLieuRendezVous,
-                                                                'selectedLieuRendezVous' => $selectedLieuRendezVous,
+                                                                //'listeLieuRendezVous' => $listeLieuRendezVous,
+                                                                //'selectedLieuRendezVous' => $selectedLieuRendezVous,
+                                                                'listeStatut' => $listeStatut,
+                                                                'selectedStatut' => $selectedStatut,
                                                                 //'listeUser' => $listeUser,
                                                                 'form' => $form->createView(),
                                                                 'idClasse' => $idClasse,
+                                                                'listeIti' => $res_list,
+                                                                'selectedIti' => $selectedIti,
+                                                                'AClieu' => json_encode($acLieuRdv),
                                                                 'idObj' => $idEvenementDeClasse
                                                             ));
 
@@ -901,8 +1072,8 @@ class EvenementController extends Controller
                     
                     break;
                 case 'date':
-                    $interDebut = $request->request->get('dateDebut', '');
-                    $interFin = $request->request->get('dateFin', '');
+                    $interDebut = new \DateTime($request->request->get('dateDebut', ''));
+                    $interFin = new \DateTime($request->request->get('dateFin', ''));
                     $resultats = EvenementController::getEventFrom(0, $this->getDoctrine()->getManager(), $interDebut, $interFin);
                     break;
                 case 'typeEtDate':
@@ -933,5 +1104,161 @@ class EvenementController extends Controller
         {
             throw new NotFoundHttpException('Impossible de trouver la page demandée');
         }
+    }
+    
+    public function demandeParticipationAction(Request $request)
+    {
+        if($request->isXmlHttpRequest())
+        {
+            $manager = $this->getDoctrine()->getManager();   
+            $idUser = $this->getUser()->getId();
+            $repository = $manager->getRepository("SiteTrailBundle:Membre");
+            $user = $repository->findOneById($idUser);
+            $idEvenement = $request->request->get('idEvenement', '');
+            $repository = $manager->getRepository("SiteTrailBundle:Evenement");
+            $event = $repository->findOneById($idEvenement);       
+            $repository = $manager->getRepository("SiteTrailBundle:Participants");
+            $participant = $repository->findOneBy(array('membre' => $user, 'evenement' => $event));
+            
+            if($participant)
+            {
+                return $this->redirect($this->generateUrl('site_trail_evenement'));
+            }
+            
+            $participation = new Participation();
+            $participation->setEtatinscription('enattente');
+            $participation->setDivers('');
+            $participation->setResultat('');
+            $manager->persist($participation);
+            $manager->flush();
+            
+            $participant = new Participants();
+            $participant->setEvenement($event);
+            $participant->setMembre($user);
+            $participant->setParticipation($participation);
+            $manager->persist($participant);
+            $manager->flush();
+            
+            return new Response("");
+        }
+        else
+        {
+            throw new NotFoundHttpException('Impossible de trouver la page demandée');
+        }
+    }
+    
+    public function retirerParticipationAction(Request $request)
+    {
+        if($request->isXmlHttpRequest())
+        {
+            $manager = $this->getDoctrine()->getManager();   
+            $idUser = $this->getUser()->getId();
+            $repository = $manager->getRepository("SiteTrailBundle:Membre");
+            $user = $repository->findOneById($idUser);
+            $idEvenement = $request->request->get('idEvenement', '');
+            $repository = $manager->getRepository("SiteTrailBundle:Evenement");
+            $event = $repository->findOneById($idEvenement);       
+            $repository = $manager->getRepository("SiteTrailBundle:Participants");
+            $participant = $repository->findOneBy(array('membre' => $user, 'evenement' => $event));
+            $repository = $manager->getRepository("SiteTrailBundle:Participation");
+            $participation = $repository->findOneBy(array('id' => $participant->getParticipation()->getId()));            
+            $manager->remove($participant);
+            $manager->remove($participation);
+            $manager->flush();
+            return new Response("");
+        }
+        else
+        {
+            throw new NotFoundHttpException('Impossible de trouver la page demandée');
+        }
+    }
+    
+    public function gererParticipationAction(Request $request)
+    {
+        $manager = $this->getDoctrine()->getManager();            
+        $idEvenement = $request->get('idEvenement');       
+        $qb = $manager->createQueryBuilder();
+        $qb->select('pant')
+            ->from('SiteTrailBundle:Participants', 'pant')
+            ->from('SiteTrailBundle:Participation', 'pion')
+            ->where('pant.participation = pion.id')
+            ->andWhere('pant.evenement = '.$idEvenement)
+            ->andWhere("pion.etatinscription = 'enattente'");
+        $query = $qb->getQuery();
+        $listeEnAttente = $query->getResult(); 
+        
+        $qb = $manager->createQueryBuilder();
+        $qb->select('pant')
+            ->from('SiteTrailBundle:Participants', 'pant')
+            ->from('SiteTrailBundle:Participation', 'pion')
+            ->where('pant.participation = pion.id')
+            ->andWhere('pant.evenement = '.$idEvenement)
+            ->andWhere("pion.etatinscription = 'accepte'");
+        $query = $qb->getQuery();
+        $listeAccepte = $query->getResult(); 
+        
+        $qb = $manager->createQueryBuilder();
+        $qb->select('pant')
+            ->from('SiteTrailBundle:Participants', 'pant')
+            ->from('SiteTrailBundle:Participation', 'pion')
+            ->where('pant.participation = pion.id')
+            ->andWhere('pant.evenement = '.$idEvenement)
+            ->andWhere("pion.etatinscription = 'refuse'");
+        $query = $qb->getQuery();
+        $listeRefuse = $query->getResult();
+        
+        $nbResParListe = array();
+        $nbResParListe[] = sizeof($listeEnAttente);
+        $nbResParListe[] = sizeof($listeAccepte);
+        $nbResParListe[] = sizeof($listeRefuse);
+        $max = max($nbResParListe);
+        
+        $membreEnAttente = array();
+        foreach($listeEnAttente as $enAttente)
+        {
+            $membreEnAttente[] = $enAttente->getMembre();
+        }
+        
+        $membreAccepte = array();
+        foreach($listeAccepte as $accepte)
+        {
+            $membreAccepte[] = $accepte->getMembre();
+        }
+        
+        $membreRefuse = array();
+        foreach($listeRefuse as $refuse)
+        {
+            $membreRefuse[] = $refuse->getMembre();
+        }
+  
+        $view = $this->get("templating")->render("SiteTrailBundle:Event:gestionParticipation.html.twig", array(
+                                                            'max' => $max,
+                                                            'idEvenement' => $idEvenement,
+                                                            'listeEnAttente' => $membreEnAttente,
+                                                            'listeAccepte' => $membreAccepte,
+                                                            'listeRefuse' => $membreRefuse));
+
+        return new Response($view);
+    }
+    
+    function updateParticipationAction(Request $request)
+    {
+        $manager = $this->getDoctrine()->getManager();  
+        $listeParticipation = $request->request->get('part', '');
+        $idEvenement = $request->request->get('idEvenement', '');
+        $listeEtatInscription = array("enattente", "accepte", "refuse");
+        
+        foreach($listeParticipation as $participation)
+        {
+            $part = explode('|', $participation);
+            $idMembre = $part[0];
+            $etatInscription = $listeEtatInscription[$part[1]];
+            $objPant = $manager->getRepository("SiteTrailBundle:Participants")->findOneBy(array('evenement' => $idEvenement, 'membre' => $idMembre));
+            $objParticipation = $objPant->getParticipation();
+            $objParticipation->setEtatInscription($etatInscription);
+            $manager->flush();
+        }
+        
+        return $this->redirect($this->generateUrl('site_trail_evenement'));
     }
 }

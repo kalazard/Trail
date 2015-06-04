@@ -43,25 +43,63 @@
                         </div>
                     </div>
                 </div>
+                        
+                <div class="form-group">
+                    <div class="row">
+                        <label class='col-sm-3 control-label'>Statut :</label>
+                        <div class="col-sm-9">
+                            <select name='statut' class="form-control">
+                                {% for monStatut in listeStatut %}
+                                    {% if monStatut.getId() == selectedStatut %}
+                                        <option selected='selected' value='{{monStatut.id}}'>{{monStatut.label}}</option>
+                                    {% else %}
+                                        <option value='{{monStatut.id}}'>{{monStatut.label}}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Champ date début -->
                 <div class="form-group">
-                    <div class="row">
+                    <div class="row addEventDate">
                         {{ form_label(form.date_debut, "Date début : ", {'label_attr': {'class': 'col-sm-3 control-label'}}) }}
                         {{ form_errors(form.date_debut) }}
-                        <div class="col-sm-9">
+                        <div class="col-sm-5">
                             {{ form_widget(form.date_debut) }}
+                        </div>
+                        <div class="col-sm-4">
+                            <label id="errorDate"></label>
                         </div>
                     </div>
                 </div>
 
                 <!-- Champ date fin -->
                 <div class="form-group">
-                    <div class="row">
+                    <div class="row addEventDate">
                         {{ form_label(form.date_fin, "Date fin : ", {'label_attr': {'class': 'col-sm-3 control-label'}}) }}
                         {{ form_errors(form.date_fin) }}
                         <div class="col-sm-9">
                             {{ form_widget(form.date_fin) }}
+                        </div>
+                    </div>
+                </div>    
+                 
+                <!-- Champ liste itinéraire -->
+                <div class="form-group">
+                    <div class="row">
+                        <label class="col-sm-3 control-label">Association d'itinéraire :</label>
+                        <div class="col-sm-9">
+                            <select id="addIti" name="addIti[]" multiple>
+                                {% for iti in listeIti.list %}
+                                    {% if iti.id in selectedIti %}
+                                        <option value='{{iti.id}}' selected="selected">{{iti.nom}} ({{iti.datecreation|date('d/m/Y', false)}})</option>  
+                                    {% else %}
+                                        <option value='{{iti.id}}'>{{iti.nom}} ({{iti.datecreation|date('d/m/Y', false)}})</option>  
+                                    {% endif %}  
+                                {% endfor %}
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -97,7 +135,7 @@
                                     
                     <!-- Champ programme label -->
                     <div class="form-group" id="programmeLabelDiv">
-                        <div class="row addEventDate">
+                        <div class="row">
                             {{ form_label(form.programme_label, "Intitulé du programme : ", {'label_attr': {'class': 'col-sm-3 control-label'}}) }}
                             {{ form_errors(form.programme_label) }}
                             <div class="col-sm-9">
@@ -108,7 +146,7 @@
                     
                     <!-- Champ programme duree -->
                     <div class="form-group" id="programmeDureeDiv">
-                        <div class="row addEventDate">
+                        <div class="row">
                             {{ form_label(form.programme_duree, "Durée du programme : ", {'label_attr': {'class': 'col-sm-3 control-label'}}) }}
                             {{ form_errors(form.programme_duree) }}
                             <div class="col-sm-9">
@@ -117,7 +155,7 @@
                         </div>
                     </div>
                                     
-                    <div class="form-group">
+                    {#<div class="form-group">
                         <div class="row">
                             <label class='col-sm-3 control-label'>Lieu de rendez-vous :</label>
                             <div class="col-sm-9">
@@ -132,7 +170,28 @@
                                 </select>
                             </div>
                         </div>
+                    </div>#}
+                    <!-- Champ lieu titre -->
+                    <div class="form-group" id="lieuTitreDiv">
+                        <div class="row">
+                            {{ form_label(form.rendezvous_titre, "Lieu de rendez-vous : ", {'label_attr': {'class': 'col-sm-3 control-label'}}) }}
+                            {{ form_errors(form.rendezvous_titre) }}
+                            <div class="col-sm-9">
+                                {{ form_widget(form.rendezvous_titre) }}
+                            </div>
+                        </div>
                     </div>
+                            
+                    <!-- Champ lieu description -->
+                    <div class="form-group" id="lieuDescriptionDiv">
+                        <div class="row">
+                            {{ form_label(form.rendezvous_description, "Précision sur le lieu : ", {'label_attr': {'class': 'col-sm-3 control-label'}}) }}
+                            {{ form_errors(form.rendezvous_description) }}
+                            <div class="col-sm-9">
+                                {{ form_widget(form.rendezvous_description) }}
+                            </div>
+                        </div>
+                    </div>                    
                 {% elseif idClasse == 2 %} <!-- Entrainement personnel -->
                 {% elseif idClasse == 3 %} <!-- Evenement divers -->
                     <!--<div class="form-group">
@@ -154,7 +213,28 @@
                         </div>
                     </div>
                 {% elseif idClasse == 4 %} <!-- Sortie découverte -->
-                    <div class="form-group">
+                    <!-- Champ lieu titre -->
+                    <div class="form-group" id="lieuTitreDiv">
+                        <div class="row ">
+                            {{ form_label(form.rendezvous_titre, "Lieu de rendez-vous : ", {'label_attr': {'class': 'col-sm-3 control-label'}}) }}
+                            {{ form_errors(form.rendezvous_titre) }}
+                            <div class="col-sm-9">
+                                {{ form_widget(form.rendezvous_titre) }}
+                            </div>
+                        </div>
+                    </div>
+                            
+                    <!-- Champ lieu description -->
+                    <div class="form-group" id="lieuDescriptionDiv">
+                        <div class="row">
+                            {{ form_label(form.rendezvous_description, "Précision sur le lieu : ", {'label_attr': {'class': 'col-sm-3 control-label'}}) }}
+                            {{ form_errors(form.rendezvous_description) }}
+                            <div class="col-sm-9">
+                                {{ form_widget(form.rendezvous_description) }}
+                            </div>
+                        </div>
+                    </div>
+                    {#<div class="form-group">
                         <div class="row">
                             <label class='col-sm-3 control-label'>Lieu de rendez-vous :</label>
                             <div class="col-sm-9">
@@ -169,7 +249,7 @@
                                 </select>
                             </div>
                         </div>
-                    </div>
+                    </div>#}
                 {% elseif idClasse == 5 %} <!-- Course officielle -->
                     <div class="form-group">
                         <div class="row">
@@ -193,6 +273,27 @@
     </div>
 </div>
 
-{% javascripts '@SiteTrailBundle/Resources/js/event/*' %}
+<script>
+    $("#modalModifEventForm").on("change", ".addEventDate", function ()
+    { 
+        checkDate($('#form_date_debut_date_year').val(), $('#form_date_debut_date_month').val(),
+                    $('#form_date_debut_date_day').val(), $('#form_date_debut_time_hour').val(),
+                    $('#form_date_debut_time_minute').val(), $('#form_date_fin_date_year').val(),
+                    $('#form_date_fin_date_month').val(), $('#form_date_fin_date_day').val(),
+                    $('#form_date_fin_time_hour').val(), $('#form_date_fin_time_minute').val()        
+        );
+    });
+    
+    
+    //auto completion
+    $(function(){
+        $( "#form_rendezvous_titre" ).autocomplete({
+            appendTo: $("#form_rendezvous_titre").parent(),
+            source: {{AClieu|raw}}
+        });
+    });
+</script>
+
+{#{% javascripts '@SiteTrailBundle/Resources/js/event/*' %}
     <script type="text/javascript" src="{{ asset_url }}"></script>
-{% endjavascripts %}
+{% endjavascripts %}#}

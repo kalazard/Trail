@@ -37,15 +37,6 @@ class Lieurendezvous implements JsonSerializable
     private $description;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="coordonnees", type="integer", nullable=false)
-     */
-    private $coordonnees;
-
-
-
-    /**
      * Get id
      *
      * @return integer 
@@ -100,36 +91,12 @@ class Lieurendezvous implements JsonSerializable
     {
         return $this->description;
     }
-
-    /**
-     * Set coordonnees
-     *
-     * @param integer $coordonnees
-     * @return Lieurendezvous
-     */
-    public function setCoordonnees($coordonnees)
-    {
-        $this->coordonnees = $coordonnees;
-
-        return $this;
-    }
-
-    /**
-     * Get coordonnees
-     *
-     * @return integer 
-     */
-    public function getCoordonnees()
-    {
-        return $this->coordonnees;
-    }
     
     public function jsonSerialize() {
         return [
             'id' => $this->getId(),
             'titre' => $this->getTitre(),
-            'description' => $this->getDescription(),
-            'coordonnees' => $this->getCoordonnees() 
+            'description' => $this->getDescription()
         ];
     }
 }

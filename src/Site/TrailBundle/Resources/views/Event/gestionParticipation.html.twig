@@ -1,0 +1,66 @@
+{% extends "SiteTrailBundle::layout.html.twig" %}
+{% block title %}{{ parent() }} - Calendrier{% endblock %}
+{% block body %}
+    <div class="container">
+	<div class="col-sm-12">
+            <h1>Gestion des participations</h1>
+	</div>
+        
+        <form method="post" action="{{path('site_trail_evenement_updateParticipation')}}" class="col-sm-12">    
+            <input type="hidden" name="idEvenement" value="{{idEvenement}}" />
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th class="text-center"><label>En attente</label></th>
+                        <th class="text-center"><label>Accepté</label></th>
+                        <th class="text-center"><label>Refusé</label></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in 0..(max-1) %}
+                        <tr>
+                            {% if (listeEnAttente[i] is defined) %}
+                                <td width="33%">
+                                    {{listeEnAttente[i].getPrenom()}} {{listeEnAttente[i].getNom()}} |
+                                    <input type="radio" name="part[]" value="{{listeEnAttente[i].getId()}}|0" checked/>Attente
+                                    <input type="radio" name="part[]" value="{{listeEnAttente[i].getId()}}|1"/>Accepté
+                                    <input type="radio" name="part[]" value="{{listeEnAttente[i].getId()}}|2"/>Refusé
+                                </td>
+                            {% else %}
+                                <td width="33%"></td>
+                            {% endif %}
+                            {% if (listeAccepte[i] is defined) %}
+                                <td width="33%">
+                                    {{listeAccepte[i].getPrenom()}} {{listeAccepte[i].getNom()}} | 
+                                    <input type="radio" name="part[]" value="{{listeAccepte[i].getId()}}|0"/>Attente
+                                    <input type="radio" name="part[]" value="{{listeAccepte[i].getId()}}|1" checked/>Accepté
+                                    <input type="radio" name="part[]" value="{{listeAccepte[i].getId()}}|2"/>Refusé
+                                </td>
+                            {% else %}
+                                <td width="33%"></td>
+                            {% endif %}
+                            {% if (listeRefuse[i] is defined) %}
+                                <td width="33%">
+                                    {{listeRefuse[i].getPrenom()}} {{listeRefuse[i].getNom()}} | 
+                                    <input type="radio" name="part[]" value="{{listeRefuse[i].getId()}}|0"/>Attente
+                                    <input type="radio" name="part[]" value="{{listeRefuse[i].getId()}}|1"/>Accepté
+                                    <input type="radio" name="part[]" value="{{listeRefuse[i].getId()}}|2" checked/>Refusé
+                                </td>
+                            {% else %}
+                                <td width="33%"></td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="text-center">
+                <input type="submit" class="btn btn-default" value="Enregistrer"/>
+                <a class="btn btn-default" href="{{ path('site_trail_evenement')}}" value="Annuler">Annuler</a>
+            </div>
+        </form>
+    </div>
+    
+    {% javascripts '@SiteTrailBundle/Resources/js/*' '@SiteTrailBundle/Resources/js/event/*' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}

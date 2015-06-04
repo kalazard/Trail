@@ -43,48 +43,51 @@ class GalleryController extends Controller
     
     public function indexAction(Request $request)
     {
-        $manager = $this->getDoctrine()->getManager();
-        $indStart = $request->get('indStart');  
-        $numPage = ($indStart/5)+1;
-
-        $listeCategorie = GalleryController::getTheCategories($indStart);
-        
-        $listeImage = array();
-		$result_categ = array();
-        
-        //récupération des 4 premières images de la catégorie
-        foreach($listeCategorie as $categorie)
+        if($this->getUser())
         {
-            $qb = $manager->createQueryBuilder();
-            $qb->select('img')
-                ->from('SiteTrailBundle:Image', 'img')
-                ->where('img.categorie = :idCategorie')
-                ->orderBy('img.id', 'DESC')
-                ->setParameter('idCategorie', $categorie->getId())
-                ->setMaxResults(4);
-            
-            $query = $qb->getQuery();
-            
-            $listeImage[] = $query->getResult();
-			
-			if(sizeof($query->getResult()) != 0)
-			{
-				$result_categ[] = $categorie;
-			}
+            $manager = $this->getDoctrine()->getManager();
+            $indStart = $request->get('indStart');  
+            $numPage = ($indStart/5)+1;
+
+            $listeCategorie = GalleryController::getTheCategories($indStart);
+
+            $listeImage = array();
+            $result_categ = array();
+
+            //récupération des 4 premières images de la catégorie
+            foreach($listeCategorie as $categorie)
+            {
+                $qb = $manager->createQueryBuilder();
+                $qb->select('img')
+                    ->from('SiteTrailBundle:Image', 'img')
+                    ->where('img.categorie = :idCategorie')
+                    ->orderBy('img.id', 'DESC')
+                    ->setParameter('idCategorie', $categorie->getId())
+                    ->setMaxResults(4);
+
+                $query = $qb->getQuery();
+
+                $listeImage[] = $query->getResult();
+            }
+        
+            /*$reqNb = "SELECT count(cat) FROM SiteTrailBundle:Categorie cat";
+            $queryNb = $manager->createQuery($reqNb);
+            $nbCategorie = $queryNb->getSingleScalarResult(); */
+
+            $nbCategorie = sizeof($listeCategorie);
+
+            $content = $this->get("templating")->render("SiteTrailBundle:Gallery:index.html.twig", array(
+                                                            'listeCategorie' => $listeCategorie,
+                                                            'listeImage' => $listeImage,
+                                                            'nbCategorie' => $nbCategorie,
+                                                            'numPage' => $numPage
+                                                        ));
+            return new Response($content);
         }
-        
-        /*$reqNb = "SELECT count(cat) FROM SiteTrailBundle:Categorie cat";
-        $queryNb = $manager->createQuery($reqNb);
-        $nbCategorie = $queryNb->getSingleScalarResult(); */
-		$nbCategorie = sizeof($listeCategorie);
-        
-        $content = $this->get("templating")->render("SiteTrailBundle:Gallery:index.html.twig", array(
-                                                        'listeCategorie' => $result_categ,
-                                                        'listeImage' => $listeImage,
-                                                        'nbCategorie' => $nbCategorie,
-                                                        'numPage' => $numPage
-                                                    ));
-        return new Response($content);
+        else
+        {
+            throw new NotFoundHttpException('Impossible de trouver la page demandée');
+        }
     }
 	
     public function categoryAction(Request $request, $idCategorie)
@@ -130,8 +133,20 @@ class GalleryController extends Controller
         $repository = $manager->getRepository("SiteTrailBundle:Image");
         $picture = $repository->findOneById($idPicture);
         
+        $arrayUnite = array("octets", "Ko", "Mo");
+        $i = 0;
+        $poidsConvert = $picture->getPoids();
+        
+        while((($poidsConvert/1024) > 1) && $i<2)
+        {
+            $poidsConvert /= 1024;
+            $i += 1;
+        }
+        
         $content = $this->get("templating")->render("SiteTrailBundle:Gallery:picture.html.twig", array(
-                                                        'picture' => $picture
+                                                        'picture' => $picture,
+                                                        'poids' => round($poidsConvert,2),
+                                                        'unite' => $arrayUnite[$i]
         ));
         
         return new Response($content);
@@ -139,7 +154,7 @@ class GalleryController extends Controller
     
     public function categorieAjoutAction(Request $request)
     {
-        if($request->isXmlHttpRequest() && $this->getUser()->getRole()->getId() == 1)
+        if($request->isXmlHttpRequest() && $this->getUser() && $this->getUser()->getRole()->getId() == 1)
         {
             $categorie = new Categorie();
             $formBuilder = $this->get('form.factory')->createBuilder('form', $categorie);
@@ -284,7 +299,18 @@ class GalleryController extends Controller
     {        
         //Sauvegarde du fichier   
         //$target_dir = "C:/testUp/";
-        $target_dir = "/var/www/uploads/";
+        $target_dir = '';
+        
+        if($this->container->getParameter("server") == 'http://localhost')
+        {
+            $target_dir = 'C:/wamp/www/uploads/';
+        }  
+        else
+        {
+            $target_dir .= "/var/www/uploads/";
+        }
+        
+        
         $target_file = $target_dir . basename($_FILES["fichier"]["name"]);
         $uploadOk = 1;
         $imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
@@ -334,11 +360,19 @@ class GalleryController extends Controller
                 $titre = $request->request->get('titre', '');
                 $description = $request->request->get('description', '');
                 $poids = $_FILES["fichier"]["size"];
-                $taille = $height.'x'.$width;
+                $taille = $width.'x'.$height;
                 $auteur = $this->getUser();
+                if($auteur == null)
+                {
+                    $auteur = $manager->getRepository("SiteTrailBundle:Membre")->find(1);
+                }
                 $repository = $manager->getRepository("SiteTrailBundle:Categorie");
                 
                 $categorie = $repository->findOneById($request->request->get('categorie', ''));
+                if($categorie == null)
+                {
+                    $categorie = $repository->find(1);
+                }
                 $repository = $manager->getRepository("SiteTrailBundle:Image");
                 $newImage = new Image();
                 $newImage->setTitre($titre);
@@ -346,9 +380,8 @@ class GalleryController extends Controller
                 $newImage->setPoids($poids);
                 $newImage->setTaille($taille);
                 $newImage->setAuteur($auteur);
-                $newImage->setCategorie($categorie);
-                $newImage->setPath("http://130.79.214.167/uploads/".$fileName);
-                //$newImage->setPath("localhost/uploads/".$fileName);
+                $newImage->setCategorie($categorie); 
+                $newImage->setPath($this->container->getParameter("server")."/uploads/".$fileName);
                 $manager->persist($newImage);
                 $manager->flush();
                 
@@ -374,11 +407,12 @@ class GalleryController extends Controller
                     $listeImage[] = $query->getResult();
                 }
 
-                $content = $this->get("templating")->render("SiteTrailBundle:Gallery:index.html.twig", array(
+                /*$content = $this->get("templating")->render("SiteTrailBundle:Gallery:index.html.twig", array(
                                                                 'listeCategorie' => $listeCategorie,
                                                                 'listeImage' => $listeImage
                                                             ));
-                return new Response($content);
+                return new Response($content);*/
+                return $this->redirect($this->generateUrl('site_trail_gallery'));
                 
             } else {
                 return new Response("Il y a eu un problème lors de l'envoi du fichier.");

@@ -41,9 +41,9 @@
                         <li>
                             <a href="{{path('site_trail_homepage_empty')}}">Accueil</a>
                         </li>
-                        <li>
-                            <a href="{{path('site_trail_evenement')}}">Calendrier</a>
-                        </li>
+                        <!--<li>
+                            <a href="{#{{path('site_trail_evenement')}}"#}>Calendrier</a>
+                        </li>-->
                         {% if not is_granted('IS_AUTHENTICATED_FULLY') %}
                             <li>
                                 <a href="{{path('site_trail_news')}}">Nouveautés</a>
@@ -60,6 +60,9 @@
                         {% endif %}
                         {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                             <li>
+                                <a href="{{path('site_trail_evenement')}}">Calendrier</a>
+                            </li>
+                            <li>
                                 <a href="{{path('site_trail_map')}}">Carte</a>
                             </li>
                             <li>
@@ -72,7 +75,11 @@
                             <li>
                                 <a href="{{path('site_trail_searchitineraire')}}">Itinéraires</a>
                             </li>
-
+                            {% if (app.user.getRole().getId() == 1) %}
+                            <li>
+                                <a href="{{path('site_trail_saveTypelieu')}}">Types de lieu</a>
+                            </li>
+                            {% endif %}
                         {% endif %}
                     </ul>
 

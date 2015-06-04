@@ -23,6 +23,7 @@ function afficherCalendrier(listeEvenements, isCo)
                     tabEvent['start'] = listeEvenements[categorie][evenement][entity].evenement.dateDebut.date;
                     
                     tabEvent['end'] = listeEvenements[categorie][evenement][entity].evenement.dateFin.date;
+                    tabEvent['statut'] = listeEvenements[categorie][evenement][entity].evenement.status.label;
                     //tabEvent['description'] = listeEvenements[categorie][evenement][entity].evenement.description;
                 }
                 else if(entity === '1') //Les participations
@@ -82,8 +83,8 @@ function afficherCalendrier(listeEvenements, isCo)
             {
                 if(isCo ===  true)
                 {
-                    $("#modalAddEventForm").children().remove();
                     $("#modalAddEventForm").remove();
+                    $('#modalModifEventForm').remove();
 
                     $.ajax({
                         type: "POST",
@@ -101,7 +102,13 @@ function afficherCalendrier(listeEvenements, isCo)
             events: eventAffiches,
             eventRender: function(event, element) {
                 contenu = "<p>" + event.start.format('HH:mm') + " - " + event.end.format('HH:mm') + "<br/>";
-                contenu += "&#8226; <a style='color:white;cursor:pointer;font-style:italic;' onclick='afficherDetail(" + event.class + ", " + event.id +")' id='detailEvenement'>" + event.title + "</a><br/>";
+                contenu += "&#8226; <a style='color:white;cursor:pointer;font-style:italic;' onclick='afficherDetail(" + event.class + ", " + event.id +")' id='detailEvenement'>" + event.title;
+                if(event.statut === 'Annulé')
+                {
+                    contenu += " <label class='red'>(ANNULE)</label>";
+                }
+                contenu += "</a><br/>";
+                
                 //contenu += "<label class='petitTexte'>" + event.description + "</label></p>";
                 element.html(contenu);
                 element.css({
@@ -113,11 +120,9 @@ function afficherCalendrier(listeEvenements, isCo)
 }
 
 //Formulaire d'ajout d'événement dynamique
-function updateFormAddEvent(divProgrammeLabel, divProgrammeDuree, selectLieuRendezVous, categorieEvenement)
+function updateFormAddEvent(divProgrammeLabel, divProgrammeDuree, divLieuTitre, divLieuDescription, categorieEvenement)
 {
     $('#specificites').children().remove();
-    
-    console.log(divProgrammeDuree);
     
     switch (categorieEvenement)
     {
@@ -127,8 +132,13 @@ function updateFormAddEvent(divProgrammeLabel, divProgrammeDuree, selectLieuRend
             $('#specificites').append('</div>');
             $('#specificites').append('<div class="form-group" id="programmeDureeDiv">');
             $('#programmeDureeDiv').append(divProgrammeDuree);
+            $('#specificites').append('</div>');                     
+            $('#specificites').append('<div class="form-group" id="lieuTitreDiv">');
+            $('#lieuTitreDiv').append(divLieuTitre);
+            $('#specificites').append('</div>');           
+            $('#specificites').append('<div class="form-group" id="lieuDescriptionDiv">');
+            $('#lieuDescriptionDiv').append(divLieuDescription);
             $('#specificites').append('</div>');         
-            $('#specificites').append(selectLieuRendezVous);                
             break;
         case '2': //Entrainement personnel
             break;
@@ -143,7 +153,12 @@ function updateFormAddEvent(divProgrammeLabel, divProgrammeDuree, selectLieuRend
             $('#specificites').append('</div>');
             break;
         case '4': //Sortie découverte
-            $('#specificites').append(selectLieuRendezVous);
+            $('#specificites').append('<div class="form-group" id="lieuTitreDiv">');
+            $('#lieuTitreDiv').append(divLieuTitre);
+            $('#specificites').append('</div>');           
+            $('#specificites').append('<div class="form-group" id="lieuDescriptionDiv">');
+            $('#lieuDescriptionDiv').append(divLieuDescription);
+            $('#specificites').append('</div>');   
             break;
         case '5': //Course officielle
             $('#specificites').append('<div class="form-group" id="grLabelRow">');
@@ -171,7 +186,7 @@ function envoiFormAjout()
         cache: false,
         data: data,
         success: function(data){
-            document.location.href=Routing.generate('site_trail_evenement')
+            document.location.href=Routing.generate('site_trail_evenement');
         }
     });
 }
@@ -219,7 +234,7 @@ function suppressionEvenement(idClasse, idObj)
 //Modification d'un événement
 function modifEvenement(idClasse, idObj)
 {
-    $('#modalModifEventForm').children().remove();
+    $("#modalAddEventForm").remove();
     $('#modalModifEventForm').remove();
     
     $.ajax({
@@ -392,6 +407,32 @@ function recuperationResEvenement()
             }
             
             $('#searchRes').html(contenuHtml);
+        }
+    });
+}
+
+//Demande de participation à un événement
+function demanderParticipation(idEvenement)
+{
+    $.ajax({
+        type: "POST",
+        url: Routing.generate('site_trail_evenement_demandeParticipation'),
+        data: {"idEvenement" : idEvenement},
+        success: function(data){
+            document.location.href=Routing.generate('site_trail_evenement');
+        }
+    });
+}
+
+//Suppression d'une demande de participation à un événement
+function retirerParticipation(idEvenement)
+{
+    $.ajax({
+        type: "POST",
+        url: Routing.generate('site_trail_evenement_retirerParticipation'),
+        data: {"idEvenement" : idEvenement},
+        success: function(data){
+            document.location.href=Routing.generate('site_trail_evenement');
         }
     });
 }
