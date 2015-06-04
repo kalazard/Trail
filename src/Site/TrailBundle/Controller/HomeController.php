@@ -50,6 +50,8 @@ class HomeController extends Controller
     
     public function newsAction($slug = NULL)
     {
+		$this->testDeDroits('Nouteautes');
+	
 		// Récupère le manager de doctrine
 		$manager = $this->getDoctrine()->getManager();
 		
@@ -127,4 +129,28 @@ class HomeController extends Controller
         $content = $this->get("templating")->render("SiteTrailBundle:Home:contact.html.twig"); 
         return new Response($content);
     }
+	
+	public function testDeDroits($permission)
+	{
+		$manager = $this->getDoctrine()->getManager();
+		
+		$repository_permissions = $manager->getRepository("SiteTrailBundle:Permission");
+		
+		$permissions = $repository_permissions->findOneBy(array('label' => $permission));
+
+		if(Count($permissions->getRole()) != 0)
+		{
+			$list_role = array();
+			foreach($permissions->getRole() as $role)
+			{
+				array_push($list_role, 'ROLE_'.$role->getLabel());
+			}
+			
+			// Test l'accès de l'utilisateur
+			if(!$this->isGranted($list_role))
+			{
+				throw $this->createNotFoundException("Vous n'avez pas accès à cette page");
+			}
+		}
+	}
 }

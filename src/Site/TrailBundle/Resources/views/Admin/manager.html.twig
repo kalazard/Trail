@@ -1,0 +1,13 @@
+{% extends "SiteTrailBundle::layout.html.twig" %}
+
+{% block title %}{{ parent() }} - Administration - Gestion{% endblock %}
+
+{% block body %}
+
+<div class="container">
+	<h1>Gestion</h1>
+	<a href="{{ path('site_trail_news_list') }}" class="btn btn-warning">Retourner à la liste</a>
+	<div class="content">
+		{{ form(form) }}
+	</div>
+{% endblock %}

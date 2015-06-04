@@ -8,6 +8,7 @@ use Site\TrailBundle\Entity\Poi;
 use Site\TrailBundle\Entity\Coordonnees;
 use Site\TrailBundle\Entity\TypeLieu;
 use Site\TrailBundle\Entity\Icone;
+use Site\TrailBundle\Entity\Permission;
 use Site\TrailBundle\Entity\Itiniraire;
 use Site\TrailBundle\Entity\Gpx;
 use Site\TrailBundle\Entity\DifficulteParcours;
@@ -23,8 +24,8 @@ class MapController extends Controller
 {
     public function indexAction()
     {
-      
-        
+		
+		
         $content = $this->get("templating")->render("SiteTrailBundle:Map:index.html.twig");
         
         

@@ -3,15 +3,14 @@
 namespace Site\TrailBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use JsonSerializable;
-use Symfony\Component\Security\Core\Role\RoleInterface;
+
 /**
  * Role
  *
  * @ORM\Table(name="role", uniqueConstraints={@ORM\UniqueConstraint(name="label_UNIQUE", columns={"label"})})
  * @ORM\Entity
  */
-class Role implements RoleInterface,  JsonSerializable
+class Role
 {
     /**
      * @var integer
@@ -36,6 +35,28 @@ class Role implements RoleInterface,  JsonSerializable
      */
     private $niveau;
 
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\ManyToMany(targetEntity="Permission", inversedBy="role")
+     * @ORM\JoinTable(name="role_has_permission",
+     *   joinColumns={
+     *     @ORM\JoinColumn(name="role_id", referencedColumnName="id")
+     *   },
+     *   inverseJoinColumns={
+     *     @ORM\JoinColumn(name="permission_id", referencedColumnName="id")
+     *   }
+     * )
+     */
+    private $permission;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->permission = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
 
     /**
@@ -93,17 +114,49 @@ class Role implements RoleInterface,  JsonSerializable
     {
         return $this->niveau;
     }
-    
-    public function getRole() {
-        return array("ROLE_".$this->getLabel());
+
+    /**
+     * Add permission
+     *
+     * @param \Site\TrailBundle\Entity\Permission $permission
+     * @return Role
+     */
+    public function addPermission(\Site\TrailBundle\Entity\Permission $permission)
+    {
+        $this->permission[] = $permission;
+
+        return $this;
     }
 
-    public function jsonSerialize()
+    /**
+     * Remove permission
+     *
+     * @param \Site\TrailBundle\Entity\Permission $permission
+     */
+    public function removePermission(\Site\TrailBundle\Entity\Permission $permission)
+    {
+        $this->permission->removeElement($permission);
+    }
+
+    /**
+     * Get permission
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getPermission()
+    {
+        return $this->permission;
+    }
+	
+	public function getRole() {
+        return array("ROLE_".$this->getLabel());
+    }
+	
+	public function jsonSerialize()
     {
         return array(
             'id' => $this->id,
             'name'=> $this->getLabel(),
         );
     }
-
 }

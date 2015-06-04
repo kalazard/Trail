@@ -1,0 +1,41 @@
+{% extends "SiteTrailBundle::layout.html.twig" %}
+
+{% block title %}{{ parent() }} - Administration - Liste des news{% endblock %}
+
+{% block body %}
+
+<div class="container">
+  <h1>Liste des news</h1>
+	<div class="content">
+		<table class="table table-striped sieve">
+				<thead>
+					<tr>
+						<th>Titre</th>
+						<th>Auteur</th>
+						<th>Date</th>
+						<th></th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+				{% if news is not empty %}
+					{% for new in news %}
+						<tr>
+							<td>{{new.titre}}</td>
+							<td>{{new.auteur.prenom}} {{new.auteur.nom}}</td>
+							<td>{{new.date|date("d/m/Y")}}</td>	
+							<td><a href="{{ path('site_trail_news_manager', {'new_alias': new.alias}) }}" class="btn btn-primary update-new">Modifier</a></td>
+							<td><a href="{{ path('site_trail_delete_news', {'new_alias': new.alias}) }}" class="btn btn-danger delete-new">Supprimer</a></td>
+						</tr>
+					{% endfor %}
+				{% endif %}
+			</tbody>
+		   </table>
+		</div>
+		
+		<script>
+        $(document).ready(function () {
+            $("table.sieve").sieve();
+			});
+			</script>
+{% endblock %}

@@ -211,7 +211,7 @@ class EvenementController extends Controller
                 $reqP .= " AND pant.evenement = ".$entPerso->getEvenement()->getId();
                 $reqP .= " AND pant.participation = pion.id";
                 $queryP = $em->createQuery($reqP);
-                $listeP = $queryP->getOneOrNullResult();            
+                $listeP = $queryP->getOneOrNullResult();
                 $listeRes = array($entPerso, $listeP);
                 $listeSortieDecouverte[] = $listeRes;
             }

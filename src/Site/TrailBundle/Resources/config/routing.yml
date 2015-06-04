@@ -383,3 +383,19 @@ site_trail_upload:
 site_trail_saveTypelieu:
     path :    /saveTypelieu
     defaults: { _controller: SiteTrailBundle:Map:saveTypelieu}
+
+site_trail_admin:
+    path:    /admin
+    defaults: { _controller: SiteTrailBundle:Admin:index }
+site_trail_acl:
+    path:    /admin/permissions
+    defaults: { _controller: SiteTrailBundle:Admin:acl }
+site_trail_news_list:
+    path :    /admin/nouveautes
+    defaults: { _controller: SiteTrailBundle:Admin:listeNews }
+site_trail_news_manager:
+    path :    /admin/nouveautes/gestion/{new_alias}
+    defaults: { _controller: SiteTrailBundle:Admin:gestionNews, new_alias : NULL }	
+site_trail_delete_news:
+    path :    /admin/nouveautes/supprimer/{new_alias}
+    defaults: { _controller: SiteTrailBundle:Admin:suppressionNews }

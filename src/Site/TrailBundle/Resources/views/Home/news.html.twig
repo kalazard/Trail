@@ -5,6 +5,15 @@
 {% block body %}
 	<div class="container">
 		<h1>News</h1>
+		
+		<div class="text-right">
+		{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+            {%if is_granted('ROLE_Administrateur')%}
+				<a href="{{ path('site_trail_news_list') }}" class="btn btn-primary">Administrer</a>
+			{%endif%}
+		{%endif%}
+		</div>
+		
 		<div class="content">
 			{% for new in news %}
 				<a href="{{path('site_trail_article', {'slug': new.alias })}}" class="h3">{{ new.titre }}</a>

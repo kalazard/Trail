@@ -23,9 +23,4 @@ Lieurendezvous:
             length: 255
             fixed: false
             comment: ''
-        coordonnees:
-            type: integer
-            nullable: false
-            unsigned: false
-            comment: ''
     lifecycleCallbacks: {  }

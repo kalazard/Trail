@@ -6,12 +6,13 @@ Parcours:
             columns:
                 - evenement
     id:
-        itineraire:
+        iditineraire:
             type: integer
             nullable: false
             unsigned: false
             comment: ''
             id: true
+            column: idItineraire
     oneToOne:
         evenement:
             targetEntity: Evenement

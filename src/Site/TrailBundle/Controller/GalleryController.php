@@ -8,7 +8,7 @@ use Site\TrailBundle\Entity\Image;
 use Symfony\Component\HttpFoundation\Request;
 
 class GalleryController extends Controller
-{
+{	
     public function getTheCategories($indStart)
     {
         $listCategories = array();

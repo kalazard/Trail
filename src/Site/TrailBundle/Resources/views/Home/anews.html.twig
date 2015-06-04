@@ -5,6 +5,16 @@
 {% block body %}
 	<div class="container">
 		<h1>{{ new.titre }}</h1>
+		
+		<div class="text-right">
+		{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+            {%if is_granted('ROLE_Administrateur')%}
+				<a href="{{ path('site_trail_news_manager', {'new_alias': new.alias }) }}" class="btn btn-primary">Modifier</a>
+				<a href="{{ path('site_trail_delete_news', {'new_alias': new.alias }) }}" class="btn btn-danger">Supprimer</a>
+			{%endif%}
+		{%endif%}
+		</div>
+		
 		<div class="content">
 			<div class="panel panel-default">
 				<div class="panel-body">
