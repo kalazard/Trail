@@ -1,26 +1,46 @@
 <?php
 
 namespace Site\TrailBundle\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use Site\TrailBundle\Entity\Utilisateur;
 use Site\TrailBundle\Entity\News;
 use Site\TrailBundle\Entity\Image;
 use Site\TrailBundle\Entity\Role;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 
 class HomeController extends Controller
 {
     //Affichage de la page d'accueil
-    public function indexAction()
+    public function indexAction(Request $request)
     {
 		$this->testDeDroits('Accueil');
 	
 		// Récupère le manager de doctrine
 		$manager = $this->getDoctrine()->getManager();
+		
+		if ($request->isMethod('post'))
+		{
+			// Si un des champs obligatoire est vide
+			if(empty($request->get('category')) ||  empty($request->get('subject')) || empty($request->get('email'))
+			|| empty($request->get('firstname')) || empty($request->get('name')) || empty($request->get('message')))
+			{
+				$this->get('session')->getFlashBag()->add('message-error', 'Aucun champs ne peut Ãªtre vide');
+				return $this->redirect($this->generateUrl('site_trail_homepage_empty'));
+			}
+			
+			// Envoi un mail
+			$message = \Swift_Message::newInstance()
+			->setSubject($request->get('category') . ' : ' . $request->get('subject'))
+			->setTo('noreply.trail@gmail.com')
+			->setFrom(array($request->get('email') => $request->get('firstname') . ' ' . $request->get('name')))
+			->setBody($request->get('email') . ' : ' . $request->get('message'));
+
+			$this->get('mailer')->send($message);
+		}
 		
 		// Récupère le dossier des news
         $repository_news = $manager->getRepository("SiteTrailBundle:News");
@@ -130,9 +150,29 @@ class HomeController extends Controller
 		return new Response($content);		
     }
 	
-	public function contactAction()
+	public function contactAction(Request $request)
     {
 		$this->testDeDroits('Contact');
+		
+		if ($request->isMethod('post'))
+		{
+			// Si un des champs obligatoire est vide
+			if(empty($request->get('category')) ||  empty($request->get('subject')) || empty($request->get('email'))
+			|| empty($request->get('firstname')) || empty($request->get('name')) || empty($request->get('message')))
+			{
+				$this->get('session')->getFlashBag()->add('message-error', 'Aucun champs ne peut Ãªtre vide');
+				return $this->redirect($this->generateUrl('site_trail_contact'));
+			}
+			
+			// Envoi un mail
+			$message = \Swift_Message::newInstance()
+			->setSubject($request->get('category') . ' : ' . $request->get('subject'))
+			->setTo('noreply.trail@gmail.com')
+			->setFrom(array($request->get('email') => $request->get('firstname') . ' ' . $request->get('name')))
+			->setBody($request->get('email') . ' : ' . $request->get('message'));
+
+			$this->get('mailer')->send($message);
+		}
 		
         $content = $this->get("templating")->render("SiteTrailBundle:Home:contact.html.twig"); 
         return new Response($content);
