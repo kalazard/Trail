@@ -20,9 +20,14 @@ use SoapClient;
 use Site\TrailBundle\Security\CustomCrypto;
 use DateTime;
 use Site\TrailBundle\Entity\Image;
-
+/**
+ * 
+ */
 class UserController extends Controller {
-
+    /**
+     * 
+     * @return View
+     */
     public function indexAction() {
 		$this->testDeDroits('Administration');
 
@@ -31,8 +36,59 @@ class UserController extends Controller {
         return new Response($content);
     }
 
-    //Création d'un utilisateur
+    /**
+     * Fonction de création d'un utilisateur
+     *
+     * Cette méthode est appelée en ajax et requiert les paramètres suivants : 
+     * 
+     * <code>
+     * email : Email de l'utilisateur à créer 
+     * nom : Nom de l'utilisateur à créer 
+     * prenom : Prénom de l'utilisateur à créer 
+     * datenaissance : Date de naissance de l'utilisateur à créer 
+     * telephone : Téléphone de l'utilisateur à créer 
+     * licence : Url du site de la licence de l'utilisateur à créer
+     * </code>
+     * 
+     * 
+     * @return string 
+     *
+     * JSON permettant de définir si l'utilisateur a été créé ou non
+     *
+     * Example en cas de succès :
+     * 
+     * <code>
+     * {
+     *     "success": true,
+     *     "serverError": false,
+     *     "message": "Message"
+     * }
+     * </code>
+     * 
+     * Example en cas d'erreur dans la création :
+     * 
+     * <code>
+     * {
+     *     "success": false,
+     *     "serverError": false,
+     *     "message": "Message"
+     * }
+     * </code>
+     * 
+     * Example en cas d'erreur du serveur :
+     * 
+     * <code>
+     * {
+     *     "success": false,
+     *     "serverError": true,
+     *     "message": "Message"
+     * }
+     * </code>
+     * 
+     * 
+     */
     public function createAction() {
+        //Seul les roles ayant la permission "administration" auront accés à cette fonction
 		$this->testDeDroits('Administration');
 		
         //On récupère la requete courrante
