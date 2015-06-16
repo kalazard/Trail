@@ -141,6 +141,18 @@ site_trail_getAllLieux:
 site_trail_getByIditineraire:
     path:     /itineraire_getById/{id}
     defaults: { _controller: SiteTrailBundle:Itiniraire:getById }
+    options:
+        expose: true
+site_trail_noteItineraireForm:
+    path:     /itineraire_noteForm
+    defaults: { _controller: SiteTrailBundle:Itiniraire:noteItineraireForm }
+    options:
+        expose: true
+site_trail_noteItineraire:
+    path:     /itineraire_note
+    defaults: { _controller: SiteTrailBundle:Itiniraire:noteItineraire }
+    options:
+        expose: true
 site_trail_gallery:
     path :    /galerie/{indStart}
     defaults: { _controller: SiteTrailBundle:Gallery:index, indStart: "0" }

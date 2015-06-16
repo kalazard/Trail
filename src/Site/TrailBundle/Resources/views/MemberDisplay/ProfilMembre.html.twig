@@ -29,7 +29,7 @@
                 <p class="lic"><strong>Licence : </strong><span class="lic" id="lc">{{licence}} </span></p>
                 <button class="btn btn-warning" id="btn" onclick="Modif()">Modifier</button>
             </form> 
-                {% if itineraires.list is not empty %}
+                {% if itineraires.list is defined and itineraires.list is not empty %}
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -40,12 +40,13 @@
                                 <th>Longueur du parcours</th>
                                 <th>Statut</th>
                                 <th>Visibilité</th>
+                                <th>Ma note</th>
+                                <th>Note moyenne</th>
                                 <th>Télécharger le fichier GPX</th>
                                 <th>Supprimer</th>
                             </tr>
                         </thead>
                         <tbody>
-
                             {% if itineraires.list is not empty %}
                                 {% for itineraire in itineraires.list %}
                                     <tr id ="{{itineraire.id}}">
@@ -63,6 +64,16 @@
                                                 {% endif %}
                                             </p>
                                         </td>
+                                        {% if userNotes[loop.index-1] is defined and userNotes[loop.index-1] is not empty %}
+                                            <td>{{userNotes[loop.index-1]}}</td>
+                                        {% else %}
+                                            <td>/</td>
+                                        {% endif %}
+                                        {% if itiMoyenne[loop.index-1] is defined and itiMoyenne[loop.index-1] > -1 %}
+                                            <td>{{itiMoyenne[loop.index-1]}}</td>
+                                        {% else %}
+                                            <td>/</td>
+                                        {% endif %}
                                         <td>
                                             <p data-placement='top' data-toggle='tooltip' title='GPX'>
                                                 <a href="http://130.79.214.167/Carto/web/app_dev.php/download/gpx/{{itineraire.id}}" class='btn btn-success btn-xs btn_edit'><span class='glyphicon glyphicon-download'></span></a>

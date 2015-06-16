@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ItiniraireController extends Controller 
 {
@@ -34,6 +35,9 @@ class ItiniraireController extends Controller
 	public function searchAction(Request $request)
 	{
 		$this->testDeDroits('Itinéraires');
+                
+                $user = $this->getUser();
+		$id_courant = $user->getId();
 		
 		$clientSOAP = new \SoapClient(null, array(
                     'uri' => "http://localhost/Carto/web/app_dev.php/itineraire",
@@ -76,10 +80,26 @@ class ItiniraireController extends Controller
 			$response = $clientSOAP->__call('itilist', array());
 		
 			$res_list = json_decode($response);
+                        //var_dump($res_list);
 			$resDiff = json_decode($responseDiff);
 			$resStat = json_decode($responseStat);
 			$resType = json_decode($responseType);
-			$content = $this->get("templating")->render("SiteTrailBundle:Itiniraire:SearchItineraire.html.twig",array("resultats" => array(),"diffs" => $resDiff,"stats" => $resStat,"typechemin" => $resType,"list" => $res_list));
+                        //var_dump($res_list);
+                        $n = $this->forward('SiteTrailBundle:Itiniraire:getNotes', array('listeIti' => $res_list,'idUser'  => $id_courant));
+                        $notes = json_decode($n->getContent(), true);
+                        $itiMoyenne = array();
+                        foreach($notes['allNotes'] as $calcMoy)
+                        {
+                            if(sizeof($calcMoy) > 0)
+                            {
+                                $itiMoyenne[] = array_sum($calcMoy) / count($calcMoy);
+                            }
+                            else
+                            {
+                                $itiMoyenne[] = -1;
+                            }
+                        }
+			$content = $this->get("templating")->render("SiteTrailBundle:Itiniraire:SearchItineraire.html.twig",array("resultats" => array(),"diffs" => $resDiff,"stats" => $resStat,"typechemin" => $resType,"list" => $res_list, "itiMoyenne" => $itiMoyenne));
 		}
 
 		return new Response($content);
@@ -132,7 +152,10 @@ class ItiniraireController extends Controller
 
 	public function getByIdAction($id)
 	{
-		$this->testDeDroits('Itinéraires');
+		$this->testDeDroits('Itinéraires');                
+                $user = $this->getUser();
+		$id_courant = $user->getId();
+                
         	//Appel du service de recherche
         	$search = array();		
 			$search["id"] = $id;
@@ -144,20 +167,41 @@ class ItiniraireController extends Controller
 	                    'exceptions' => true
 	                ));
 
-	        $response = $clientSOAP->__call('getById', $search);
+	    $response = $clientSOAP->__call('getById', $search);
 
-			$res = json_decode($response);
+            $res = json_decode($response);
                         
             //Récupération du service
             $evenementService = $this->container->get('evenement_service');
             $eventService = $evenementService->getEventAndEventUsed($id);
             $listEvent = $eventService['allEvent'];
-            $selectedEvent = $eventService['usedEvent'];            
+            $selectedEvent = $eventService['usedEvent'];
+            
+            $res->list[] = $res->searchResults;
+            
+            $n = $this->forward('SiteTrailBundle:Itiniraire:getNotes', array('listeIti' => $res,'idUser'  => $id_courant));
+            
+            $notes = json_decode($n->getContent(), true);
+            $userNotes = $notes['userNotes'];
+            $itiMoyenne = array();
+            foreach($notes['allNotes'] as $calcMoy)
+            {
+                if(sizeof($calcMoy) > 0)
+                {
+                    $itiMoyenne[] = array_sum($calcMoy) / count($calcMoy);
+                }
+                else
+                {
+                    $itiMoyenne[] = -1;
+                }
+            }
             
             $content = $this->get("templating")->render("SiteTrailBundle:Itiniraire:FicheItineraire.html.twig",
                                                         array("resultats" => $res,
                                                                 "jsonObject" => $response,
                                                                 "listEvent" => $listEvent,
+                                                                "userNotes" => $userNotes,
+                                                                "itiMoyenne" => $itiMoyenne,
                                                                 "usedEvent" => $selectedEvent));
             return new Response($content);
 	}
@@ -175,6 +219,42 @@ class ItiniraireController extends Controller
 
                 //On appel la méthode du webservice qui permet de se connecter
                 $response = $clientSOAP->__call('getByUser', array("user" => $user));
+    
+		$res = json_decode($response);
+		return new Response($response);
+	}
+        
+        public function getAllNotesAction()
+	{
+            $this->testDeDroits('Itinéraires');
+
+            $clientSOAP = new \SoapClient(null, array(
+                'uri' => "http://localhost/Carto/web/app_dev.php/itineraire",
+                'location' => "http://localhost/Carto/web/app_dev.php/itineraire",
+                'trace' => true,
+                'exceptions' => true
+            ));
+
+            //On appel la méthode du webservice qui permet de se connecter
+            $response = $clientSOAP->__call('getAllNotes', array());
+
+            $res = json_decode($response);
+            return new Response($response);
+	}
+        
+        public function getNotesAction($listeIti, $idUser)
+	{
+		$this->testDeDroits('Itinéraires');
+		
+		$clientSOAP = new \SoapClient(null, array(
+                    'uri' => "http://localhost/Carto/web/app_dev.php/itineraire",
+                    'location' => "http://localhost/Carto/web/app_dev.php/itineraire",
+                    'trace' => true,
+                    'exceptions' => true
+                ));
+
+                //On appel la méthode du webservice qui permet de se connecter
+                $response = $clientSOAP->__call('getNotes', array('listeIti' => $listeIti,"idUser" => $idUser));
     
 		$res = json_decode($response);
 		return new Response($response);
@@ -309,8 +389,63 @@ class ItiniraireController extends Controller
 			}
 		}
 	}
+        
+    public function noteItineraireFormAction(Request $request)
+    {
+        if($request->isXmlHttpRequest())
+        {
+            $listeNote = json_decode($this->forward('SiteTrailBundle:Itiniraire:getAllNotes', array())->getContent());
+            $idUser = $this->getUser()->getId();
+            $idItineraire = $request->request->get('idIti', '');
+            $clientSOAP = new \SoapClient(null, array(
+                    'uri' => "http://localhost/Carto/web/app_dev.php/itineraire",
+                    'location' => "http://localhost/Carto/web/app_dev.php/itineraire",
+                    'trace' => true,
+                    'exceptions' => true
+                ));            
+            $search = array();		
+            $search["id"] = $idItineraire;
+            $response = $clientSOAP->__call('getById', $search);
+            $listeIti = json_decode($response); 
+            $listeIti->list[] = $listeIti->searchResults;
+            $n = $this->forward('SiteTrailBundle:Itiniraire:getNotes', array('listeIti' => $listeIti,'idUser'  => $idUser));
+            $notes = json_decode($n->getContent(), true);
+            $maNote = $notes['userNotes'][0];
+            
+            $formulaire = $this->get("templating")->render("SiteTrailBundle:Itiniraire:NoteItineraire.html.twig", array(    "maNote" => $maNote,
+                                                                                                                            "listeNote" => $listeNote,
+                                                                                                                            "idIti" => $idItineraire
+                                                          ));
 
+            return new Response($formulaire);
+        }
+        else
+        {
+            throw new NotFoundHttpException('Impossible de trouver la page demandée');
+        }
+    }
+    
+    public function noteItineraireAction(Request $request)
+    {
+        var_dump($_REQUEST);
+        $idUser = $this->getUser()->getId();
+        $idItineraire = $request->request->get('idIti', '');
+        $note = $request->request->get('note', '');
+
+        $clientSOAP = new \SoapClient(null, array(
+                'uri' => "http://localhost/Carto/web/app_dev.php/itineraire",
+                'location' => "http://localhost/Carto/web/app_dev.php/itineraire",
+                'trace' => true,
+                'exceptions' => true
+            ));
+
+        $search = array();		
+        $search["idUser"] = $idUser;
+        $search["idItineraire"] = $idItineraire;
+        $search["note"] = $note;
+        $response = $clientSOAP->__call('noterItineraire', $search);
+        
+        return $this->redirect($this->generateUrl('site_trail_getByIditineraire', array("id" => $idItineraire)));
+    }
 }
-
-
 ?>
