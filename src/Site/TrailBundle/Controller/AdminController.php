@@ -3,6 +3,7 @@
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Site\TrailBundle\Entity\Permission;
 use Site\TrailBundle\Entity\Membre;
+use Site\TrailBundle\Entity\Image;
 use Site\TrailBundle\Entity\Role;
 use Site\TrailBundle\Entity\News;
 use \DateTime;
@@ -125,9 +126,10 @@ class AdminController extends Controller
 		if($new_alias != NULL)
 		{
 			$new = $repository_news->findOneBy(array('alias' => $new_alias));
-		
+
 			// Créer le formulaire
 			$form = $this->createFormBuilder()
+				->add('image', 'file', array('label'  => 'Image', 'required' => false))
 				->add('titre', 'text', array('label'  => 'Titre', 'attr' => array('class' => 'form-control'), 'data' => $new->getTitre()))
 				->add('visibilite', 'choice', array('choices' => array('0' => 'Non visible', '1' => 'Visible'), 'data' => $new->getVisibilite(), 'attr' => array('class' => 'form-control')))
 				->add('texte', 'textarea', array('label'  => 'Texte', 'attr' => array('class' => 'form-control'), 'data' => $new->getTexte()))
@@ -138,7 +140,7 @@ class AdminController extends Controller
 			
 			// Si le formulaire a été posté correctement
 			if ($form->isValid())
-			{
+			{			
 				$dateTime = new DateTime('NOW');
 				
 				$author = $repository_members->findOneBy(array('id' => $this->getUser()->getId()));
@@ -150,6 +152,13 @@ class AdminController extends Controller
 				$new->setDate($dateTime);
 				$new->setAuteur($author);
 				
+				if($form->get('image')->getData() != null)
+				{
+					$picture = new Image();
+					$picture = $this->upload_image($form->get('image')->getData(), $form->get('titre')->getData(), $author);
+					if($picture) $new->setImage($picture);
+				}
+				
 				$manager->persist($new);
 				$manager->flush();
 				
@@ -157,16 +166,30 @@ class AdminController extends Controller
 				
 				return $this->redirect($this->generateUrl('site_trail_news_manager', array('new_alias' => $new->getAlias())));
 			}	
-				
-			$content = $this->get("templating")->render("SiteTrailBundle:Admin:manager.html.twig", array(
+			
+			$view = array(
 				'new' => $new,
 				'form' => $form->createView()
-			)); 
+			);
+			
+			if($new->getImage()->getId() != 0)
+			{
+				$repository_images = $manager->getRepository("SiteTrailBundle:Image");
+				$image = $repository_images->findOneBy(array('id' => $new->getImage()->getId()));
+				$view['img'] = $image->getPath();
+			}
+			if(!empty($new))
+			{
+				$view['new'] = $new;
+			}
+				
+			$content = $this->get("templating")->render("SiteTrailBundle:Admin:manager.html.twig", $view); 
 		}
 		else
 		{
 			// Créer le formulaire
 			$form = $this->createFormBuilder()
+				->add('image', 'file', array('label'  => 'Image', 'required' => false))
 				->add('titre', 'text', array('label'  => 'Titre', 'attr' => array('class' => 'form-control')))
 				->add('visibilite', 'choice', array('choices' => array('0' => 'Non visible', '1' => 'Visible'), 'attr' => array('class' => 'form-control')))
 				->add('texte', 'textarea', array('label'  => 'Texte', 'attr' => array('class' => 'form-control')))
@@ -193,6 +216,10 @@ class AdminController extends Controller
 				$new->setDate($dateTime);
 				$new->setAuteur($author);
 				
+				$picture = new Image();
+				$picture = $this->upload_image($form->get('image')->getData(), $form->get('titre')->getData(), $author);
+				if($picture) $new->setImage($picture);
+				
 				$manager->persist($new);
 				$manager->flush();
 				
@@ -207,6 +234,43 @@ class AdminController extends Controller
 		}
 		
         return new Response($content);
+    }
+	
+	public function upload_image($image, $titre, $auteur) {
+		$dateTime = new DateTime('NOW');
+		
+		$for_extension = explode('.', $image->getClientOriginalName());
+		$extension = $for_extension[Count($for_extension)-1];
+		
+		$fileName = "image" . date_format($dateTime, 'U') . $extension;
+		
+		$image->move($this->container->getParameter("upload_directory"), $fileName);
+		
+		list($width, $height, $type, $attr) = getimagesize($this->container->getParameter("upload_directory").$fileName);
+
+		$manager = $this->getDoctrine()->getManager();
+
+		//On rajoute l'image dans la base de données
+		$description = "Image de l'article " . $titre;
+		$poids = $image->getMaxFilesize();
+		$taille = $width . 'x' .$height;
+		
+		$repository_category = $manager->getRepository("SiteTrailBundle:Categorie");
+		$categorie = $repository_category->find(2);
+		
+		$newImage = new Image();
+		$newImage->setTitre($titre);
+		$newImage->setDescription($description);
+		$newImage->setPoids($poids);
+		$newImage->setTaille($taille);
+		$newImage->setAuteur($auteur);
+		$newImage->setCategorie($categorie);
+		$newImage->setPath($this->container->getParameter("img_path").$fileName);
+		
+		$manager->persist($newImage);
+		$manager->flush();
+			
+		return $newImage;
     }
 	
 	public function convert_to_alias($chaine)

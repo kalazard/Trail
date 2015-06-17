@@ -16,6 +16,12 @@
 		</div>
 		
 		<div class="content">
+			{% if img is defined %}
+				<div class="row">
+					<div id="picture" class="img-responsive col-xs-12 col-sm-4 article-img move-top-sm" style="background-image: url('{{ img }}');"></div>
+				</div>
+			{% endif %}
+		
 			<div class="panel panel-default">
 				<div class="panel-body">
 					<p>
