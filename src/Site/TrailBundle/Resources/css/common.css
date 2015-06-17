@@ -28,6 +28,14 @@
     background-size: cover;
 }
 
+.article-img
+{
+    height: 100px;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+}
+
 html
 {
     height: 100%;

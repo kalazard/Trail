@@ -50,6 +50,7 @@ class HomeController extends Controller
             ->from('SiteTrailBundle:News', 'news')
 			->where('news.visibilite = :visibilite AND news.alias != :trail AND news.alias != :club')
 			->orderBy('news.date', 'DESC')
+			->orderBy('news.id', 'DESC')
 			->setParameters(['visibilite' => 1, 'trail' => "le-trail", 'club' => "le-club"])
 			->setMaxResults(2);
 
@@ -79,6 +80,7 @@ class HomeController extends Controller
 		
 		// Récupère le dossier des news
         $repository_news = $manager->getRepository("SiteTrailBundle:News");
+		$repository_images = $manager->getRepository("SiteTrailBundle:Image");
 		
 		if($slug == NULL)
 		{
@@ -88,9 +90,20 @@ class HomeController extends Controller
 			  ');
 			$query->setParameters(['visibilite' => 1, 'trail' => "le-trail", 'club' => "le-club"]);
 			$news = $query->getResult();
-
+			
+			$img = array();
+			foreach($news as $new)
+			{
+				if($new->getImage()->getId() != 0)
+				{
+					$image = $repository_images->findOneBy(array('id' => $new->getImage()->getId()));
+					$img[$new->getId()] = $image->getPath();
+				}
+			}
+			
 			$content = $this->get("templating")->render("SiteTrailBundle:Home:news.html.twig", array(
-				'news' => $news
+				'news' => $news,
+				'img' => $img
 			)); 			
 		}
 		else
@@ -102,9 +115,17 @@ class HomeController extends Controller
 			$query->setParameters(['visibilite' => 1, 'slug' => $slug]);
 			$new = $query->getSingleResult();
 			
-			$content = $this->get("templating")->render("SiteTrailBundle:Home:anews.html.twig", array(
+			$view = array(
 				'new' => $new
-			)); 
+			);
+			
+			if($new->getImage()->getId() != 0)
+			{
+				$image = $repository_images->findOneBy(array('id' => $new->getImage()->getId()));
+				$view['img'] = $image->getPath();
+			}
+			
+			$content = $this->get("templating")->render("SiteTrailBundle:Home:anews.html.twig", $view); 	
 		}
 		
         return new Response($content);

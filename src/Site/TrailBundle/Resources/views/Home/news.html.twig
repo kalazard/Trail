@@ -17,9 +17,14 @@
 		<div class="content">
 			{% for new in news %}
 				<a href="{{path('site_trail_article', {'slug': new.alias })}}" class="h3">{{ new.titre }}</a>
+				{% if img[new.id] is defined %}
+					<div class="row">
+						<div id="picture" class="img-responsive col-xs-12 col-sm-4 move-bottom-xs article-img move-top-sm" style="background-image: url('{{ img[new.id] }}');"></div>
+					</div>
+				{% endif %}
 				<div class="panel panel-default">
 				  <div class="panel-body">
-					<p>{{ new.texte }}</p>
+					<p>{{ new.texte|slice(0, 250) }}...</p>
 					<a href="{{path('site_trail_article', {'slug': new.alias })}}" class="pull-right">Voir la suite</a>
 				  </div>
 				</div>
