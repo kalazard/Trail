@@ -1421,15 +1421,24 @@ class EvenementController extends Controller
     function updateParticipationAction(Request $request)
     {
 		$this->testDeDroits('Calendrier');
+                
 		
         $manager = $this->getDoctrine()->getManager();  
-        $listeParticipation = $request->request->get('part', '');
+        
+        foreach( $_POST as $k => $v )
+        {
+            if ( preg_match('/,?(.*_part),?/', $k) )
+            {
+                $listeParticipation[$k] = $v;
+            }
+        }
+
         $idEvenement = $request->request->get('idEvenement', '');
         $listeEtatInscription = array("enattente", "accepte", "refuse");
         
         foreach($listeParticipation as $participation)
         {
-            $part = explode('|', $participation);
+            $part = explode('|', $participation[0]);
             $idMembre = $part[0];
             $etatInscription = $listeEtatInscription[$part[1]];
             $objPant = $manager->getRepository("SiteTrailBundle:Participants")->findOneBy(array('evenement' => $idEvenement, 'membre' => $idMembre));

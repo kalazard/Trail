@@ -86,19 +86,23 @@ class ItiniraireController extends Controller
 			$resType = json_decode($responseType);
                         //var_dump($res_list);
                         $n = $this->forward('SiteTrailBundle:Itiniraire:getNotes', array('listeIti' => $res_list,'idUser'  => $id_courant));
-                        $notes = json_decode($n->getContent(), true);
+                        $notes = json_decode($n->getContent(), true);;
                         $itiMoyenne = array();
-                        foreach($notes['allNotes'] as $calcMoy)
+                        if(is_array($notes['allNotes']))
                         {
-                            if(sizeof($calcMoy) > 0)
+                            foreach($notes['allNotes'] as $calcMoy)
                             {
-                                $itiMoyenne[] = array_sum($calcMoy) / count($calcMoy);
-                            }
-                            else
-                            {
-                                $itiMoyenne[] = -1;
+                                if(sizeof($calcMoy) > 0)
+                                {
+                                    $itiMoyenne[] = array_sum($calcMoy) / count($calcMoy);
+                                }
+                                else
+                                {
+                                    $itiMoyenne[] = -1;
+                                }
                             }
                         }
+                        
 			$content = $this->get("templating")->render("SiteTrailBundle:Itiniraire:SearchItineraire.html.twig",array("resultats" => array(),"diffs" => $resDiff,"stats" => $resStat,"typechemin" => $resType,"list" => $res_list, "itiMoyenne" => $itiMoyenne));
 		}
 
