@@ -7,7 +7,17 @@
 <div class="container">
 	<h1>Gestion</h1>
 	<a href="{{ path('site_trail_news_list') }}" class="btn btn-warning">Retourner à la liste</a>
+	{% if new is defined and new.visibilite == 1 %}
+			<a href="{{ path('site_trail_article', {'slug': new.alias}) }}" class="btn btn-warning">Voir la nouveauté</a>
+	{% endif %}
 	<div class="content">
+	
+		{% if img is defined %}
+			<div class="row">
+				<div id="picture" class="img-responsive col-xs-12 col-sm-4 article-img move-top-sm" style="background-image: url('{{ img }}');"></div>
+			</div>
+		{% endif %}
+			
 		{{ form(form) }}
 	</div>
 {% endblock %}
