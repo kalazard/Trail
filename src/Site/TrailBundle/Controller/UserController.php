@@ -154,57 +154,25 @@ class UserController extends Controller {
                 }
                 //Si le nom est vide
                 if ($nom == "") {
-                    //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur
-                    //$return = array('success' => false, 'serverError' => false, 'message' => "Le nom ne doît pas être vide");
-                    //$response = new Response(json_encode($return));
-                    //$response->headers->set('Content-Type', 'application/json');
-                    //return $response;
                     $nom = null;
                 }
                 //Si la date de naissance est vide
                 if ($datenaissance == "") {
-                    //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur
-                    //$return = array('success' => false, 'serverError' => false, 'message' => "La date de naissance ne doît pas être vide");
-                    //$response = new Response(json_encode($return));
-                    //$response->headers->set('Content-Type', 'application/json');
-                    //return $response;
                     $datenaissance = null;
                 }
                 //Si le prenom est vide
                 if ($prenom == "") {
-                    //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur
-                    //$return = array('success' => false, 'serverError' => false, 'message' => "Le prénom ne doît pas être vide");
-                    //$response = new Response(json_encode($return));
-                    //$response->headers->set('Content-Type', 'application/json');
-                    //return $response;
                     $prenom = null;
                 }
                 //Si le telephone est vide
                 if ($telephone == "") {
-                    //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur
-                    //$return = array('success' => false, 'serverError' => false, 'message' => "Le telephone ne doît pas être vide");
-                    //$response = new Response(json_encode($return));
-                    //$response->headers->set('Content-Type', 'application/json');
-                    //return $response;
                     $telephone = null;
                 }
                 //Si la licence est vide
                 if ($licence == "") {
-                    //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur
-                    //$return = array('success' => false, 'serverError' => false, 'message' => "La licence ne doît pas être vide");
-                    //$response = new Response(json_encode($return));
-                    //$response->headers->set('Content-Type', 'application/json');
-                    //return $response;
                     $licence = null;
                 }
                 //Si le mot de passe est vide
-                /* if ($password == "") {
-                  //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur
-                  $return = array('success' => false, 'serverError' => false, 'message' => "Le mot de passe ne doît pas être vide");
-                  $response = new Response(json_encode($return));
-                  $response->headers->set('Content-Type', 'application/json');
-                  return $response;
-                  } */
                 if ($licence != "" && !filter_var($licence, FILTER_VALIDATE_URL)) {
                     $return = array('success' => false, 'serverError' => false, 'message' => "La licence doit être un lien valide");
                     $response = new Response(json_encode($return));
@@ -794,38 +762,18 @@ class UserController extends Controller {
 
 				//Si le nom est vide
 				if ($nom == "") {
-					//success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
-					/* $return = array('success' => false, 'serverError' => false, 'message' => "Le nom ne doît pas être vide");
-					  $response = new Response(json_encode($return));
-					  $response->headers->set('Content-Type', 'application/json');
-					  return $response; */
 					$nom = null;
 				}
 				//Si la date de naissance est vide
 				if ($datenaissance == "") {
-					//success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
-					/* $return = array('success' => false, 'serverError' => false, 'message' => "La date de naissance ne doît pas être vide");
-					  $response = new Response(json_encode($return));
-					  $response->headers->set('Content-Type', 'application/json');
-					  return $response; */
 					$datenaissance = null;
 				}
 				//Si le prenom est vide
 				if ($prenom == "") {
-					//success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
-					/* $return = array('success' => false, 'serverError' => false, 'message' => "Le prénom ne doît pas être vide");
-					  $response = new Response(json_encode($return));
-					  $response->headers->set('Content-Type', 'application/json');
-					  return $response; */
 					$prenom = null;
 				}
 				//Si le telephone est vide
 				if ($telephone == "") {
-					//success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
-					/* $return = array('success' => false, 'serverError' => false, 'message' => "Le telephone ne doît pas être vide");
-					  $response = new Response(json_encode($return));
-					  $response->headers->set('Content-Type', 'application/json');
-					  return $response; */
 					$telephone = null;
 				}
 
