@@ -21,9 +21,22 @@ use Site\TrailBundle\Entity\Parcours;
 class EvenementController extends Controller
 {
     //Retourne l'événement l'objet evenement et l'objet de sa categorie
+    /**
+     * Fonction qui renvoie l'objet événement de sa catégorie et l'objet événement
+     *
+     * Cette méthode requiert les paramètres suivants : 
+     * 
+     * <code>
+     * manager : Objet entity manager 
+     * idclasse : Nombre associé à la classe  
+     * idEvenementDeClasse : L'id de l'objet 
+     * </code>
+     * 
+     * @return array 
+     */
     public static function getEvenementEtEvenementDeCategorie($manager, $idClasse, $idEvenementDeClasse)
     {
-		$this->testDeDroits('Calendrier');
+        $this->testDeDroits('Calendrier');
 		
         //On récupère l'événement de la catégorie
         switch ($idClasse)
@@ -277,36 +290,66 @@ class EvenementController extends Controller
     }
     
     //Affiche le calendrier
+    /**
+     * Fonction d'affichage de la vue de calendrier
+     *
+     * Cette méthode ne requiert pas de paramètres 
+     *  
+     * @return Response 
+     */
     public function indexAction()
     {
-		$this->testDeDroits('Calendrier');
-		
-		$idUser = $this->getUser()->getId();            
-		$listeEvenement = EvenementController::getEventFrom($idUser, $this->getDoctrine()->getManager());
-		/*}
-		else
-		{
-			$listeEvenement = EvenementController::getEventFrom(0, $this->getDoctrine()->getManager());
+        $this->testDeDroits('Calendrier');
 
-			//On retire les événements qui ne sont pas disponibles pour les non connectés
-			$listeEvenement[0] = array();
-			$listeEvenement[1] = array();
-			$listeEvenement[2] = array();
-			$listeEvenement[4] = array();
-		}*/
+        $idUser = $this->getUser()->getId();            
+        $listeEvenement = EvenementController::getEventFrom($idUser, $this->getDoctrine()->getManager());
+        /*}
+        else
+        {
+                $listeEvenement = EvenementController::getEventFrom(0, $this->getDoctrine()->getManager());
 
-		//On transforme les résultats en json            
-		$listeEvenementJson = json_encode($listeEvenement);
+                //On retire les événements qui ne sont pas disponibles pour les non connectés
+                $listeEvenement[0] = array();
+                $listeEvenement[1] = array();
+                $listeEvenement[2] = array();
+                $listeEvenement[4] = array();
+        }*/
 
-		$view = $this->get("templating")->render("SiteTrailBundle:Event:calendrier.html.twig", array(
-															'listeEvenement' => $listeEvenementJson));
+        //On transforme les résultats en json            
+        $listeEvenementJson = json_encode($listeEvenement);
 
-		return new Response($view);
+        $view = $this->get("templating")->render("SiteTrailBundle:Event:calendrier.html.twig", array(
+                                                                                                                'listeEvenement' => $listeEvenementJson));
+
+        return new Response($view);
     }
     
+    /**
+     * Fonction d'affichage du formulaire d'ajout d'événement
+     *
+     * Cette méthode est appelée en ajax et requiert les paramètres suivants : 
+     * 
+     * <code>
+     * date_debut : Date de début de l'événement
+     * date_fin : Date de fin de l'événement
+     * titre : Titre de l'événement
+     * description : Description de l'événement
+     * status : Statut de l'événement
+     * type : Numéro de la catégorie de l'événement
+     * kid : Lien du kid associé à l'événement
+     * programme_label : Label du programme de l'événement
+     * programme_duree : Durée du programme de l'événement
+     * rendezvous_titre : Titre du lieu de rendez-vous
+     * rendezvous_description : Description du lieu de rendez-vous
+     * description : Description pour les événements divers
+     * siteUrl : URL de la course
+     * </code> 
+     * 
+     * @return Response 
+     */
     public function showFormAddEventAction(Request $request)
     {
-		$this->testDeDroits('Calendrier');
+        $this->testDeDroits('Calendrier');
 		
         if($request->isXmlHttpRequest())
         {
@@ -546,9 +589,21 @@ class EvenementController extends Controller
         }
     }
     
+    /**
+     * Fonction qui affiche les détails de l'événement
+     *
+     * Cette méthode est appelée en ajax et requiert les paramètres suivants : 
+     * 
+     * <code>
+     * idClasse : Nombre pour identifier la classe de la catégorie de l'événement
+     * idObjet : ID de l'objet
+     * </code>
+     * 
+     * @return Response 
+     */
     public function afficherDetailEvenementAction(Request $request)
     {
-		$this->testDeDroits('Calendrier');
+        $this->testDeDroits('Calendrier');
 		
         if($request->isXmlHttpRequest())
         {
@@ -658,6 +713,18 @@ class EvenementController extends Controller
         }
     }
     
+    /**
+     * Fonction qui permet de supprimer un événement
+     *
+     * Cette méthode est appelée en ajax et requiert les paramètres suivants : 
+     * 
+     * <code>
+     * idClasse : Nombre pour identifier la classe de la catégorie de l'événement
+     * idObjet : ID de l'objet
+     * </code>
+     * 
+     * @return Response 
+     */
     public function supprEvenementAction(Request $request)
     {
 		$this->testDeDroits('Calendrier');
@@ -740,9 +807,32 @@ class EvenementController extends Controller
         }
     }
     
+    /**
+     * Fonction qui permet de modifier un événement
+     *
+     * Cette méthode est appelée en ajax et requiert les paramètres suivants : 
+     * 
+     * <code>
+     * idClasse : Nombre pour identifier la classe de la catégorie de l'événement
+     * idObjet : ID de l'objet
+     * titre : Titre de l'événement
+     * description : Description de l'événement
+     * lienKid : Lien du kid associé à l'événement
+     * date_debut : Date de début de l'événement
+     * date_fin : Date de fin de l'événement
+     * programme_label : Label du programme
+     * programme_duree : Durée du programme
+     * rendezvous_titre : Titre du lieu de rendez-vous
+     * rendezvous_description : Description du lieu de rendez-vous
+     * descEventDiv : Description de l'événement divers
+     * siteUrl : URL de la course
+     * </code>
+     * 
+     * @return Response 
+     */
     public function modifEvenementAction(Request $request)
     {
-		$this->testDeDroits('Calendrier');
+        $this->testDeDroits('Calendrier');
 		
         if($request->isXmlHttpRequest())
         {   
@@ -994,9 +1084,29 @@ class EvenementController extends Controller
         }
     }
     
+    /**
+     * Fonction qui compare deux dates
+     *
+     * Cette méthode requiert les paramètres suivants : 
+     * 
+     * <code>
+     * $anneeD : Année de début
+     * $moisD = Mois de début
+     * $jourD = Jour de début
+     * $heureD = Heure de début
+     * $minuteD = Minute de début
+     * $anneeF = Année de fin
+     * $moisF = Mois de fin
+     * $jourF = Jour de fin
+     * $heureF = Heure de fin
+     * $minuteF = Minute de fin
+     * </code>
+     * 
+     * @return Response 
+     */
     public function checkDateAction(Request $request)
     {
-		$this->testDeDroits('Calendrier');
+        $this->testDeDroits('Calendrier');
 		
         $anneeD = $request->request->get('anneeD', '');
         $moisD = $request->request->get('moisD', '');
@@ -1026,9 +1136,16 @@ class EvenementController extends Controller
         return new Response("ok");
     }
     
+    /**
+     * Fonction qui affiche le formulaire de recherche d'évenements
+     *
+     * Cette méthode ne requiert pas de paramètres : 
+     * 
+     * @return Response 
+     */
     public function eventSearchFormAction()
     {
-		$this->testDeDroits('Calendrier');
+        $this->testDeDroits('Calendrier');
 		
         $typeEvent = "";
         
@@ -1055,6 +1172,20 @@ class EvenementController extends Controller
         return new Response($content);
     }
     
+    /**
+     * Fonction qui recherche des événements
+     *
+     * Cette méthode appelée en AJAX requiert les paramètres suivants : 
+     * 
+     * <code>
+     * searchType : Type de la recherche
+     * type : Mois de début
+     * dateDebut : Date de début de la recherche
+     * dateFin : Date de fin de la recherche
+     * </code>
+     * 
+     * @return Response 
+     */
     public function eventSearchAction(Request $request)
     {
         $this->testDeDroits('Calendrier');
@@ -1113,6 +1244,17 @@ class EvenementController extends Controller
 		return new Response($resultatsJson);
     }
     
+    /**
+     * Fonction qui permet de s'inscrire aux événements
+     *
+     * Cette méthode appelée en AJAX requiert les paramètres suivants : 
+     * 
+     * <code>
+     * idEvenement : ID de l'événement
+     * </code>
+     * 
+     * @return Response 
+     */
     public function demandeParticipationAction(Request $request)
     {
         $this->testDeDroits('Calendrier');
@@ -1151,9 +1293,20 @@ class EvenementController extends Controller
 		return new Response("");
     }
     
+    /**
+     * Fonction qui permet de retirer sa participation à un événement
+     *
+     * Cette méthode appelée en AJAX requiert les paramètres suivants : 
+     * 
+     * <code>
+     * idEvenement : ID de l'événement
+     * </code>
+     * 
+     * @return Response 
+     */
     public function retirerParticipationAction(Request $request)
     {
-		$this->testDeDroits('Calendrier');
+        $this->testDeDroits('Calendrier');
 		
         if(!$request->isXmlHttpRequest()) show_404();
 		
@@ -1174,6 +1327,17 @@ class EvenementController extends Controller
 		return new Response("");
     }
     
+    /**
+     * Fonction affiche la page de gestion des participants à un événement
+     *
+     * Cette méthode requiert les paramètres suivants : 
+     * 
+     * <code>
+     * idEvenement : ID de l'événement
+     * </code>
+     * 
+     * @return Response 
+     */
     public function gererParticipationAction(Request $request)
     {
 		$this->testDeDroits('Calendrier');
@@ -1244,6 +1408,18 @@ class EvenementController extends Controller
         return new Response($view);
     }
     
+    /**
+     * Fonction qui met à jour les participations à un événement
+     *
+     * Cette méthode requiert les paramètres suivants : 
+     * 
+     * <code>
+     * part : Liste des participations
+     * idEvenement : ID de l'événement
+     * </code>
+     * 
+     * @return Response 
+     */
     function updateParticipationAction(Request $request)
     {
 		$this->testDeDroits('Calendrier');
