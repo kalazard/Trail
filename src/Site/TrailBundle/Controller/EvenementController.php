@@ -834,7 +834,7 @@ class EvenementController extends Controller
         {  */ 
             $idUser = 1;//$this->getUser()->getId();
             $idClasse = $request->request->get('idClasse', '3');
-            $idEvenementDeClasse = $request->request->get('idObj', '139');
+            $idEvenementDeClasse = $request->request->get('idObj', '1');
             $manager = $this->getDoctrine()->getManager();
             //$selectedLieuRendezVous = 0;
 
