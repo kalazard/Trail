@@ -178,8 +178,8 @@ class HomeController extends Controller
 		if ($request->isMethod('post'))
 		{
 			// Si un des champs obligatoire est vide
-			if(empty($request->get('category')) ||  empty($request->get('subject')) || empty($request->get('email'))
-			|| empty($request->get('firstname')) || empty($request->get('name')) || empty($request->get('message')))
+			if($request->get('category') == '' ||  $request->get('subject') == '' || $request->get('email') == ''
+			|| $request->get('firstname') == '' || $request->get('name') == '' || $request->get('message') == '')
 			{
 				$this->get('session')->getFlashBag()->add('message-error', 'Aucun champs ne peut être vide');
 				return $this->redirect($this->generateUrl('site_trail_contact'));
