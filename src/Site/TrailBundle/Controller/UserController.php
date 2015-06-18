@@ -50,7 +50,6 @@ class UserController extends Controller {
      * licence : Url du site de la licence de l'utilisateur à créer
      * </code>
      * 
-     * 
      * @return string 
      *
      * JSON permettant de définir si l'utilisateur a été créé ou non
@@ -155,57 +154,25 @@ class UserController extends Controller {
                 }
                 //Si le nom est vide
                 if ($nom == "") {
-                    //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur
-                    //$return = array('success' => false, 'serverError' => false, 'message' => "Le nom ne doît pas être vide");
-                    //$response = new Response(json_encode($return));
-                    //$response->headers->set('Content-Type', 'application/json');
-                    //return $response;
                     $nom = null;
                 }
                 //Si la date de naissance est vide
                 if ($datenaissance == "") {
-                    //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur
-                    //$return = array('success' => false, 'serverError' => false, 'message' => "La date de naissance ne doît pas être vide");
-                    //$response = new Response(json_encode($return));
-                    //$response->headers->set('Content-Type', 'application/json');
-                    //return $response;
                     $datenaissance = null;
                 }
                 //Si le prenom est vide
                 if ($prenom == "") {
-                    //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur
-                    //$return = array('success' => false, 'serverError' => false, 'message' => "Le prénom ne doît pas être vide");
-                    //$response = new Response(json_encode($return));
-                    //$response->headers->set('Content-Type', 'application/json');
-                    //return $response;
                     $prenom = null;
                 }
                 //Si le telephone est vide
                 if ($telephone == "") {
-                    //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur
-                    //$return = array('success' => false, 'serverError' => false, 'message' => "Le telephone ne doît pas être vide");
-                    //$response = new Response(json_encode($return));
-                    //$response->headers->set('Content-Type', 'application/json');
-                    //return $response;
                     $telephone = null;
                 }
                 //Si la licence est vide
                 if ($licence == "") {
-                    //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur
-                    //$return = array('success' => false, 'serverError' => false, 'message' => "La licence ne doît pas être vide");
-                    //$response = new Response(json_encode($return));
-                    //$response->headers->set('Content-Type', 'application/json');
-                    //return $response;
                     $licence = null;
                 }
                 //Si le mot de passe est vide
-                /* if ($password == "") {
-                  //success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur
-                  $return = array('success' => false, 'serverError' => false, 'message' => "Le mot de passe ne doît pas être vide");
-                  $response = new Response(json_encode($return));
-                  $response->headers->set('Content-Type', 'application/json');
-                  return $response;
-                  } */
                 if ($licence != "" && !filter_var($licence, FILTER_VALIDATE_URL)) {
                     $return = array('success' => false, 'serverError' => false, 'message' => "La licence doit être un lien valide");
                     $response = new Response(json_encode($return));
@@ -306,7 +273,47 @@ class UserController extends Controller {
         }
     }
 
-    //Permttra de charger la liste des rôles disponibles
+     /**
+     * Fonction de chargement des roles
+     *
+     * Cette méthode est appelée en ajax et ne requiert aucuns paramètres 
+     * 
+     * @return string 
+     *
+     * JSON contenant la liste des roles de la base de données
+     *
+     * Example en cas de succès :
+     * 
+     * <code>
+     * {
+     *     "success": true,
+     *     "serverError": false,
+     *     "roles": role
+     * }
+     * </code>
+     * 
+     * Example en cas d'erreur dans la création :
+     * 
+     * <code>
+     * {
+     *     "success": false,
+     *     "serverError": false,
+     *     "message": "Message"
+     * }
+     * </code>
+     * 
+     * Example en cas d'erreur du serveur :
+     * 
+     * <code>
+     * {
+     *     "success": false,
+     *     "serverError": true,
+     *     "message": "Message"
+     * }
+     * </code>
+     * 
+     * 
+     */
     public function loadRolesAction() {
 		$this->testDeDroits('Administration');
 		
@@ -338,6 +345,51 @@ class UserController extends Controller {
         }
     }
 
+         /**
+     * Fonction de récupération de l'état de l'utilisateur (activé / désactivé)
+     *
+     * Cette méthode est appelée en ajax et requiert les paramètres suivants : 
+     * 
+     * <code>
+     * id_user : id de l'utilisateur
+     * </code>
+     * 
+     * @return string 
+     *
+     * JSON contenant l'état d'activation de l'utilisateur
+     *
+     * Example en cas de succès :
+     * 
+     * <code>
+     * {
+     *     "success": true,
+     *     "serverError": false,
+     *     "actif": int
+     * }
+     * </code>
+     * 
+     * Example en cas d'erreur dans la création :
+     * 
+     * <code>
+     * {
+     *     "success": false,
+     *     "serverError": false,
+     *     "message": "Message"
+     * }
+     * </code>
+     * 
+     * Example en cas d'erreur du serveur :
+     * 
+     * <code>
+     * {
+     *     "success": false,
+     *     "serverError": true,
+     *     "message": "Message"
+     * }
+     * </code>
+     * 
+     * 
+     */
     public function getUserActivationAction() {
 		$this->testDeDroits('Administration');
 		
@@ -436,6 +488,52 @@ class UserController extends Controller {
         }
     }
 
+    /**
+     * Fonction d'activation ou de désactivation de l'utilisateur
+     *
+     * Cette méthode est appelée en ajax et requiert les paramètres suivants : 
+     * 
+     * <code>
+     * id_user : id de l'utilisateur
+     * activation: int en fonction de l'état que l'on veut donner à l'utilisateur
+     * </code>
+     * 
+     * @return string 
+     *
+     * JSON contenant le succès de l'opération
+     *
+     * Example en cas de succès :
+     * 
+     * <code>
+     * {
+     *     "success": true,
+     *     "serverError": false,
+     *     "message": "message"
+     * }
+     * </code>
+     * 
+     * Example en cas d'erreur dans la création :
+     * 
+     * <code>
+     * {
+     *     "success": false,
+     *     "serverError": false,
+     *     "message": "Message"
+     * }
+     * </code>
+     * 
+     * Example en cas d'erreur du serveur :
+     * 
+     * <code>
+     * {
+     *     "success": false,
+     *     "serverError": true,
+     *     "message": "Message"
+     * }
+     * </code>
+     * 
+     * 
+     */
     public function deleteAction() {
         $this->testDeDroits('Administration');
 		
@@ -491,7 +589,52 @@ class UserController extends Controller {
         }
     }
 
-    //Récupération d'un utilisateur dans la base de données
+    /**
+     * Fonction de récupération des informations d'un utilisateur dans la base de données
+     *
+     * Cette méthode est appelée en ajax et requiert les paramètres suivants : 
+     * 
+     * <code>
+     * id_user : id de l'utilisateur
+     * </code>
+     * 
+     * @return string 
+     *
+     * JSON contenant les informations de l'utilisateur
+     *
+     * Example en cas de succès :
+     * 
+     * <code>
+     * {
+     *     "success": true,
+     *     "serverError": false,
+     *     "user": Objet membre sérailisé
+     *     "role": Objet role de l'utilisateur sérialisé
+     * }
+     * </code>
+     * 
+     * Example en cas d'erreur dans la création :
+     * 
+     * <code>
+     * {
+     *     "success": false,
+     *     "serverError": false,
+     *     "message": "Message"
+     * }
+     * </code>
+     * 
+     * Example en cas d'erreur du serveur :
+     * 
+     * <code>
+     * {
+     *     "success": false,
+     *     "serverError": true,
+     *     "message": "Message"
+     * }
+     * </code>
+     * 
+     * 
+     */
     public function getUserAction() {
 		$this->testDeDroits('Administration');
 		
@@ -619,38 +762,18 @@ class UserController extends Controller {
 
 				//Si le nom est vide
 				if ($nom == "") {
-					//success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
-					/* $return = array('success' => false, 'serverError' => false, 'message' => "Le nom ne doît pas être vide");
-					  $response = new Response(json_encode($return));
-					  $response->headers->set('Content-Type', 'application/json');
-					  return $response; */
 					$nom = null;
 				}
 				//Si la date de naissance est vide
 				if ($datenaissance == "") {
-					//success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
-					/* $return = array('success' => false, 'serverError' => false, 'message' => "La date de naissance ne doît pas être vide");
-					  $response = new Response(json_encode($return));
-					  $response->headers->set('Content-Type', 'application/json');
-					  return $response; */
 					$datenaissance = null;
 				}
 				//Si le prenom est vide
 				if ($prenom == "") {
-					//success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
-					/* $return = array('success' => false, 'serverError' => false, 'message' => "Le prénom ne doît pas être vide");
-					  $response = new Response(json_encode($return));
-					  $response->headers->set('Content-Type', 'application/json');
-					  return $response; */
 					$prenom = null;
 				}
 				//Si le telephone est vide
 				if ($telephone == "") {
-					//success = false car l'opération de création à échoué, serverError = false car ce n'est pas uen erreure côté serveur 
-					/* $return = array('success' => false, 'serverError' => false, 'message' => "Le telephone ne doît pas être vide");
-					  $response = new Response(json_encode($return));
-					  $response->headers->set('Content-Type', 'application/json');
-					  return $response; */
 					$telephone = null;
 				}
 
