@@ -35,9 +35,7 @@ class EvenementController extends Controller
      * @return array 
      */
     public static function getEvenementEtEvenementDeCategorie($manager, $idClasse, $idEvenementDeClasse)
-    {
-        $this->testDeDroits('Calendrier');
-		
+    {		
         //On récupère l'événement de la catégorie
         switch ($idClasse)
         {
@@ -835,8 +833,8 @@ class EvenementController extends Controller
         if($request->isXmlHttpRequest())
         {   
             $idUser = $this->getUser()->getId();
-            $idClasse = $request->request->get('idClasse', '4');
-            $idEvenementDeClasse = $request->request->get('idObj', '1');
+            $idClasse = $request->request->get('idClasse', '');
+            $idEvenementDeClasse = $request->request->get('idObj', '');
             $manager = $this->getDoctrine()->getManager();
             //$selectedLieuRendezVous = 0;
 
