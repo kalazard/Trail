@@ -11,7 +11,7 @@
             <h1>Fiche Membre</h1>
             <!-- On appel directement le controlleur qui est sur le serveur !-->
             
-            <form method="POST" action="http://130.79.214.167/Trail/web/app_dev.php/user/avatarupload" enctype="multipart/form-data">
+            <form method="POST" action="{{ app.request.getSchemeAndHttpHost() }}/Trail/web/app_dev.php/user/avatarupload" enctype="multipart/form-data">
                 <div class="row">
                     <div id="avatar" class="img-size col-xs-3" style="background-image: url('{{app.user.avatar.path}}');"></div>
                     <input class="col-xs-3" type="file" name='fichier' style="margin-top:32px" />
@@ -76,7 +76,7 @@
                                         {% endif %}
                                         <td>
                                             <p data-placement='top' data-toggle='tooltip' title='GPX'>
-                                                <a href="http://130.79.214.167/Carto/web/app_dev.php/download/gpx/{{itineraire.id}}" class='btn btn-success btn-xs btn_edit'><span class='glyphicon glyphicon-download'></span></a>
+                                                <a href="{{ app.request.getSchemeAndHttpHost() }}/Carto/web/app_dev.php/download/gpx/{{itineraire.id}}" class='btn btn-success btn-xs btn_edit'><span class='glyphicon glyphicon-download'></span></a>
                                             </p>
                                         </td>
                                         <td>

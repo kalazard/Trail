@@ -80,7 +80,7 @@
                         <th>Longueur du parcours</th>
                         <th>Statut</th>
                         <th>Note moyenne</th>
-                        <th>supprimer</th>
+                        <th>Supprimer</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -88,7 +88,7 @@
                         {% if list.list is not empty %}
                             {% for itineraire in list.list %}
                                 {% if itineraire.public == 1 or itineraire.auteur.id == app.user.id %}
-                                    <tr>
+                                    <tr id={{ itineraire.id }}>
                                         <td><a href="{{ path('site_trail_getByIditineraire', {'id': itineraire.id}) }}">{{itineraire.nom}}</a></td>
                                         <td>{{itineraire.typechemin.label}}</td>
                                         <td>{{itineraire.difficulte.label}}</td>
@@ -111,7 +111,7 @@
                     {% else %}
                         {% if resultats.searchResults is not empty %}
                             {% for itineraire in resultats.searchResults %}
-                                <tr>
+                                <tr id={{ itineraire.id }}>
                                     <td><a href="{{ path('site_trail_getByIditineraire', {'id': itineraire.id}) }}">{{itineraire.nom}}</a></td>
                                     <td>{{itineraire.typechemin.label}}</td>
                                     <td>{{itineraire.difficulte.label}}</td>

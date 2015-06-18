@@ -378,18 +378,9 @@ class GalleryController extends Controller
 		
         //Sauvegarde du fichier   
         //$target_dir = "C:/testUp/";
-        $target_dir = '';
-        
-        if($this->container->getParameter("server") == 'http://localhost')
-        {
-            $target_dir = 'C:/wamp/www/uploads/';
-        }  
-        else
-        {
-            $target_dir .= "/var/www/uploads/";
-        }
-        
-        
+
+		$target_dir = $this->container->getParameter("upload_directory");
+
         $target_file = $target_dir . basename($_FILES["fichier"]["name"]);
         $uploadOk = 1;
         $imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
