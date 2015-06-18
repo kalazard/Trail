@@ -138,8 +138,8 @@
     </li>
 
                                                                                                         <li class="method public">
-        <a href="#method_deleteAction" title="deleteAction :: ">
-            <span class="description"></span><pre>deleteAction</pre>
+        <a href="#method_deleteAction" title="deleteAction :: Fonction d&#039;activation ou de désactivation de l&#039;utilisateur">
+            <span class="description">Fonction d&#039;activation ou de désactivation de l&#039;utilisateur</span><pre>deleteAction</pre>
         </a>
     </li>
 
@@ -150,14 +150,14 @@
     </li>
 
                                                                                                         <li class="method public">
-        <a href="#method_getUserAction" title="getUserAction :: ">
-            <span class="description"></span><pre>getUserAction</pre>
+        <a href="#method_getUserAction" title="getUserAction :: Fonction de récupération des informations d&#039;un utilisateur dans la base de données">
+            <span class="description">Fonction de récupération des informations d&#039;un utilisateur dans la base de données</span><pre>getUserAction</pre>
         </a>
     </li>
 
                                                                                                         <li class="method public">
-        <a href="#method_getUserActivationAction" title="getUserActivationAction :: ">
-            <span class="description"></span><pre>getUserActivationAction</pre>
+        <a href="#method_getUserActivationAction" title="getUserActivationAction :: Fonction de récupération de l&#039;état de l&#039;utilisateur (activé / désactivé)">
+            <span class="description">Fonction de récupération de l&#039;état de l&#039;utilisateur (activé / désactivé)</span><pre>getUserActivationAction</pre>
         </a>
     </li>
 
@@ -168,8 +168,8 @@
     </li>
 
                                                                                                         <li class="method public">
-        <a href="#method_loadRolesAction" title="loadRolesAction :: ">
-            <span class="description"></span><pre>loadRolesAction</pre>
+        <a href="#method_loadRolesAction" title="loadRolesAction :: Fonction de chargement des roles">
+            <span class="description">Fonction de chargement des roles</span><pre>loadRolesAction</pre>
         </a>
     </li>
 
@@ -378,24 +378,21 @@ licence : Url du site de la licence de l'utilisateur à créer
                         </div>
                                             <a id="method_deleteAction"></a>
                         <div class="element clickable method public  method_deleteAction" data-toggle="collapse" data-target=".method_deleteAction .collapse">
-                            <h2>deleteAction</h2>
-                            <pre>deleteAction() </pre>
+                            <h2>Fonction d&#039;activation ou de désactivation de l&#039;utilisateur</h2>
+                            <pre>deleteAction() : string</pre>
                             <div class="labels">
                                                                                                                                                                                             </div>
 
                             
                             <div class="row collapse">
                                 <div class="detail-description">
-                                    <div class="long_description"></div>
+                                    <div class="long_description"><p>Cette méthode est appelée en ajax et requiert les paramètres suivants :</p>
+<p><code>
+id_user : id de l'utilisateur
+activation: int en fonction de l'état que l'on veut donner à l'utilisateur
+</code></p></div>
 
                                     <table class="table">
-                                                                                    <tr>
-                                                <th>
-                                                    
-                                                </th>
-                                                <td>
-                                                                                                    </td>
-                                            </tr>
                                                                                     <tr>
                                                 <th>
                                                     
@@ -406,6 +403,32 @@ licence : Url du site de la licence de l'utilisateur à créer
                                                                             </table>
 
                                     
+                                                                            <h3>Response</h3>
+                                        <code>string</code><p><p>JSON contenant le succès de l'opération</p>
+<p>Example en cas de succès :</p>
+<p><code>
+{
+&quot;success&quot;: true,
+&quot;serverError&quot;: false,
+&quot;message&quot;: &quot;message&quot;
+}
+</code></p>
+<p>Example en cas d'erreur dans la création :</p>
+<p><code>
+{
+&quot;success&quot;: false,
+&quot;serverError&quot;: false,
+&quot;message&quot;: &quot;Message&quot;
+}
+</code></p>
+<p>Example en cas d'erreur du serveur :</p>
+<p><code>
+{
+&quot;success&quot;: false,
+&quot;serverError&quot;: true,
+&quot;message&quot;: &quot;Message&quot;
+}
+</code></p></p>
                                                                     </div>
                             </div>
 
@@ -446,24 +469,20 @@ licence : Url du site de la licence de l'utilisateur à créer
                         </div>
                                             <a id="method_getUserAction"></a>
                         <div class="element clickable method public  method_getUserAction" data-toggle="collapse" data-target=".method_getUserAction .collapse">
-                            <h2>getUserAction</h2>
-                            <pre>getUserAction() </pre>
+                            <h2>Fonction de récupération des informations d&#039;un utilisateur dans la base de données</h2>
+                            <pre>getUserAction() : string</pre>
                             <div class="labels">
                                                                                                                                                                                             </div>
 
                             
                             <div class="row collapse">
                                 <div class="detail-description">
-                                    <div class="long_description"></div>
+                                    <div class="long_description"><p>Cette méthode est appelée en ajax et requiert les paramètres suivants :</p>
+<p><code>
+id_user : id de l'utilisateur
+</code></p></div>
 
                                     <table class="table">
-                                                                                    <tr>
-                                                <th>
-                                                    
-                                                </th>
-                                                <td>
-                                                                                                    </td>
-                                            </tr>
                                                                                     <tr>
                                                 <th>
                                                     
@@ -474,30 +493,53 @@ licence : Url du site de la licence de l'utilisateur à créer
                                                                             </table>
 
                                     
+                                                                            <h3>Response</h3>
+                                        <code>string</code><p><p>JSON contenant les informations de l'utilisateur</p>
+<p>Example en cas de succès :</p>
+<p><code>
+{
+&quot;success&quot;: true,
+&quot;serverError&quot;: false,
+&quot;user&quot;: Objet membre sérailisé
+&quot;role&quot;: Objet role de l'utilisateur sérialisé
+}
+</code></p>
+<p>Example en cas d'erreur dans la création :</p>
+<p><code>
+{
+&quot;success&quot;: false,
+&quot;serverError&quot;: false,
+&quot;message&quot;: &quot;Message&quot;
+}
+</code></p>
+<p>Example en cas d'erreur du serveur :</p>
+<p><code>
+{
+&quot;success&quot;: false,
+&quot;serverError&quot;: true,
+&quot;message&quot;: &quot;Message&quot;
+}
+</code></p></p>
                                                                     </div>
                             </div>
 
                         </div>
                                             <a id="method_getUserActivationAction"></a>
                         <div class="element clickable method public  method_getUserActivationAction" data-toggle="collapse" data-target=".method_getUserActivationAction .collapse">
-                            <h2>getUserActivationAction</h2>
-                            <pre>getUserActivationAction() </pre>
+                            <h2>Fonction de récupération de l&#039;état de l&#039;utilisateur (activé / désactivé)</h2>
+                            <pre>getUserActivationAction() : string</pre>
                             <div class="labels">
                                                                                                                                                                                             </div>
 
                             
                             <div class="row collapse">
                                 <div class="detail-description">
-                                    <div class="long_description"></div>
+                                    <div class="long_description"><p>Cette méthode est appelée en ajax et requiert les paramètres suivants :</p>
+<p><code>
+id_user : id de l'utilisateur
+</code></p></div>
 
                                     <table class="table">
-                                                                                    <tr>
-                                                <th>
-                                                    
-                                                </th>
-                                                <td>
-                                                                                                    </td>
-                                            </tr>
                                                                                     <tr>
                                                 <th>
                                                     
@@ -508,6 +550,32 @@ licence : Url du site de la licence de l'utilisateur à créer
                                                                             </table>
 
                                     
+                                                                            <h3>Response</h3>
+                                        <code>string</code><p><p>JSON contenant l'état d'activation de l'utilisateur</p>
+<p>Example en cas de succès :</p>
+<p><code>
+{
+&quot;success&quot;: true,
+&quot;serverError&quot;: false,
+&quot;actif&quot;: int
+}
+</code></p>
+<p>Example en cas d'erreur dans la création :</p>
+<p><code>
+{
+&quot;success&quot;: false,
+&quot;serverError&quot;: false,
+&quot;message&quot;: &quot;Message&quot;
+}
+</code></p>
+<p>Example en cas d'erreur du serveur :</p>
+<p><code>
+{
+&quot;success&quot;: false,
+&quot;serverError&quot;: true,
+&quot;message&quot;: &quot;Message&quot;
+}
+</code></p></p>
                                                                     </div>
                             </div>
 
@@ -543,24 +611,17 @@ licence : Url du site de la licence de l'utilisateur à créer
                         </div>
                                             <a id="method_loadRolesAction"></a>
                         <div class="element clickable method public  method_loadRolesAction" data-toggle="collapse" data-target=".method_loadRolesAction .collapse">
-                            <h2>loadRolesAction</h2>
-                            <pre>loadRolesAction() </pre>
+                            <h2>Fonction de chargement des roles</h2>
+                            <pre>loadRolesAction() : string</pre>
                             <div class="labels">
                                                                                                                                                                                             </div>
 
                             
                             <div class="row collapse">
                                 <div class="detail-description">
-                                    <div class="long_description"></div>
+                                    <div class="long_description"><p>Cette méthode est appelée en ajax et ne requiert aucuns paramètres</p></div>
 
                                     <table class="table">
-                                                                                    <tr>
-                                                <th>
-                                                    
-                                                </th>
-                                                <td>
-                                                                                                    </td>
-                                            </tr>
                                                                                     <tr>
                                                 <th>
                                                     
@@ -571,6 +632,32 @@ licence : Url du site de la licence de l'utilisateur à créer
                                                                             </table>
 
                                     
+                                                                            <h3>Response</h3>
+                                        <code>string</code><p><p>JSON contenant la liste des roles de la base de données</p>
+<p>Example en cas de succès :</p>
+<p><code>
+{
+&quot;success&quot;: true,
+&quot;serverError&quot;: false,
+&quot;roles&quot;: role
+}
+</code></p>
+<p>Example en cas d'erreur dans la création :</p>
+<p><code>
+{
+&quot;success&quot;: false,
+&quot;serverError&quot;: false,
+&quot;message&quot;: &quot;Message&quot;
+}
+</code></p>
+<p>Example en cas d'erreur du serveur :</p>
+<p><code>
+{
+&quot;success&quot;: false,
+&quot;serverError&quot;: true,
+&quot;message&quot;: &quot;Message&quot;
+}
+</code></p></p>
                                                                     </div>
                             </div>
 
@@ -772,7 +859,7 @@ licence : Url du site de la licence de l'utilisateur à créer
             Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by
             <a href="http://glyphicons.com/">Glyphicons</a>.<br/>
             Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and<br/>
-            generated on Tue, 16 Jun 2015 09:06:05 +0200.<br/>
+            generated on Wed, 17 Jun 2015 13:13:46 +0200.<br/>
     </footer>
     </body>
 </html>
