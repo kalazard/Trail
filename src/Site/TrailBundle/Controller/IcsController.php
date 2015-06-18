@@ -13,6 +13,19 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class IcsController extends Controller
 {
+    /**
+     * Fonction qui renvoie un fichier ics
+     *
+     * Cette méthode requiert les paramètres suivants : 
+     * 
+     * <code>
+     * id : Savoir si on télécharge le fichier ics de l'exterieur du site ou non
+     * dateDebut : Date de début des événements à mettre dans le fichier ICS
+     * dateFin : Date de fin des événements à mettre dans le fichier ICS
+     * </code>
+     * 
+     * @return Response 
+     */
     public function indexAction($id, $dateDebut='', $dateFin='')
     {
 		$this->testDeDroits('Calendrier');
@@ -48,6 +61,13 @@ class IcsController extends Controller
         return new Response($ics->show());
     }
     
+    /**
+     * Fonction qui affiche le formulaire de choix de récupération du fichier ICS
+     *
+     * Cette méthode ne requiert pas de paramètres : 
+     * 
+     * @return Response 
+     */
     public function icsFormAction(Request $request)
     { 
 		$this->testDeDroits('Calendrier');
