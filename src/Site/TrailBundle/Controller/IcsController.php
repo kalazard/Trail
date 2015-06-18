@@ -89,7 +89,7 @@ class IcsController extends Controller
     {
         $manager = $this->getDoctrine()->getManager();
         
-        $repository_permissions = $manager->getRepository("SiteCartoBundle:Permission");
+        $repository_permissions = $manager->getRepository("SiteTrailBundle:Permission");
         
         $permissions = $repository_permissions->findOneBy(array('label' => $permission));
 
