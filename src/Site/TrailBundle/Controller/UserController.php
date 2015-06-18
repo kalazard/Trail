@@ -572,7 +572,15 @@ class UserController extends Controller {
 					return $response;
 				}
 				//L'utilisateur a bien été supprimé
-				$return = array('success' => true, 'serverError' => false, 'message' => "L'utilisateur a bien été désactivé");
+                if($activation == 0)
+                {
+                    $messagea = "L'utilisateur a bien été désactivé";
+                }
+                else
+                {
+                     $messagea = "L'utilisateur a bien été activé";
+                }
+				$return = array('success' => true, 'serverError' => false, 'message' => $messagea);
 				$response = new Response(json_encode($return));
 				$response->headers->set('Content-Type', 'application/json');
 				return $response;
