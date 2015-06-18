@@ -1045,7 +1045,13 @@ class EvenementController extends Controller
                             'trace' => true,
                             'exceptions' => true
                         ));
-            $response = $clientSOAP->__call('itilist', array());
+            try
+            {
+                $response = $clientSOAP->__call('itilist', array());
+            } catch (Exception $ex) {
+                echo "erreur : " . $ex;
+            }
+            
             $res_list = json_decode($response);
             $evenementService = $this->container->get('evenement_service');
             $selectedIti = $evenementService->getUsedIti($evenementAssocie->getId());
