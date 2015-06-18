@@ -29,7 +29,7 @@
                         </tr>
                     </table>
                 </div>
-                <p>URL de votre calendrier : <br/><a href="{{ path('site_trail_evenement_ics') }}/{{ app.user.getTokenics() }}">http://130.79.214.167/Trail/web/app_dev.php/ics/{{ app.user.getTokenics() }}</a></p>
+                <p>URL de votre calendrier : <br/><a href="{{ path('site_trail_evenement_ics') }}/{{ app.user.getTokenics() }}">{{ app.request.getSchemeAndHttpHost() }}/Trail/web/app_dev.php/ics/{{ app.user.getTokenics() }}</a></p>
                 <p class="text-warning"><small>Seule l'URL permet une mise à jour des évènements !</small></p>
             </div>
         </div>
