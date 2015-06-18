@@ -1045,8 +1045,8 @@ class EvenementController extends Controller
                             'trace' => true,
                             'exceptions' => true
                         ));
-            $response = $clientSOAP->__call('itilist', array());
-            $res_list = json_decode($response);
+           // $response = $clientSOAP->__call('itilist', array());
+            $res_list = array("list"=> array());//json_decode($response);
             $evenementService = $this->container->get('evenement_service');
             $selectedIti = $evenementService->getUsedIti($evenementAssocie->getId());
             $repository = $manager->getRepository("SiteTrailBundle:Lieurendezvous");        
