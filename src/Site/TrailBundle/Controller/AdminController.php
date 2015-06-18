@@ -128,13 +128,27 @@ class AdminController extends Controller
 			$new = $repository_news->findOneBy(array('alias' => $new_alias));
 
 			// Créer le formulaire
-			$form = $this->createFormBuilder()
-				->add('image', 'file', array('label'  => 'Image', 'required' => false))
-				->add('titre', 'text', array('label'  => 'Titre', 'attr' => array('class' => 'form-control'), 'data' => $new->getTitre()))
-				->add('visibilite', 'choice', array('choices' => array('0' => 'Non visible', '1' => 'Visible'), 'data' => $new->getVisibilite(), 'attr' => array('class' => 'form-control')))
-				->add('texte', 'textarea', array('label'  => 'Texte', 'attr' => array('class' => 'form-control'), 'data' => $new->getTexte()))
-				->add('valider', 'submit', array('attr' => array('class' => 'btn btn-warning move-bottom-sm')))
-				->getForm();
+			if($new_alias == 'le-trail' || $new_alias == 'le-club')
+			{
+				$form = $this->createFormBuilder()
+					->add('image', 'file', array('label'  => 'Image', 'required' => false))
+					->add('titre', 'text', array('label'  => 'Titre', 'attr' => array('class' => 'form-control', 'disabled' => true), 'data' => $new->getTitre()))
+					->add('visibilite', 'choice', array('choices' => array('0' => 'Non visible', '1' => 'Visible'), 'data' => $new->getVisibilite(), 'attr' => array('class' => 'form-control')))
+					->add('texte', 'textarea', array('label'  => 'Texte', 'attr' => array('class' => 'form-control'), 'data' => $new->getTexte()))
+					->add('valider', 'submit', array('attr' => array('class' => 'btn btn-warning move-bottom-sm')))
+					->getForm();
+			}
+			else
+			{
+				$form = $this->createFormBuilder()
+					->add('image', 'file', array('label'  => 'Image', 'required' => false))
+					->add('titre', 'text', array('label'  => 'Titre', 'attr' => array('class' => 'form-control'), 'data' => $new->getTitre()))
+					->add('visibilite', 'choice', array('choices' => array('0' => 'Non visible', '1' => 'Visible'), 'data' => $new->getVisibilite(), 'attr' => array('class' => 'form-control')))
+					->add('texte', 'textarea', array('label'  => 'Texte', 'attr' => array('class' => 'form-control'), 'data' => $new->getTexte()))
+					->add('valider', 'submit', array('attr' => array('class' => 'btn btn-warning move-bottom-sm')))
+					->getForm();
+			}
+				
 				
 			$form->handleRequest($request);
 			
@@ -274,7 +288,9 @@ class AdminController extends Controller
     }
 	
 	public function convert_to_alias($chaine)
-	{	
+	{
+		$chaine = strtr($chaine, '@ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÒÓÔÕÖÙÚÛÜİàáâãäåçèéêëìíîïğòóôõöùúûüıÿABCDEFGHIJKLMNOPQRSTUVWXYZ',
+								'aaaaaaaceeeeiiiiooooouuuuyaaaaaaceeeeiiiioooooouuuuyyabcdefghijklmnopqrstuvwxyz');
 		$chaine = preg_replace("#[^a-zA-Z0-9 ]#", "", $chaine);
 		return strtr($chaine, ' ', '-');
 	}
