@@ -86,7 +86,7 @@ class HomeController extends Controller
 		{
 			$query = $manager->createQuery('SELECT news FROM SiteTrailBundle:News news
               WHERE news.visibilite = :visibilite AND news.alias != :trail AND news.alias != :club
-			  ORDER BY news.date DESC
+			  ORDER BY news.date DESC, news.id DESC
 			  ');
 			$query->setParameters(['visibilite' => 1, 'trail' => "le-trail", 'club' => "le-club"]);
 			$news = $query->getResult();
@@ -110,7 +110,7 @@ class HomeController extends Controller
 		{
 			$query = $manager->createQuery('SELECT news FROM SiteTrailBundle:News news
               WHERE news.visibilite = :visibilite AND news.alias = :slug
-			  ORDER BY news.date DESC
+			  ORDER BY news.date DESC, news.id DESC
 			  ');
 			$query->setParameters(['visibilite' => 1, 'slug' => $slug]);
 			$new = $query->getSingleResult();
@@ -140,7 +140,7 @@ class HomeController extends Controller
 		
 		$query = $manager->createQuery('SELECT news FROM SiteTrailBundle:News news
 		  WHERE news.visibilite = :visibilite AND news.alias = :club
-		  ORDER BY news.date DESC
+		  ORDER BY news.date DESC, news.id DESC
 		  ');
 		$query->setParameters(['visibilite' => 1, 'club' => "le-club"]);
 		$new = $query->getSingleResult();
@@ -160,7 +160,7 @@ class HomeController extends Controller
 		
 		$query = $manager->createQuery('SELECT news FROM SiteTrailBundle:News news
 		  WHERE news.visibilite = :visibilite AND news.alias = :trail
-		  ORDER BY news.date DESC
+		  ORDER BY news.date DESC, news.id DESC
 		  ');
 		$query->setParameters(['visibilite' => 1, 'trail' => "le-trail"]);
 		$new = $query->getSingleResult();
