@@ -315,7 +315,7 @@ class UserController extends Controller {
      * 
      */
     public function loadRolesAction() {
-		$this->testDeDroits('Administration');
+		//$this->testDeDroits('Administration');
 		
         //On récupère la requête courrante
         $request = $this->getRequest();
@@ -854,7 +854,7 @@ class UserController extends Controller {
         if ($request->isXmlHttpRequest()) {
             try {
                 if (!$this->isCsrfTokenValid('default', $request->get('_csrf_token'))) {
-                    throw new Exception("CSRF TOKEN ATTAK MAGGLE", 500);
+                    throw new Exception("CSRF TOKEN ATTAK", 500);
                 }
                 //On récupère l'email
                 $email = $request->request->get('_email');
@@ -1095,6 +1095,11 @@ class UserController extends Controller {
                 return new RedirectResponse($this->generateUrl('site_trail_profilmembre'));
             }
         }
+    }
+
+    public function resetPasswordAction()
+    {
+
     }
 	
 	public function testDeDroits($permission)

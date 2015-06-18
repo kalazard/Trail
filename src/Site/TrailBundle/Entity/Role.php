@@ -3,14 +3,15 @@
 namespace Site\TrailBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\Security\Core\Role\RoleInterface;
+use JsonSerializable;
 /**
  * Role
  *
  * @ORM\Table(name="role", uniqueConstraints={@ORM\UniqueConstraint(name="label_UNIQUE", columns={"label"})})
  * @ORM\Entity
  */
-class Role
+class Role implements RoleInterface,  JsonSerializable
 {
     /**
      * @var integer
@@ -152,8 +153,7 @@ class Role
         return array("ROLE_".$this->getLabel());
     }
 	
-	public function jsonSerialize()
-    {
+	public function jsonSerialize() {
         return array(
             'id' => $this->id,
             'name'=> $this->getLabel(),
