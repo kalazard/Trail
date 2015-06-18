@@ -35,9 +35,7 @@ class EvenementController extends Controller
      * @return array 
      */
     public static function getEvenementEtEvenementDeCategorie($manager, $idClasse, $idEvenementDeClasse)
-    {
-        $this->testDeDroits('Calendrier');
-		
+    {		
         //On récupère l'événement de la catégorie
         switch ($idClasse)
         {
@@ -832,14 +830,17 @@ class EvenementController extends Controller
     {
         $this->testDeDroits('Calendrier');
 		
-        if($request->isXmlHttpRequest())
-        {   
-            $idUser = $this->getUser()->getId();
-            $idClasse = $request->request->get('idClasse', '4');
+        /*if($request->isXmlHttpRequest())
+        {  */ 
+            $idUser = 1;//$this->getUser()->getId();
+            $idClasse = $request->request->get('idClasse', '3');
             $idEvenementDeClasse = $request->request->get('idObj', '1');
             $manager = $this->getDoctrine()->getManager();
             //$selectedLieuRendezVous = 0;
 
+            var_dump($idClasse);
+            var_dump($idEvenementDeClasse);
+            
             $tabEvenements = EvenementController::getEvenementEtEvenementDeCategorie($this->getDoctrine()->getManager(), $idClasse, $idEvenementDeClasse);
 
             $evenementDeCategorie = $tabEvenements[0];
@@ -1044,7 +1045,13 @@ class EvenementController extends Controller
                             'trace' => true,
                             'exceptions' => true
                         ));
-            $response = $clientSOAP->__call('itilist', array());
+            try
+            {
+                $response = $clientSOAP->__call('itilist', array());
+            } catch (Exception $ex) {
+                echo "erreur : " . $ex;
+            }
+            
             $res_list = json_decode($response);
             $evenementService = $this->container->get('evenement_service');
             $selectedIti = $evenementService->getUsedIti($evenementAssocie->getId());
@@ -1075,11 +1082,11 @@ class EvenementController extends Controller
                                                             ));
 
             return new Response($formulaire);
-        }
+       /* }
         else
         {
             throw new NotFoundHttpException('Impossible de trouver la page demandée');
-        }
+        }*/
     }
     
     /**
@@ -1421,15 +1428,24 @@ class EvenementController extends Controller
     function updateParticipationAction(Request $request)
     {
 		$this->testDeDroits('Calendrier');
+                
 		
         $manager = $this->getDoctrine()->getManager();  
-        $listeParticipation = $request->request->get('part', '');
+        
+        foreach( $_POST as $k => $v )
+        {
+            if ( preg_match('/,?(.*_part),?/', $k) )
+            {
+                $listeParticipation[$k] = $v;
+            }
+        }
+
         $idEvenement = $request->request->get('idEvenement', '');
         $listeEtatInscription = array("enattente", "accepte", "refuse");
         
         foreach($listeParticipation as $participation)
         {
-            $part = explode('|', $participation);
+            $part = explode('|', $participation[0]);
             $idMembre = $part[0];
             $etatInscription = $listeEtatInscription[$part[1]];
             $objPant = $manager->getRepository("SiteTrailBundle:Participants")->findOneBy(array('evenement' => $idEvenement, 'membre' => $idMembre));

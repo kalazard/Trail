@@ -110,18 +110,20 @@ class MemberDisplayController extends Controller
 		$notes = json_decode($n->getContent(), true);
                 
                 $result['userNotes'] = $notes['userNotes'];
-                
-                foreach($notes['allNotes'] as $calcMoy)
+                if(is_array($notes['allNotes']))
                 {
-                    if(sizeof($calcMoy) > 0)
+                    foreach($notes['allNotes'] as $calcMoy)
                     {
-                        $result['itiMoyenne'][] = array_sum($calcMoy) / count($calcMoy);
+                        if(sizeof($calcMoy) > 0)
+                        {
+                            $result['itiMoyenne'][] = array_sum($calcMoy) / count($calcMoy);
+                        }
+                        else
+                        {
+                            $result['itiMoyenne'][] = -1;
+                        }
+
                     }
-                    else
-                    {
-                        $result['itiMoyenne'][] = -1;
-                    }
-                    
                 }
                 
 		//chargement des itinéraires d'un utilisateur donné.
