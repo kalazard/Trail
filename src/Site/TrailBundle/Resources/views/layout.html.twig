@@ -186,6 +186,7 @@
                         </div>
                         <div class="modal-footer ">
                             <button id="btn_login" type="submit" class="btn btn-warning btn-block"><span class="glyphicon glyphicon-ok-sign"></span> Se connecter</button>
+                            <button type="button" id="resetpassword">Reset password</button>
                         </div>
                         <input id="csfrtoken" type="hidden" name="_csrf_token" value="{{ csrf_token('default') }}">
                     </form> 
@@ -252,6 +253,7 @@
                         </div>
                         <div class="modal-footer ">
                             <button id="btn_login" type="submit" class="btn btn-warning btn-block"><span class="glyphicon glyphicon-plus-sign"></span> Ajouter un membre</button>
+
                         </div>
                         <input id="csfrtoken_creation" type="hidden" name="_csrf_token" value="{{ csrf_token('default') }}">
                     </form> 
@@ -398,6 +400,38 @@
                                 if (data.success)
                                 {
                                     location.replace("{{path('logout')}}");
+
+                                }
+                                else
+                                {
+
+                                    $.notify(data.message, "error");
+
+                                }
+                            }
+                            else
+                            {
+                                console.log(data.message);
+                            }
+
+                        }
+                    });
+                    return false;
+                });
+
+                $("#resetpassword").click(function () {
+                    var email = $("#userid").val()
+                    $.ajax({
+                        type: "POST",
+                        url: "{{path('site_trail_resetPassword')}}",
+                        data: {email: email},
+                        cache: false,
+                        success: function (data) {
+                            if (!data.serverError)
+                            {
+                                if (data.success)
+                                {
+                                    $.notify("Un mot de passe vous sera envoyé par mail", "success");
 
                                 }
                                 else
