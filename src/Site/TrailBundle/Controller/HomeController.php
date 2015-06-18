@@ -25,8 +25,8 @@ class HomeController extends Controller
 		if ($request->isMethod('post'))
 		{
 			// Si un des champs obligatoire est vide
-			if(empty($request->get('category')) ||  empty($request->get('subject')) || empty($request->get('email'))
-			|| empty($request->get('firstname')) || empty($request->get('name')) || empty($request->get('message')))
+			if($request->get('category') == '' ||  $request->get('subject') == '' || $request->get('email') == ''
+			|| $request->get('firstname') == '' || $request->get('name') == '' || $request->get('message') == '')
 			{
 				$this->get('session')->getFlashBag()->add('message-error', 'Aucun champs ne peut être vide');
 				return $this->redirect($this->generateUrl('site_trail_homepage_empty'));
@@ -86,7 +86,7 @@ class HomeController extends Controller
 		{
 			$query = $manager->createQuery('SELECT news FROM SiteTrailBundle:News news
               WHERE news.visibilite = :visibilite AND news.alias != :trail AND news.alias != :club
-			  ORDER BY news.date DESC
+			  ORDER BY news.date DESC, news.id DESC
 			  ');
 			$query->setParameters(['visibilite' => 1, 'trail' => "le-trail", 'club' => "le-club"]);
 			$news = $query->getResult();
@@ -110,7 +110,7 @@ class HomeController extends Controller
 		{
 			$query = $manager->createQuery('SELECT news FROM SiteTrailBundle:News news
               WHERE news.visibilite = :visibilite AND news.alias = :slug
-			  ORDER BY news.date DESC
+			  ORDER BY news.date DESC, news.id DESC
 			  ');
 			$query->setParameters(['visibilite' => 1, 'slug' => $slug]);
 			$new = $query->getSingleResult();
@@ -140,7 +140,7 @@ class HomeController extends Controller
 		
 		$query = $manager->createQuery('SELECT news FROM SiteTrailBundle:News news
 		  WHERE news.visibilite = :visibilite AND news.alias = :club
-		  ORDER BY news.date DESC
+		  ORDER BY news.date DESC, news.id DESC
 		  ');
 		$query->setParameters(['visibilite' => 1, 'club' => "le-club"]);
 		$new = $query->getSingleResult();
@@ -160,7 +160,7 @@ class HomeController extends Controller
 		
 		$query = $manager->createQuery('SELECT news FROM SiteTrailBundle:News news
 		  WHERE news.visibilite = :visibilite AND news.alias = :trail
-		  ORDER BY news.date DESC
+		  ORDER BY news.date DESC, news.id DESC
 		  ');
 		$query->setParameters(['visibilite' => 1, 'trail' => "le-trail"]);
 		$new = $query->getSingleResult();
@@ -178,8 +178,8 @@ class HomeController extends Controller
 		if ($request->isMethod('post'))
 		{
 			// Si un des champs obligatoire est vide
-			if(empty($request->get('category')) ||  empty($request->get('subject')) || empty($request->get('email'))
-			|| empty($request->get('firstname')) || empty($request->get('name')) || empty($request->get('message')))
+			if($request->get('category') == '' ||  $request->get('subject') == '' || $request->get('email') == ''
+			|| $request->get('firstname') == '' || $request->get('name') == '' || $request->get('message') == '')
 			{
 				$this->get('session')->getFlashBag()->add('message-error', 'Aucun champs ne peut être vide');
 				return $this->redirect($this->generateUrl('site_trail_contact'));

@@ -99,7 +99,7 @@ class AdminController extends Controller
         $repository_news = $manager->getRepository("SiteTrailBundle:News");
 		
 		$query = $manager->createQuery('SELECT news FROM SiteTrailBundle:News news
-			  ORDER BY news.date DESC
+			  ORDER BY news.date DESC, news.id DESC
 			  ');
 		$news = $query->getResult();
 

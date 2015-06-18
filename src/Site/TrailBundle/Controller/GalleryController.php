@@ -8,7 +8,18 @@ use Site\TrailBundle\Entity\Image;
 use Symfony\Component\HttpFoundation\Request;
 
 class GalleryController extends Controller
-{	
+{
+    /**
+     * Fonction qui récupère les catégories des images de la galeri
+     *
+     * Cette méthode requiert les paramètres suivants : 
+     * 
+     * <code>
+     * indStart : Indice de début de la recherche
+     * </code>
+     * 
+     * @return Response 
+     */
     public function getTheCategories($indStart)
     {
         $listCategories = array();
@@ -32,6 +43,13 @@ class GalleryController extends Controller
         return $listCategories;
     }
     
+    /**
+     * Fonction qui affiche la page d'accueil de la galerie
+     *
+     * Cette méthode ne requiert pas de paramètres : 
+     * 
+     * @return Response 
+     */
     public function indexAction(Request $request)
     {
 		$this->testDeDroits('Gallerie');
@@ -76,6 +94,18 @@ class GalleryController extends Controller
 		return new Response($content);
     }
 	
+    /**
+     * Fonction qui affiche les iamges d'une catégorie
+     *
+     * Cette méthode requiert les paramètres suivants : 
+     * 
+     * <code>
+     * indStart : Indice de début de la recherche des images
+     * idCategorie : ID de la catégorie
+     * </code>
+     * 
+     * @return Response 
+     */
     public function categoryAction(Request $request, $idCategorie)
     {
 		$this->testDeDroits('Gallerie');
@@ -114,6 +144,17 @@ class GalleryController extends Controller
         return new Response($content);
     }
 	
+    /**
+     * Fonction qui affiche la fiche de description d'une image
+     *
+     * Cette méthode requiert les paramètres suivants : 
+     * 
+     * <code>
+     * idPicture : ID de l'image
+     * </code>
+     * 
+     * @return Response 
+     */
     public function pictureAction(Request $request)
     {
 		$this->testDeDroits('Gallerie');
@@ -142,6 +183,17 @@ class GalleryController extends Controller
         return new Response($content);
     }
     
+    /**
+     * Fonction qui permet d'ajouter une catégorie
+     *
+     * Cette méthode requiert les paramètres suivants : 
+     * 
+     * <code>
+     * label : Label de la catégorie
+     * </code>
+     * 
+     * @return Response 
+     */
     public function categorieAjoutAction(Request $request)
     {
 		$this->testDeDroits('Gallerie');
@@ -175,6 +227,17 @@ class GalleryController extends Controller
 		return new Response($formulaire);
     }
     
+    /**
+     * Fonction qui permet de supprimer une catégorie
+     *
+     * Cette méthode requiert les paramètres suivants : 
+     * 
+     * <code>
+     * idCategorie : ID de la catégorie
+     * </code>
+     * 
+     * @return Response 
+     */
     public function categorieSuppressionAction(Request $request)
     {
 		$this->testDeDroits('Gallerie');
@@ -208,6 +271,18 @@ class GalleryController extends Controller
 		return $this->redirect($this->generateUrl('site_trail_gallery'));
     }
     
+    /**
+     * Fonction qui permet de modifier une catégorie
+     *
+     * Cette méthode requiert les paramètres suivants : 
+     * 
+     * <code>
+     * idCategorie : ID de la catégorie
+     * label : Label de la catégorie
+     * </code>
+     * 
+     * @return Response 
+     */
     public function CategorieModifAction(Request $request)
     {
 		$this->testDeDroits('Gallerie');
@@ -246,6 +321,13 @@ class GalleryController extends Controller
 		return new Response($formulaire);
     }
     
+    /**
+     * Fonction qui permet d'afficher le formulaire d'ajout d'une image
+     *
+     * Cette méthode ne requiert pas de paramètres 
+     * 
+     * @return Response 
+     */
     public function showAddPictureAction()
     {
 		$this->testDeDroits('Gallerie');
@@ -276,6 +358,20 @@ class GalleryController extends Controller
         return new Response($formulaire);
     }
     
+    /**
+     * Fonction qui permet d'ajouter une image
+     *
+     * Cette méthode requiert les paramètres suivants : 
+     * 
+     * <code>
+     * titre : Titre de l'image
+     * description : Description de l'image
+     * categorie : Catégorie de l'image
+     * fichier : Fichier
+     * </code>
+     * 
+     * @return Response 
+     */
     public function addPictureAction(Request $request)
     {        
 		$this->testDeDroits('Gallerie');
@@ -394,6 +490,17 @@ class GalleryController extends Controller
         }
     }
     
+    /**
+     * Fonction qui permet d'afficher le formulaire de modification d'une image
+     *
+     * Cette méthode requiert les paramètres suivants : 
+     * 
+     * <code>
+     * idPicture : ID de l'image
+     * </code>
+     * 
+     * @return Response 
+     */
     public function showUpdatePictureFormAction(Request $request)
     {
 		$this->testDeDroits('Gallerie');
@@ -438,6 +545,20 @@ class GalleryController extends Controller
 		return new Response($content);
     }
     
+    /**
+     * Fonction qui permet de mettre à jour une image
+     *
+     * Cette méthode requiert les paramètres suivants : 
+     * 
+     * <code>
+     * idPicture : ID de l'image
+     * titre : Titre de l'image
+     * description : Description de l'image
+     * categorie : Catégorie de l'image
+     * </code>
+     * 
+     * @return Response 
+     */
     public function updatePictureAction(Request $request)
     {
 		$this->testDeDroits('Gallerie');
@@ -465,6 +586,17 @@ class GalleryController extends Controller
         return new Response($content);
     }
     
+    /**
+     * Fonction qui permet de supprimer une image
+     *
+     * Cette méthode requiert les paramètres suivants : 
+     * 
+     * <code>
+     * idPicture : ID de l'image
+     * </code>
+     * 
+     * @return Response 
+     */
     public function deletePictureAction(Request $request)
     {
 		$this->testDeDroits('Gallerie');

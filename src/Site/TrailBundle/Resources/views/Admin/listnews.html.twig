@@ -27,7 +27,12 @@
 							<td>{{new.auteur.prenom}} {{new.auteur.nom}}</td>
 							<td>{{new.date|date("d/m/Y")}}</td>	
 							<td><a href="{{ path('site_trail_news_manager', {'new_alias': new.alias}) }}" class="btn btn-primary update-new">Modifier</a></td>
-							<td><a href="{{ path('site_trail_delete_news', {'new_alias': new.alias}) }}" class="btn btn-danger delete-new">Supprimer</a></td>
+
+							{% if new.alias != 'le-trail' and new.alias != 'le-club' %}
+								<td><a href="{{ path('site_trail_delete_news', {'new_alias': new.alias}) }}" class="btn btn-danger delete-new">Supprimer</a></td>
+							{% else %}
+								<td></td>
+							{% endif %}
 						</tr>
 					{% endfor %}
 				{% endif %}
