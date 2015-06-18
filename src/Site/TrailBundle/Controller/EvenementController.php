@@ -830,14 +830,17 @@ class EvenementController extends Controller
     {
         $this->testDeDroits('Calendrier');
 		
-        if($request->isXmlHttpRequest())
-        {   
-            $idUser = $this->getUser()->getId();
-            $idClasse = $request->request->get('idClasse', '');
-            $idEvenementDeClasse = $request->request->get('idObj', '');
+        /*if($request->isXmlHttpRequest())
+        {  */ 
+            $idUser = 1;//$this->getUser()->getId();
+            $idClasse = $request->request->get('idClasse', '3');
+            $idEvenementDeClasse = $request->request->get('idObj', '139');
             $manager = $this->getDoctrine()->getManager();
             //$selectedLieuRendezVous = 0;
 
+            var_dump($idClasse);
+            var_dump($idEvenementDeClasse);
+            
             $tabEvenements = EvenementController::getEvenementEtEvenementDeCategorie($this->getDoctrine()->getManager(), $idClasse, $idEvenementDeClasse);
 
             $evenementDeCategorie = $tabEvenements[0];
@@ -1073,11 +1076,11 @@ class EvenementController extends Controller
                                                             ));
 
             return new Response($formulaire);
-        }
+       /* }
         else
         {
             throw new NotFoundHttpException('Impossible de trouver la page demandée');
-        }
+        }*/
     }
     
     /**
