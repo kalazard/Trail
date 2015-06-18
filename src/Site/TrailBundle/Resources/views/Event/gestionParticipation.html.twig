@@ -19,32 +19,32 @@
                 <tbody>
                     {% for i in 0..(max-1) %}
                         <tr>
-                            {% if (listeEnAttente[i] is defined) %}
+                            {% if (listeEnAttente[i] is defined and listeEnAttente|length > 0) %}
                                 <td width="33%">
                                     {{listeEnAttente[i].getPrenom()}} {{listeEnAttente[i].getNom()}} |
-                                    <input type="radio" name="part[]" value="{{listeEnAttente[i].getId()}}|0" checked/>Attente
-                                    <input type="radio" name="part[]" value="{{listeEnAttente[i].getId()}}|1"/>Accepté
-                                    <input type="radio" name="part[]" value="{{listeEnAttente[i].getId()}}|2"/>Refusé
+                                    <input type="radio" name="{{listeEnAttente[i].getId()}}_part[]" value="{{listeEnAttente[i].getId()}}|0" checked/>Attente
+                                    <input type="radio" name="{{listeEnAttente[i].getId()}}_part[]" value="{{listeEnAttente[i].getId()}}|1"/>Accepté
+                                    <input type="radio" name="{{listeEnAttente[i].getId()}}_part[]" value="{{listeEnAttente[i].getId()}}|2"/>Refusé
                                 </td>
                             {% else %}
                                 <td width="33%"></td>
                             {% endif %}
-                            {% if (listeAccepte[i] is defined) %}
+                            {% if (listeAccepte[i] is defined and listeAccepte|length > 0) %}
                                 <td width="33%">
                                     {{listeAccepte[i].getPrenom()}} {{listeAccepte[i].getNom()}} | 
-                                    <input type="radio" name="part[]" value="{{listeAccepte[i].getId()}}|0"/>Attente
-                                    <input type="radio" name="part[]" value="{{listeAccepte[i].getId()}}|1" checked/>Accepté
-                                    <input type="radio" name="part[]" value="{{listeAccepte[i].getId()}}|2"/>Refusé
+                                    <input type="radio" name="{{listeAccepte[i].getId()}}_part[]" value="{{listeAccepte[i].getId()}}|0"/>Attente
+                                    <input type="radio" name="{{listeAccepte[i].getId()}}_part[]" value="{{listeAccepte[i].getId()}}|1" checked/>Accepté
+                                    <input type="radio" name="{{listeAccepte[i].getId()}}_part[]" value="{{listeAccepte[i].getId()}}|2"/>Refusé
                                 </td>
                             {% else %}
                                 <td width="33%"></td>
                             {% endif %}
-                            {% if (listeRefuse[i] is defined) %}
+                            {% if (listeRefuse[i] is defined and listeRefuse|length > 0) %}
                                 <td width="33%">
                                     {{listeRefuse[i].getPrenom()}} {{listeRefuse[i].getNom()}} | 
-                                    <input type="radio" name="part[]" value="{{listeRefuse[i].getId()}}|0"/>Attente
-                                    <input type="radio" name="part[]" value="{{listeRefuse[i].getId()}}|1"/>Accepté
-                                    <input type="radio" name="part[]" value="{{listeRefuse[i].getId()}}|2" checked/>Refusé
+                                    <input type="radio" name="{{listeRefuse[i].getId()}}_part[]" value="{{listeRefuse[i].getId()}}|0"/>Attente
+                                    <input type="radio" name="{{listeRefuse[i].getId()}}_part[]" value="{{listeRefuse[i].getId()}}|1"/>Accepté
+                                    <input type="radio" name="{{listeRefuse[i].getId()}}_part[]" value="{{listeRefuse[i].getId()}}|2" checked/>Refusé
                                 </td>
                             {% else %}
                                 <td width="33%"></td>
