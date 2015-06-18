@@ -61,8 +61,6 @@ class EvenementController extends Controller
     
     public static function getEventFrom($idUser, $em, $dateDebut='', $dateFin='')
     {
-		$this->testDeDroits('Calendrier');
-		
         $listeEvenement = array();
         $listeEntrainement = array();
         $listeEntrainementPersonnel = array();
@@ -343,8 +341,8 @@ class EvenementController extends Controller
                 if($kid == 1)
                 {
                     $clientSOAP = new \SoapClient(null, array(
-                        'uri' => $this->container->getParameter("server")."/Kidoikoiaki/web/app_dev.php/evenement",
-                        'location' => $this->container->getParameter("server")."/Kidoikoiaki/web/app_dev.php/evenement",
+                        'uri' => $this->container->getParameter("base_url")."/Kidoikoiaki/web/app_dev.php/evenement",
+                        'location' => $this->container->getParameter("base_url")."/Kidoikoiaki/web/app_dev.php/evenement",
                         'trace' => true,
                         'exceptions' => true
                     ));
@@ -352,7 +350,7 @@ class EvenementController extends Controller
                     //renvoie le token : mettre titre evenement
                     $token = json_decode($clientSOAP->__call('creerevenement', array('title' => $event->getTitre())));
                     
-                    $event->setLienKid($this->container->getParameter("server")."/Kidoikoiaki/web/app_dev.php/participants/".$token->token);
+                    $event->setLienKid($this->container->getParameter("base_url")."/Kidoikoiaki/web/app_dev.php/participants/".$token->token);
                 }
                 
                 $repository = $manager->getRepository("SiteTrailBundle:Membre");
@@ -368,8 +366,8 @@ class EvenementController extends Controller
                 if(sizeof($selectedIti) > 0 && $selectedIti != '')
                 {
                     $clientSOAP = new \SoapClient(null, array(
-	                    'uri' => $this->container->getParameter("server")."/Carto/web/app_dev.php/itineraire",
-	                    'location' => $this->container->getParameter("server")."/Carto/web/app_dev.php/itineraire",
+	                    'uri' => $this->container->getParameter("base_url")."/Carto/web/app_dev.php/itineraire",
+	                    'location' => $this->container->getParameter("base_url")."/Carto/web/app_dev.php/itineraire",
 	                    'trace' => true,
 	                    'exceptions' => true
 	                ));
@@ -491,8 +489,8 @@ class EvenementController extends Controller
             $acLieuRdv = array_unique($acLieuRdv);
             
             $clientSOAP = new \SoapClient(null, array(
-                            'uri' => $this->container->getParameter("server")."/Carto/web/app_dev.php/itineraire",
-                            'location' => $this->container->getParameter("server")."/Carto/web/app_dev.php/itineraire",
+                            'uri' => $this->container->getParameter("base_url")."/Carto/web/app_dev.php/itineraire",
+                            'location' => $this->container->getParameter("base_url")."/Carto/web/app_dev.php/itineraire",
                             'trace' => true,
                             'exceptions' => true
                         ));
@@ -606,8 +604,8 @@ class EvenementController extends Controller
             $listeParcours = array(); 
             
             $clientSOAP = new \SoapClient(null, array(
-	                    'uri' => $this->container->getParameter("server")."/Carto/web/app_dev.php/itineraire",
-	                    'location' => $this->container->getParameter("server")."/Carto/web/app_dev.php/itineraire",
+	                    'uri' => $this->container->getParameter("base_url")."/Carto/web/app_dev.php/itineraire",
+	                    'location' => $this->container->getParameter("base_url")."/Carto/web/app_dev.php/itineraire",
 	                    'trace' => true,
 	                    'exceptions' => true
 	                ));
@@ -843,8 +841,8 @@ class EvenementController extends Controller
                 if(sizeof($selectedIti) > 0 && $selectedIti != '')
                 {
                     $clientSOAP = new \SoapClient(null, array(
-	                    'uri' => $this->container->getParameter("server")."/Carto/web/app_dev.php/itineraire",
-	                    'location' => $this->container->getParameter("server")."/Carto/web/app_dev.php/itineraire",
+	                    'uri' => $this->container->getParameter("base_url")."/Carto/web/app_dev.php/itineraire",
+	                    'location' => $this->container->getParameter("base_url")."/Carto/web/app_dev.php/itineraire",
 	                    'trace' => true,
 	                    'exceptions' => true
 	                ));
@@ -951,8 +949,8 @@ class EvenementController extends Controller
             $listeUser = $query->getResult();  */      
             
             $clientSOAP = new \SoapClient(null, array(
-                            'uri' => $this->container->getParameter("server")."/Carto/web/app_dev.php/itineraire",
-                            'location' => $this->container->getParameter("server")."/Carto/web/app_dev.php/itineraire",
+                            'uri' => $this->container->getParameter("base_url")."/Carto/web/app_dev.php/itineraire",
+                            'location' => $this->container->getParameter("base_url")."/Carto/web/app_dev.php/itineraire",
                             'trace' => true,
                             'exceptions' => true
                         ));

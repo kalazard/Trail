@@ -5,6 +5,9 @@ News:
         fk_news_membre1_idx:
             columns:
                 - auteur
+        fk_news_image1_idx:
+            columns:
+                - image
     id:
         id:
             type: integer
@@ -43,6 +46,15 @@ News:
             nullable: false
             comment: ''
     manyToOne:
+        image:
+            targetEntity: Image
+            cascade: {  }
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                image:
+                    referencedColumnName: id
+            orphanRemoval: false
         auteur:
             targetEntity: Membre
             cascade: {  }

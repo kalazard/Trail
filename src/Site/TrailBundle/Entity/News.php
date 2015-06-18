@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * News
  *
- * @ORM\Table(name="news")
+ * @ORM\Table(name="news", indexes={@ORM\Index(name="fk_news_membre1_idx", columns={"auteur"}), @ORM\Index(name="fk_news_image1_idx", columns={"image"})})
  * @ORM\Entity
  */
 class News
@@ -50,6 +50,23 @@ class News
     private $texte;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date", type="date", nullable=false)
+     */
+    private $date;
+
+    /**
+     * @var \Image
+     *
+     * @ORM\ManyToOne(targetEntity="Image")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="image", referencedColumnName="id")
+     * })
+     */
+    private $image;
+
+    /**
      * @var \Membre
      *
      * @ORM\ManyToOne(targetEntity="Membre")
@@ -58,13 +75,6 @@ class News
      * })
      */
     private $auteur;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="date", type="date", nullable=false)
-     */
-    private $date;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
@@ -193,29 +203,6 @@ class News
     }
 
     /**
-     * Set auteur
-     *
-     * @param \Site\TrailBundle\Entity\Membre $auteur
-     * @return News
-     */
-    public function setAuteur(\Site\TrailBundle\Entity\Membre $auteur = null)
-    {
-        $this->auteur = $auteur;
-
-        return $this;
-    }
-
-    /**
-     * Get auteur
-     *
-     * @return \Site\TrailBundle\Entity\Membre 
-     */
-    public function getAuteur()
-    {
-        return $this->auteur;
-    }
-
-    /**
      * Set date
      *
      * @param \DateTime $date
@@ -236,6 +223,52 @@ class News
     public function getDate()
     {
         return $this->date;
+    }
+
+    /**
+     * Set image
+     *
+     * @param \Site\TrailBundle\Entity\Image $image
+     * @return News
+     */
+    public function setImage(\Site\TrailBundle\Entity\Image $image = null)
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    /**
+     * Get image
+     *
+     * @return \Site\TrailBundle\Entity\Image 
+     */
+    public function getImage()
+    {
+        return $this->image;
+    }
+
+    /**
+     * Set auteur
+     *
+     * @param \Site\TrailBundle\Entity\Membre $auteur
+     * @return News
+     */
+    public function setAuteur(\Site\TrailBundle\Entity\Membre $auteur = null)
+    {
+        $this->auteur = $auteur;
+
+        return $this;
+    }
+
+    /**
+     * Get auteur
+     *
+     * @return \Site\TrailBundle\Entity\Membre 
+     */
+    public function getAuteur()
+    {
+        return $this->auteur;
     }
 
     /**
@@ -269,5 +302,37 @@ class News
     public function getCommentaire()
     {
         return $this->commentaire;
+    }
+	
+	/**
+     * @see \Serializable::unserialize()
+     */
+    //de meme
+    public function unserialize($serialized)
+    {
+        list (
+            $this->id,
+            $this->titre,
+            $this->visibilite,
+			$this->alias,
+			$this->texte,
+			$this->image,
+			$this->auteur,
+			$this->commentaire
+        ) = unserialize($serialized);
+    }
+    
+    public function jsonSerialize() {
+        return [
+            'id' => $this->getId(),
+            'titre' => $this->getTitre(),
+            'visibilite' => $this->getVisibilite(),
+            'alias' => $this->getAlias(),
+            'texte' => $this->getTexte(),
+            'date' => $this->getDate(),
+            'image' => $this->getImage(),
+            'auteur' => $this->getAuteur(),
+            'commentaire' => $this->getCommentaire()
+        ];
     }
 }

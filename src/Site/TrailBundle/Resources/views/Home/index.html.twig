@@ -11,12 +11,12 @@
 			<div class="row">
 				<div class="col-sm-offset-1 col-sm-4">
 					<h3>{{ news_one.titre }}</h3>
-					<p>{{ news_one.texte }}</p>
+					<p>{{ news_one.texte|slice(0, 250) }}</p>
 					<a href="{{path('site_trail_article', {'slug': news_one.alias })}}" class="colored pull-right">Voir la suite</a>
 				</div>
 				<div class="col-sm-offset-2 col-sm-4">
 					<h3>{{ news_two.titre }}</h3>
-					<p>{{ news_two.texte }}</p>
+					<p>{{ news_two.texte|slice(0, 250) }}</p>
 					<a href="{{path('site_trail_article', {'slug': news_two.alias })}}" class="colored pull-right">Voir la suite</a>
 				</div>
 			</div>
@@ -31,12 +31,12 @@
 			<div class="row">
 				<div class="col-sm-offset-1 col-sm-4">
 					<h3>{{ club.titre }}</h3>
-					<p>{{ club.texte }}</p>
+					<p>{{ club.texte|slice(0, 250) }}</p>
 					<a href="{{path('site_trail_club')}}" class="pull-right">Voir la suite</a>
 				</div>
 				<div class="col-sm-offset-2 col-sm-4">
 					<h3>{{ trail.titre }}</h3>
-					<p>{{ trail.texte }}</p>
+					<p>{{ trail.texte|slice(0, 250) }}...</p>
 					<a href="{{path('site_trail_trail')}}" class="pull-right">Voir la suite</a>
 				</div>
 			</div>
@@ -46,42 +46,49 @@
 	<div class="contact">
 		<div class="container">
 			<h2 class="colored text-center">Contact</h2>
-			<div class="row">
-				<div class="col-sm-offset-1 col-sm-4">
-					<div class="row">
-						<div class="form-group col-sm-6">
-							<label for="firstname">Prenom</label>
-							<input type="text" class="form-control" name="firstname" placeholder="Prenom">
+			
+			{% for flashMessage in app.session.flashbag.get('message-error') %}
+				<div class="alert alert-danger">{{ flashMessage }}</div>
+			{% endfor %}
+	
+			<form action="{{ path('site_trail_homepage_empty') }}" method="post">
+				<div class="row">
+					<div class="col-sm-offset-1 col-sm-4">
+						<div class="row">
+							<div class="form-group col-sm-6">
+								<label for="firstname">Prenom</label>
+								<input type="text" class="form-control" name="firstname" placeholder="Prenom">
+							</div>
+							<div class="form-group col-sm-6">
+								<label for="name">Nom</label>
+								<input type="text" class="form-control" name="name" placeholder="Nom">
+							</div>
 						</div>
-						<div class="form-group col-sm-6">
-							<label for="name">Nom</label>
-							<input type="text" class="form-control" name="name" placeholder="Nom">
+						<div class="form-group">
+							<label for="category">Categorie</label>
+							<select class="form-control" name="category">
+							  <option>Suggestion</option>
+							  <option>Autre</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="subject">Sujet</label>
+							<input type="text" class="form-control" name="subject" placeholder="Sujet">
 						</div>
 					</div>
-					<div class="form-group">
-						<label for="category">Categorie</label>
-						<select class="form-control" name="category">
-						  <option>Suggestion</option>
-						  <option>Autre</option>
-						</select>
-					</div>
-					<div class="form-group">
-						<label for="subject">Sujet</label>
-						<input type="text" class="form-control" name="subject" placeholder="Sujet">
+					<div class="col-sm-offset-2 col-sm-4">
+						<div class="form-group">
+							<label for="email">Votre email</label>
+							<input type="email" class="form-control" name="email" placeholder="Votre email">
+						</div>
+						<div class="form-group">
+							<label for="message">Message</label>
+							<textarea class="form-control" rows="3" name="message" placeholder="Message"></textarea>
+						</div>
 					</div>
 				</div>
-				<div class="col-sm-offset-2 col-sm-4">
-					<div class="form-group">
-						<label for="email">Votre email</label>
-						<input type="email" class="form-control" name="email" placeholder="Votre email">
-					</div>
-					<div class="form-group">
-						<label for="message">Message</label>
-						<textarea class="form-control" rows="3" name="message" placeholder="Message"></textarea>
-					</div>
-				</div>
-			</div>
-			<button type="submit" class="btn btn-default center-block">Envoyer</button>
+				<button type="submit" class="btn btn-default center-block">Envoyer</button>
+			</form>
 		</div>
 	</div>
 	

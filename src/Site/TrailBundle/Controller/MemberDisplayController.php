@@ -103,8 +103,27 @@ class MemberDisplayController extends Controller
 		$result['licence'] = $data->getLicence();		
 
 		$iti = $this->forward('SiteTrailBundle:Itiniraire:getByUser', array('user'  => $id_courant));		
-		$result['itineraires'] = json_decode($iti->getContent());	
-
+		$result['itineraires'] = json_decode($iti->getContent());
+                //var_dump($result['itineraires']);
+                
+                $n = $this->forward('SiteTrailBundle:Itiniraire:getNotes', array('listeIti' => $result['itineraires'],'idUser'  => $id_courant));		
+		$notes = json_decode($n->getContent(), true);
+                
+                $result['userNotes'] = $notes['userNotes'];
+                
+                foreach($notes['allNotes'] as $calcMoy)
+                {
+                    if(sizeof($calcMoy) > 0)
+                    {
+                        $result['itiMoyenne'][] = array_sum($calcMoy) / count($calcMoy);
+                    }
+                    else
+                    {
+                        $result['itiMoyenne'][] = -1;
+                    }
+                    
+                }
+                
 		//chargement des itinéraires d'un utilisateur donné.
 		
 		$content = $this->get("templating")->render("SiteTrailBundle:MemberDisplay:ProfilMembre.html.twig",$result);
