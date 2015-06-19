@@ -283,7 +283,10 @@
                                 <label>Nouveau mot de passe:</label>
                                 <input id="newpassword" class="form-control " type="password" placeholder="nouveau mot de passe">
                             </div> 
-
+                            <div class="form-group">
+                                <label>Confirmez le mot de passe:</label>
+                                <input id="reenternewpassword" class="form-control " type="password" placeholder="Confirmation mot de passe">
+                            </div>
                         </div>
                         <div class="modal-footer ">
                             <button id="btn_login" type="submit" class="btn btn-warning btn-block"><span class="glyphicon glyphicon-ok-sign"></span> Valider</button>
@@ -393,6 +396,12 @@
                     var newpassword = $("#newpassword").val();
                     var oldpassword = $("#oldpassword").val();
                     var token = $("#csfrtoken").val();
+                    var reenter = $("#reenternewpassword").val();
+                    if(reenter != newpassword)
+                    {
+                        $.notify("les mots de passe ne sont pas identiques !", "error");
+                        return false;
+                    }
                     $.ajax({
                         type: "POST",
                         url: "{{path('site_trail_changePassword')}}",
