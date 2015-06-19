@@ -1158,8 +1158,6 @@ class UserController extends Controller {
     }
 
     public function uploadAvatarAction() {
-		$this->testDeDroits('Administration');
-		
         //Sauvegarde du fichier   
         $target_dir = $this->container->getParameter("upload_directory");
         $target_file = $target_dir . basename($_FILES["fichier"]["name"]);
