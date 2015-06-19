@@ -830,16 +830,13 @@ class EvenementController extends Controller
     {
         $this->testDeDroits('Calendrier');
 		
-        /*if($request->isXmlHttpRequest())
-        {  */ 
-            $idUser = 1;//$this->getUser()->getId();
-            $idClasse = $request->request->get('idClasse', '3');
-            $idEvenementDeClasse = $request->request->get('idObj', '1');
+        if($request->isXmlHttpRequest())
+        { 
+            $idUser = $this->getUser()->getId();
+            $idClasse = $request->request->get('idClasse', '');
+            $idEvenementDeClasse = $request->request->get('idObj', '');
             $manager = $this->getDoctrine()->getManager();
             //$selectedLieuRendezVous = 0;
-
-            var_dump($idClasse);
-            var_dump($idEvenementDeClasse);
             
             $tabEvenements = EvenementController::getEvenementEtEvenementDeCategorie($this->getDoctrine()->getManager(), $idClasse, $idEvenementDeClasse);
 
@@ -1045,13 +1042,8 @@ class EvenementController extends Controller
                             'trace' => true,
                             'exceptions' => true
                         ));
-            try
-            {
-                $response = $clientSOAP->__call('itilist', array());
-            } catch (Exception $ex) {
-                echo "erreur : " . $ex;
-            }
             
+            $response = $clientSOAP->__call('itilist', array());            
             $res_list = json_decode($response);
             $evenementService = $this->container->get('evenement_service');
             $selectedIti = $evenementService->getUsedIti($evenementAssocie->getId());
@@ -1082,11 +1074,11 @@ class EvenementController extends Controller
                                                             ));
 
             return new Response($formulaire);
-       /* }
+        }
         else
         {
             throw new NotFoundHttpException('Impossible de trouver la page demandée');
-        }*/
+        }
     }
     
     /**
