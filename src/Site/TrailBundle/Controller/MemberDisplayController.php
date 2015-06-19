@@ -138,12 +138,28 @@ class MemberDisplayController extends Controller
 		
 		//on récupère les infos et on les stocke
 		$prenom="";$nom="";$email="";$tel="";$date="";$licence="";
+
+		$dateNaissance=explode("/",$request->request->get('Date'));
 		
 		$prenom = $request->request->get('Prenom','');
 		$nom = $request->request->get('Nom','');
 		$email = $request->request->get('Email','');
 		$tel = $request->request->get('Tel');
-		$date = $request->request->get('Date');
+		if(sizeof($dateNaissance) == 3)
+		{
+			if(checkdate($dateNaissance[1], $dateNaissance[0], $dateNaissance[2]))
+			{
+				$date = $request->request->get('Date');
+			}
+			else
+			{
+				$date = "01/01/0001";
+			}
+		}
+		else
+		{
+			$date = "01/01/0001";
+		}
 		$licence = $request->request->get('Licence');
 		
 		//si les variables existent et passent les test, on les compare au infos de l'utilisateur
