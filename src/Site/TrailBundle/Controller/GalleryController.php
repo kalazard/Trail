@@ -579,11 +579,11 @@ class GalleryController extends Controller
         $picture->setCategorie($categorie);
         $manager->flush();
         
-        $content = $this->get("templating")->render("SiteTrailBundle:Gallery:picture.html.twig", array(
-                                                        'picture' => $picture
+        $response = $this->forward('SiteTrailBundle:Gallery:picture', array(
+            'idPicture'  => $picture->getId()
         ));
-        
-        return new Response($content);
+
+        return $response;
     }
     
     /**
