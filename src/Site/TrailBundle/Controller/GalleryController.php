@@ -20,7 +20,7 @@ class GalleryController extends Controller
      * 
      * @return Response 
      */
-    public function getTheCategories($indStart)
+    public function getTheCategories($indStart, $pagination=true)
     {
         $listCategories = array();
 		
@@ -33,10 +33,14 @@ class GalleryController extends Controller
 			->from('SiteTrailBundle:Image', 'img')
 			->where('cat.id = img.categorie')
             ->orderBy('cat.label', 'ASC')
-			->distinct()
-            ->setFirstResult($indStart)
-            ->setMaxResults(5);
-
+			->distinct();
+                
+        if($pagination)
+        {
+            $qb->setFirstResult($indStart)
+                ->setMaxResults(5);
+        }
+        
         $query = $qb->getQuery();
         $listCategories = $query->getResult();      
         
@@ -58,7 +62,7 @@ class GalleryController extends Controller
 		$indStart = $request->get('indStart');  
 		$numPage = ($indStart/5)+1;
 
-		$listeCategorie = GalleryController::getTheCategories($indStart);
+		$listeCategorie = GalleryController::getTheCategories($indStart, true);
 
 		$listeImage = array();
 		$result_categ = array();
@@ -83,7 +87,7 @@ class GalleryController extends Controller
 		$queryNb = $manager->createQuery($reqNb);
 		$nbCategorie = $queryNb->getSingleScalarResult(); */
 
-		$nbCategorie = sizeof($listeCategorie);
+		$nbCategorie = sizeof(GalleryController::getTheCategories($indStart, false));
 
 		$content = $this->get("templating")->render("SiteTrailBundle:Gallery:index.html.twig", array(
 														'listeCategorie' => $listeCategorie,
