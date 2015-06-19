@@ -434,7 +434,49 @@ class UserController extends Controller {
         }
     }
 
-    //Récupération de la liste des utilisateurs
+    /**
+     * Fonction de récupération de tous les utilisateurs de la base de données
+     *
+     * Cette méthode est appelée en ajax et ne requiert aucuns paramètres : 
+     * 
+     * @return string 
+     *
+     * JSON contenant une liste de tous les utilisateurs
+     *
+     * Example en cas de succès :
+     * 
+     * <code>
+     * {
+     *     "success": true,
+     *     "serverError": false,
+     *     "users": Liste d'objet utilisateurs,
+     *     "visibilite": récupère le rôle de l'utilisateur connecté pour savoir si il est admin ou non
+     *     "actifs": Tableau qui pour chaque utilisateur renvoyé contiendra son état d'activation
+     * }
+     * </code>
+     * 
+     * Example en cas d'erreur :
+     * 
+     * <code>
+     * {
+     *     "success": false,
+     *     "serverError": false,
+     *     "message": "Message"
+     * }
+     * </code>
+     * 
+     * Example en cas d'erreur du serveur :
+     * 
+     * <code>
+     * {
+     *     "success": false,
+     *     "serverError": true,
+     *     "message": "Message"
+     * }
+     * </code>
+     * 
+     * 
+     */
     public function getAllUsersAction() {
 		$this->testDeDroits('Annuaire');
 		
@@ -683,7 +725,57 @@ class UserController extends Controller {
         }
     }
 
-    //Mise à jour d'un utilisateur dans la base de données
+    /**
+     * Fonction de mise à jour d'un utilisateur
+     *
+     * Cette méthode est appelée en ajax et requiert les paramètres suivants : 
+     * 
+     * <code>
+     * id_user : id de l'utilisateur à modifier
+     * emailUpdate : Email de l'utilisateur à modifier 
+     * nomUpdate : Nom de l'utilisateur à modifier 
+     * prenomUpdate : Prénom de l'utilisateur à modifier 
+     * datenaissanceUpdate : Date de naissance de l'utilisateur à modifier 
+     * telephoneUpdate : Téléphone de l'utilisateur à modifier 
+     * licenceUpdate : Url du site de la licence de l'utilisateur à modifier
+     * </code>
+     * 
+     * @return string 
+     *
+     * JSON permettant de définir si l'utilisateur a été modifié ou non
+     *
+     * Example en cas de succès :
+     * 
+     * <code>
+     * {
+     *     "success": true,
+     *     "serverError": false,
+     *     "message": "Message"
+     * }
+     * </code>
+     * 
+     * Example en cas d'erreur dans la création :
+     * 
+     * <code>
+     * {
+     *     "success": false,
+     *     "serverError": false,
+     *     "message": "Message"
+     * }
+     * </code>
+     * 
+     * Example en cas d'erreur du serveur :
+     * 
+     * <code>
+     * {
+     *     "success": false,
+     *     "serverError": true,
+     *     "message": "Message"
+     * }
+     * </code>
+     * 
+     * 
+     */
     public function updateUserAction() {
 		$this->testDeDroits('Administration');
 		
@@ -847,7 +939,53 @@ class UserController extends Controller {
         }
     }
 
-    //Permettra de connecter un utilisateur
+    /**
+     * Fonction de connexion de l'utilisateur
+     *
+     * Cette méthode est appelée en ajax et requiert les paramètres suivants : 
+     * 
+     * <code>
+     * _csrf_token : token csrf généré
+     * _email : email de l'utilisateur à connecter
+     * _password : mot de passe de l'utilisateur à connecter
+     * </code>
+     * 
+     * @return string 
+     *
+     * JSON permettant de définir si l'utilisateur est connecté ou non
+     *
+     * Example en cas de succès :
+     * 
+     * <code>
+     * {
+     *     "success": true,
+     *     "serverError": false,
+     *     "message": "Message"
+     * }
+     * </code>
+     * 
+     * Example en cas d'erreur dans la création :
+     * 
+     * <code>
+     * {
+     *     "success": false,
+     *     "serverError": false,
+     *     "message": "Message"
+     * }
+     * </code>
+     * 
+     * Example en cas d'erreur du serveur :
+     * 
+     * <code>
+     * {
+     *     "success": false,
+     *     "serverError": true,
+     *     "message": "Message"
+     * }
+     * </code>
+     * 
+     * 
+     */
     public function logInAction() {
         $request = $this->getRequest();
         //On regarde qu'il s'agit bien d'une requête ajax
@@ -894,7 +1032,7 @@ class UserController extends Controller {
 
                 //Si l'utilisateur n'existe pas dans notre base de données
                 if (is_null($membre)) {
-                    $return = array('success' => false, 'serverError' => false, 'message' => "Existe pas dans la bdd");
+                    $return = array('success' => false, 'serverError' => false, 'message' => "L'utilisateur spécifié n'existe pas");
                     $response = new Response(json_encode($return));
                     $response->headers->set('Content-Type', 'application/json');
                     return $response;
@@ -920,6 +1058,7 @@ class UserController extends Controller {
         }
     }
 
+    
     public function logOutAction() {
         $this->get('security.token_storage')->setToken(null);
         $this->get('request')->getSession()->invalidate();
