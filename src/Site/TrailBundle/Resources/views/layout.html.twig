@@ -27,7 +27,10 @@
         <nav class="navbar navbar-default navbar-fixed-top">
             <div class="container-fluid">
                 <div class="navbar-header">
-                    <img src="http://zupimages.net/up/15/13/7nnr.png">
+                    
+					<a href="{{path('site_trail_homepage_empty')}}">
+						<img src="http://zupimages.net/up/15/13/7nnr.png">
+					</a>
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
                         <span class="sr-only">Toggle navigation</span>
                         <span class="icon-bar"></span>
@@ -186,8 +189,8 @@
                         </div>
                         <div class="modal-footer ">
                             <button id="btn_login" type="submit" class="btn btn-warning btn-block"><span class="glyphicon glyphicon-ok-sign"></span> Se connecter</button>
-                            <button type="button" id="resetpassword">Reset password</button>
-                        </div>
+							<a id="resetpassword" href="#">J'ai perdu mon mot de passe</a>
+						</div>
                         <input id="csfrtoken" type="hidden" name="_csrf_token" value="{{ csrf_token('default') }}">
                     </form> 
                 </div>
@@ -368,6 +371,7 @@
                                 if (data.success)
                                 {
                                     $.notify(data.message, "success");
+									$('#createUserModal').modal('hide');
                                 }
                                 else
                                 {
@@ -419,7 +423,8 @@
                     return false;
                 });
 
-                $("#resetpassword").click(function () {
+                $("#resetpassword").click(function (e) {
+				e.preventDefault;
                     var email = $("#userid").val()
                     $.ajax({
                         type: "POST",
