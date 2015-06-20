@@ -1190,7 +1190,7 @@ class UserController extends Controller {
 
         //On vérifie qu'il n'y a pas eu d'erreurs lors de l'upload
         if ($uploadOk == 0) {
-            $response = new RedirectResponse($this->generateUrl('site_trail_profilmembre'));
+            
         } else {
             $date = new \DateTime;
             $fileName = "image" . date_format($date, 'U') . "." . $imageFileType;
@@ -1232,6 +1232,7 @@ class UserController extends Controller {
                 return new RedirectResponse($this->generateUrl('site_trail_profilmembre'));
             }
         }
+        return new RedirectResponse($this->generateUrl('site_trail_profilmembre'));
     }
 
     public function resetPasswordAction()
