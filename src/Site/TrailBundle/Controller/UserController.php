@@ -1163,34 +1163,34 @@ class UserController extends Controller {
         $target_file = $target_dir . basename($_FILES["fichier"]["name"]);
         $uploadOk = 1;
         $imageFileType = pathinfo($target_file, PATHINFO_EXTENSION);
-
+        $message_err = "Impossible de modifier l'avatar";
         // Check if image file is a actual image or fake image
         if (isset($_POST["submit"])) {
             $check = getimagesize($_FILES["fichier"]["tmp_name"]);
             if ($check !== false) {
-                echo "File is an image - " . $check["mime"] . ".";
+                
                 $uploadOk = 1;
             } else {
-                echo "Le fichier n'est pas une image.";
+                $message_err =  "Le fichier n'est pas une image.";
                 $uploadOk = 0;
             }
         }
 
         //On vérifie la taille du fichier
         if ($_FILES["fichier"]["size"] > 5000000) {
-            echo "L'image est trop volomineuse.";
+            $message_err =  "L'image est trop volomineuse.";
             $uploadOk = 0;
         }
 
         //Autorisation de certaines extensions de fichier
         if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif") {
-            echo "Seules les extensions JPG, JPEG, PNG & GIF sont autorisées.";
+            $message_err =  "Seules les extensions JPG, JPEG, PNG & GIF sont autorisées.";
             $uploadOk = 0;
         }
 
         //On vérifie qu'il n'y a pas eu d'erreurs lors de l'upload
         if ($uploadOk == 0) {
-            echo "Il y a eu un problème lors de l'envoi du fichier.";
+            
         } else {
             $date = new \DateTime;
             $fileName = "image" . date_format($date, 'U') . "." . $imageFileType;
@@ -1232,6 +1232,7 @@ class UserController extends Controller {
                 return new RedirectResponse($this->generateUrl('site_trail_profilmembre'));
             }
         }
+        return new RedirectResponse($this->generateUrl('site_trail_profilmembre'));
     }
 
     public function resetPasswordAction()
