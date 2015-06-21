@@ -173,11 +173,19 @@
     divLieuTitre = $('#lieuTitreDiv').html();
     divLieuDescription = $('#lieuDescriptionDiv').html();
     
+    var autoComplObj = {{AClieu|raw}};
+    var autoComplArray = [];
+    
+    for(keys in autoComplObj)
+    {
+        autoComplArray.push(autoComplObj[keys]);
+    }
+    
     //auto completion
     $(function(){
         $( "#form_rendezvous_titre" ).autocomplete({
             appendTo: $("#form_rendezvous_titre").parent(),
-            source: {{AClieu|raw}}
+            source: autoComplArray
         });
     });
     
@@ -188,7 +196,7 @@
         
         $( "#form_rendezvous_titre" ).autocomplete({
             appendTo: $("#form_rendezvous_titre").parent(),
-            source: {{AClieu|raw}}
+            source: autoComplArray
         });
     });
     
