@@ -13,6 +13,16 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ItiniraireController extends Controller 
 {
+
+    /**
+     * Fonction de récupération de la liste des itineraires
+     *
+     * Cette méthode ne requiert aucuns paramètres
+     * 
+     * @return View 
+     * 
+     * 
+     */
 	public function listAction()
 	{
 		$this->testDeDroits('Itinéraires');
@@ -32,6 +42,25 @@ class ItiniraireController extends Controller
 		return new Response($content);
 	}
 	
+
+    /**
+     * Fonction de recherche d'un itinéraire
+     *
+     * Cette méthode est appelée en POST et requiert les paramètres suivants : 
+     * 
+     * <code>
+     * nom : nom de l'itinéraire
+     * typechemin : type de chemin
+     * longueur : longueur de l'itinéraire 
+     * datecrea : Date de création de l'itinéraire
+     * difficulté : Difficulté de l'itinéraire
+     * status : status de l'itinéraire
+     * </code>
+     * 
+     * @return View
+     * 
+     * 
+     */
 	public function searchAction(Request $request)
 	{
 		$this->testDeDroits('Itinéraires');
@@ -153,7 +182,18 @@ class ItiniraireController extends Controller
       return new Response('This is not ajax!', 400);
     }
 
-
+    /**
+     * Fonction de création d'un utilisateur
+     *
+     * Cette méthode est appelée en GET et requiert les paramètres suivants : 
+     * 
+     * <code>
+     * id : id de l'itinéraire à rechercher
+     * 
+     * @return View 
+     *
+     * 
+     */
 	public function getByIdAction($id)
 	{
 		$this->testDeDroits('Itinéraires');                
@@ -210,6 +250,20 @@ class ItiniraireController extends Controller
             return new Response($content);
 	}
 
+    /**
+     * Fonction de récupération des itinéraires en fonction des utilisateurs
+     *
+     * Cette méthode est appelée en GET et requiert les paramètres suivants : 
+     * 
+     * <code>
+     * user : id de l'utilisateur
+     * </code>
+     * 
+     * @return string 
+     *
+     * JSON contenant la liste des itinéraires
+     *
+     */
 	public function getByUserAction($user)
 	{
 		$this->testDeDroits('Itinéraires');
@@ -227,6 +281,7 @@ class ItiniraireController extends Controller
 		$res = json_decode($response);
 		return new Response($response);
 	}
+        
         
         public function getAllNotesAction()
 	{
