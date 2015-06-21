@@ -78,6 +78,9 @@
                             <li>
                                 <a href="{{path('site_trail_searchitineraire')}}">Itinéraires</a>
                             </li>
+                            <li>
+                                <a href="{{path('site_trail_upload')}}">Uploader un GPX</a>
+                            </li>
                             {% if (app.user.getRole().getId() == 1) %}
 							<li>
                                 <a href="{{path('site_trail_admin')}}">Administration</a>
