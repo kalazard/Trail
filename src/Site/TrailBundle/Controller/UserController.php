@@ -991,6 +991,7 @@ class UserController extends Controller {
         //On regarde qu'il s'agit bien d'une requête ajax
         if ($request->isXmlHttpRequest()) {
             try {
+                //On vérifie le token csrf (comme c'est une requête en ajax ce dernier est envoyé manuellement)
                 if (!$this->isCsrfTokenValid('default', $request->get('_csrf_token'))) {
                     throw new Exception("CSRF TOKEN ATTAK", 500);
                 }
@@ -1058,7 +1059,16 @@ class UserController extends Controller {
         }
     }
 
-    
+    /**
+     * Fonction de déconnexion de l'utilisateur
+     *
+     * Cette méthode est appelée en GET et ne requiert aucuns paramètres : 
+     * 
+     * @return View 
+     *
+     * Redirige sur la page d'acceuil 
+     * 
+     */
     public function logOutAction() {
         $this->get('security.token_storage')->setToken(null);
         $this->get('request')->getSession()->invalidate();
@@ -1068,7 +1078,54 @@ class UserController extends Controller {
         return $response;
     }
 
-    //Permet de changer le mot de passe d'un utilisateur
+    /**
+     * Fonction de changement du mot de passe de l'utilisateur
+     *
+     * Cette méthode est appelée en ajax et requiert les paramètres suivants : 
+     * 
+     * <code>
+     * oldpassword : ancien mot de passe de l'utilisateur
+     * newpassword : le nouveau mot de passe
+     * </code>
+     *
+     * On vérifie que l'ancien mot de passe est juste, ensuite on change le mot de passe.
+     * 
+     * @return string 
+     *
+     * JSON permettant de définir si le mot de passe a été changé
+     *
+     * Example en cas de succès :
+     * 
+     * <code>
+     * {
+     *     "success": true,
+     *     "serverError": false,
+     *     "message": "Message"
+     * }
+     * </code>
+     * 
+     * Example en cas d'erreur dans la création :
+     * 
+     * <code>
+     * {
+     *     "success": false,
+     *     "serverError": false,
+     *     "message": "Message"
+     * }
+     * </code>
+     * 
+     * Example en cas d'erreur du serveur :
+     * 
+     * <code>
+     * {
+     *     "success": false,
+     *     "serverError": true,
+     *     "message": "Message"
+     * }
+     * </code>
+     * 
+     * 
+     */
     public function changePasswordAction() {
         $request = $this->getRequest();
         //On regarde qu'il s'agit bien d'une requête ajax
@@ -1147,8 +1204,17 @@ class UserController extends Controller {
         }
     }
 
-    //Affichage du formulaire d'ajout d'un utilisateur
-    //Affichage de la liste des membres
+    /**
+     * Fonction permettant d'afficher l'annuaire
+     *
+     * Cette méthode est appelée en GET et ne requiert aucuns paramètres.
+     * 
+     * @return View 
+     *
+     * Redirige sur la page de l'annuaire
+     * 
+     * 
+     */
     public function annuaireAction() {
 		$this->testDeDroits('Annuaire');
 		
@@ -1157,6 +1223,21 @@ class UserController extends Controller {
         return new Response($content);
     }
 
+
+    /**
+     * Fonction de modification de l'avatar d'un membre
+     *
+     * Cette méthode est appelée en POST et requiert les paramètres suivants : 
+     * 
+     * <code>
+     * fichier : La photo de l'utilisateur
+     * </code>
+     * 
+     * @return View 
+     *
+     * Redirige vers la fiche membre 
+     * 
+     */
     public function uploadAvatarAction() {
         //Sauvegarde du fichier   
         $target_dir = $this->container->getParameter("upload_directory");
@@ -1234,7 +1315,49 @@ class UserController extends Controller {
         }
         return new RedirectResponse($this->generateUrl('site_trail_profilmembre'));
     }
-
+    
+    /**
+     * Fonction de réinitialisation du mot de passe de l'utilisateur
+     *
+     * Cette méthode est appelée en ajax et ne requiert aucuns paramètres.
+     * Un email avec un nouveau mot de passe est envoyé à l'adresse mail de l'utilisateur.
+     * 
+     * @return string 
+     *
+     * JSON contenant un message.
+     *
+     * Example en cas de succès :
+     * 
+     * <code>
+     * {
+     *     "success": true,
+     *     "serverError": false,
+     *     "message": "Message"
+     * }
+     * </code>
+     * 
+     * Example en cas d'erreur dans la création :
+     * 
+     * <code>
+     * {
+     *     "success": false,
+     *     "serverError": false,
+     *     "message": "Message"
+     * }
+     * </code>
+     * 
+     * Example en cas d'erreur du serveur :
+     * 
+     * <code>
+     * {
+     *     "success": false,
+     *     "serverError": true,
+     *     "message": "Message"
+     * }
+     * </code>
+     * 
+     * 
+     */
     public function resetPasswordAction()
     {
        $request = $this->getRequest();
