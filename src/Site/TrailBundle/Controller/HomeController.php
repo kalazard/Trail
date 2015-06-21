@@ -19,7 +19,7 @@ class HomeController extends Controller
      *
      * Cette méthode ne requiert aucuns paramètres.
      * Un email est envoyé si le formulaire de contact est correctement remplit
-	 **/
+	 */
     public function indexAction(Request $request)
     {
 		$this->testDeDroits('Accueil');
@@ -80,7 +80,7 @@ class HomeController extends Controller
      * Fonction d'affichage de la liste des nouveautés ou d'une nouveauté seule
      *
      * Cette méthode requiert l'alias d'une novueauté
-	 **/
+	 */
     public function newsAction($slug = NULL)
     {
 		$this->testDeDroits('Nouteautes');
@@ -145,7 +145,7 @@ class HomeController extends Controller
      * Fonction d'affichage de la rubrique "le club"
      *
      * Cette méthode ne requiert aucun paramètre
-	 **/
+	 */
 	public function clubAction()
     {
 		$this->testDeDroits('LeClub');
@@ -170,7 +170,7 @@ class HomeController extends Controller
      * Fonction d'affichage de la rubrique "le trail"
      *
      * Cette méthode ne requiert aucun paramètre
-	 **/
+	 */
 	public function trailAction()
     {
 		$this->testDeDroits('LeTrail');
@@ -195,7 +195,7 @@ class HomeController extends Controller
      * Fonction d'affichage de la fiche de contact
      *
      * Cette méthode ne requiert aucun paramètre
-	 **/
+	 */
 	public function contactAction(Request $request)
     {
 		$this->testDeDroits('Contact');
@@ -228,7 +228,7 @@ class HomeController extends Controller
      * Fonction de test des droits de l'utilisateur
      *
      * Cette méthode ne requiert aucun paramètre
-	 **/
+	 */
 	public function testDeDroits($permission)
 	{
 		$manager = $this->getDoctrine()->getManager();
