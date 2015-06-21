@@ -1207,7 +1207,7 @@ class UserController extends Controller {
     /**
      * Fonction permettant d'afficher l'annuaire
      *
-     * Cette méthode est appelée en GET et requiert les paramètres suivants : 
+     * Cette méthode est appelée en GET et ne requiert aucuns paramètres.
      * 
      * @return View 
      *
